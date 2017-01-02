@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 
 namespace Cake.Intellisense
@@ -26,26 +24,32 @@ namespace Cake.Intellisense
                         .AddMembers(
                             SyntaxFactory.ClassDeclaration("MainForm")
                                 .AddMembers(
-                                    SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName("void"), "Main")
+                                    SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName("int"), "Main")
                                         .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                                         .AddParameterListParameters(parameterList)
                                         .AddTypeParameterListParameters(SyntaxFactory.TypeParameter("T"))
-                                        .AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause("b").AddConstraints())
+                                        .AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause("T").AddConstraints(SyntaxFactory.TypeConstraint(SyntaxFactory.ParseTypeName("class"))))
                                         .WithBody(
                                             SyntaxFactory.Block(
                                                 SyntaxFactory.ReturnStatement(
                                                     SyntaxFactory.DefaultExpression(SyntaxFactory.ParseTypeName("int"))))))
                         )
-                );
+                ).NormalizeWhitespace();
 
-            var output = comp.NormalizeWhitespace().ToFullString();
-            Console.Write(output);
-            Console.ReadKey();
 
+            MetadataReference[] references =
+            {
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
+            };
+
+            var x = comp.ToFullString();
 
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName: "Cake.Intellisense",
-                syntaxTrees: new[] { comp.SyntaxTree }
+                syntaxTrees: new[] { CSharpSyntaxTree.Create(comp) },
+                references: references,
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
             );
 
 

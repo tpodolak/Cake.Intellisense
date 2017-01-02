@@ -19,14 +19,14 @@ namespace Cake.Intellisense
             var zzz = new Class1();
             zzz.Foo();
 
-            ShowX();
-            Console.WriteLine();
-            var assembly = Assembly.LoadFrom("Cake.Common.dll");
-            foreach (var type in assembly.GetTypes().SelectMany(val => val.GetMethods().Where(x => x.GetCustomAttributes<CakeMethodAliasAttribute>().Any())))
-            {
-                ShowMethods(type);
-
-            }
+//            ShowX();
+//            Console.WriteLine();
+//            var assembly = Assembly.LoadFrom("Cake.Common.dll");
+//            foreach (var type in assembly.GetTypes().SelectMany(val => val.GetMethods().Where(x => x.GetCustomAttributes<CakeMethodAliasAttribute>().Any())))
+//            {
+//                ShowMethods(type);
+//
+//            }
 
             Console.ReadKey();
 
