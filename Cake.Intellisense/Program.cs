@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Cake.Core.Annotations;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Cake.Intellisense
 {
@@ -14,19 +15,29 @@ namespace Cake.Intellisense
     {
         static void Main(string[] args)
         {
-            // var x = AssemblyMetadata.CreateFromFile("Cake.Common.dll");
+            var cakeCommon = Assembly.LoadFrom("Cake.Common.dll");
+            var cakeCore = Assembly.LoadFrom("Cake.Core.dll");
 
             var zzz = new Class1();
-            zzz.Foo();
+            var result = zzz.Genrate(cakeCommon.GetExportedTypes().Where(val => val.GetCustomAttributes<CakeAliasCategoryAttribute>().Any()).ToList());
+            var x = result.ToFullString();
 
-//            ShowX();
-//            Console.WriteLine();
-//            var assembly = Assembly.LoadFrom("Cake.Common.dll");
-//            foreach (var type in assembly.GetTypes().SelectMany(val => val.GetMethods().Where(x => x.GetCustomAttributes<CakeMethodAliasAttribute>().Any())))
-//            {
-//                ShowMethods(type);
-//
-//            }
+            MetadataReference[] references =
+            {
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+                MetadataReference.CreateFromFile("Cake.Common.dll"),
+                MetadataReference.CreateFromFile("Cake.Core.dll"),
+                MetadataReference.CreateFromFile(typeof(System.Uri).Assembly.Location)
+            };
+
+            CSharpCompilation compilation = CSharpCompilation.Create(
+                assemblyName: "Cake.Common.AliasesMetadata",
+                syntaxTrees: new[] { CSharpSyntaxTree.ParseText(x) },
+                references: references,
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+            zzz.Compile(compilation);
 
             Console.ReadKey();
 
@@ -78,7 +89,7 @@ namespace Cake.Intellisense
                 return $"{x + t.Name.Substring(0, t.Name.LastIndexOf("`", StringComparison.InvariantCulture))}<{string.Join(", ", t.GetGenericArguments().Select(PrettyTypeName))}>";
             }
 
-            return  t == typeof(void) ? "void" : x + t.Name;
+            return t == typeof(void) ? "void" : x + t.Name;
         }
     }
 }
