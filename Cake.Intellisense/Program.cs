@@ -19,7 +19,9 @@ namespace Cake.Intellisense
             var cakeCore = Assembly.LoadFrom("Cake.Core.dll");
 
             var zzz = new Class1();
-            var result = zzz.Genrate(cakeCommon.GetExportedTypes().Where(val => val.GetCustomAttributes<CakeAliasCategoryAttribute>().Any()).ToList());
+            var types = cakeCommon.GetExportedTypes().Where(val => val.GetCustomAttributes<CakeAliasCategoryAttribute>().Any()).ToList();
+            var namespaces = string.Join(Environment.NewLine, types.Select(val => $"using static {val.Namespace}.{val.Name}Metadata;"));
+            var result = zzz.Genrate(types);
             var x = result.ToFullString();
 
             MetadataReference[] references =

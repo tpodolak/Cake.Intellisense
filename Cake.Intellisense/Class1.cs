@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Cake.Core.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -13,6 +17,7 @@ namespace Cake.Intellisense
 {
     public class Class1
     {
+        private static XDocument documentation = XDocument.Load("Cake.Common.xml");
         public void Foo()
         {
 
@@ -95,6 +100,11 @@ namespace Cake.Intellisense
             return cu.NormalizeWhitespace();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
         public MemberDeclarationSyntax CreateMethodDeclaration(MethodInfo methodInfo)
         {
             var methodDeclarationSyntax = MethodDeclaration(ParseTypeName(PrettyTypeName(methodInfo.ReturnType)), methodInfo.Name)
@@ -156,14 +166,35 @@ namespace Cake.Intellisense
 
         public IEnumerable<SyntaxToken> CreateModifiers(MethodInfo methodInfo)
         {
-            if (methodInfo.IsStatic)
-                yield return Token(SyntaxKind.StaticKeyword);
+            string path = "M:" + methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
+
+            var res = @" /// <summary>
+        /// 
+        /// </summary>";
+
+            var xmlDocuOfMethod = documentation.XPathSelectElement("//member[starts-with(@name, '" + path + "')]");
+
+            var doc = documentation.Root.Elements("members").Elements().FirstOrDefault(el => el.Attribute("name")?.Value.StartsWith(path) == true);
+
+            var nodes = doc.Descendants().Where(val => val.Name != "param" || val.Attribute("name")?.Value != methodInfo.GetParameters().First().Name);
+            var result = string.Join(Environment.NewLine, nodes.Select(val => val.ToString()));
+
+            var res2 = string.Join(Environment.NewLine, result.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(val => @"///" + val));
+
+            SyntaxTrivia comment = Comment(res2);
+
+            yield return
+                Token(TriviaList(comment), SyntaxKind.None, TriviaList(CarriageReturn));
 
             if (methodInfo.IsPublic)
                 yield return Token(SyntaxKind.PublicKeyword);
 
             if (methodInfo.IsPrivate)
                 yield return Token(SyntaxKind.PrivateKeyword);
+
+            if (methodInfo.IsStatic)
+                yield return Token(SyntaxKind.StaticKeyword);
+
         }
 
         public TypeParameterConstraintClauseSyntax[] CreateConstraintClauses(MethodInfo methodInfo)
@@ -179,7 +210,7 @@ namespace Cake.Intellisense
 
         public NamespaceDeclarationSyntax CreateNamespace(string @namespace)
         {
-            return NamespaceDeclaration(IdentifierName($"{@namespace}.AliasMetadata"));
+            return NamespaceDeclaration(IdentifierName(@namespace));
         }
 
         public TypeParameterSyntax[] CreateTypeParameters(MethodInfo methodInfo)
@@ -195,7 +226,7 @@ namespace Cake.Intellisense
         public ClassDeclarationSyntax CreateClass(Type type)
         {
             return
-                ClassDeclaration(type.Name).WithModifiers(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)))
+                ClassDeclaration(type.Name + "Metadata").WithModifiers(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)))
                     .AddMembers(
                         type.GetMethods(BindingFlags.Public | BindingFlags.Static)
                             .Where(val => val.GetCustomAttributes<CakeMethodAliasAttribute>().Any())
