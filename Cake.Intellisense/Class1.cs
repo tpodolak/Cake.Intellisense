@@ -28,74 +28,65 @@ namespace Cake.Intellisense
         };
 
 
-//        public void Foo()
-//        {
-//
-//            var parameterList = new[]
-//            {
-//                Parameter(Identifier("name")).WithType(ParseTypeName("int"))
-//            };
-//
-//            var comp = CompilationUnit()
-//                .AddMembers(
-//                    NamespaceDeclaration(IdentifierName("ACO"))
-//                        .AddMembers(
-//                            ClassDeclaration("MainForm")
-//                                .AddMembers(
-//                                    MethodDeclaration(ParseTypeName("int"), "Main")
-//                                        .AddModifiers(Token(SyntaxKind.PublicKeyword))
-//                                        .AddParameterListParameters(parameterList)
-//                                        .AddTypeParameterListParameters(TypeParameter("T"))
-//                                        .AddConstraintClauses(TypeParameterConstraintClause("T").AddConstraints(TypeConstraint(ParseTypeName("class"))))
-//                                        .WithBody(
-//                                            Block(
-//                                                ReturnStatement(
-//                                                    DefaultExpression(ParseTypeName("int"))))))
-//                        )
-//                ).NormalizeWhitespace();
-//
-//
-//            MetadataReference[] references =
-//            {
-//                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-//                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
-//            };
-//
-//            var x = comp.ToFullString();
-//
-//            CSharpCompilation compilation = CSharpCompilation.Create(
-//                assemblyName: "Cake.Intellisense",
-//                syntaxTrees: new[] { CSharpSyntaxTree.Create(comp) },
-//                references: references,
-//                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-//            );
-//
-//
-//            Compile(compilation);
-//        }
+        //        public void Foo()
+        //        {
+        //
+        //            var parameterList = new[]
+        //            {
+        //                Parameter(Identifier("name")).WithType(ParseTypeName("int"))
+        //            };
+        //
+        //            var comp = CompilationUnit()
+        //                .AddMembers(
+        //                    NamespaceDeclaration(IdentifierName("ACO"))
+        //                        .AddMembers(
+        //                            ClassDeclaration("MainForm")
+        //                                .AddMembers(
+        //                                    MethodDeclaration(ParseTypeName("int"), "Main")
+        //                                        .AddModifiers(Token(SyntaxKind.PublicKeyword))
+        //                                        .AddParameterListParameters(parameterList)
+        //                                        .AddTypeParameterListParameters(TypeParameter("T"))
+        //                                        .AddConstraintClauses(TypeParameterConstraintClause("T").AddConstraints(TypeConstraint(ParseTypeName("class"))))
+        //                                        .WithBody(
+        //                                            Block(
+        //                                                ReturnStatement(
+        //                                                    DefaultExpression(ParseTypeName("int"))))))
+        //                        )
+        //                ).NormalizeWhitespace();
+        //
+        //
+        //            MetadataReference[] references =
+        //            {
+        //                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+        //                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
+        //            };
+        //
+        //            var x = comp.ToFullString();
+        //
+        //            CSharpCompilation compilation = CSharpCompilation.Create(
+        //                assemblyName: "Cake.Intellisense",
+        //                syntaxTrees: new[] { CSharpSyntaxTree.Create(comp) },
+        //                references: references,
+        //                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        //            );
+        //
+        //
+        //            Compile(compilation);
+        //        }
 
         public void Compile(CSharpCompilation compilation, string output)
         {
-            using (var ms = new MemoryStream())
+            EmitResult result = compilation.Emit(output, null, Path.ChangeExtension(output, "xml"));
+
+            if (!result.Success)
             {
-                EmitResult result = compilation.Emit(ms);
+                var failures = result.Diagnostics.Where(diagnostic =>
+                    diagnostic.IsWarningAsError ||
+                    diagnostic.Severity == DiagnosticSeverity.Error);
 
-                if (!result.Success)
+                foreach (var diagnostic in failures)
                 {
-                    var failures = result.Diagnostics.Where(diagnostic =>
-                        diagnostic.IsWarningAsError ||
-                        diagnostic.Severity == DiagnosticSeverity.Error);
-
-                    foreach (var diagnostic in failures)
-                    {
-                        Console.Error.WriteLine(diagnostic);
-                    }
-                }
-                else
-                {
-                    ms.Seek(0, SeekOrigin.Begin);
-                    ms.WriteTo(new FileStream(output, FileMode.Create, System.IO.FileAccess.Write));
-                    // var assembly = Assembly.Load(ms.ToArray());
+                    Console.Error.WriteLine(diagnostic);
                 }
             }
         }

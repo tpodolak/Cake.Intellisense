@@ -51,40 +51,36 @@ namespace Cake.Intellisense
             var packa = packageManager.LocalRepository.GetPackages().ToList();
             //Download and unzip the package
             packageManager.InstallPackage(newset.Id, newset.Version);
+            var local = packageManager.LocalRepository.FindPackage(newset.Id, newset.Version);
+
             int dependencyId = 0;
 
-            var packageDependencySets = newset.DependencySets.ToList();
-            if (packageDependencySets.Count > 1)
-            {
-                Console.WriteLine("Multiple farameworks");
-                for (var index = 0; index < packageDependencySets.Count; index++)
-                {
-                    var framework = packageDependencySets[index].TargetFramework;
-                    Console.WriteLine($"[{index + 1}] - {framework}");
-                }
+            var files = newset.GetFiles();
+            var frameworks = files.GroupBy(val => val.TargetFramework).Select(fm => fm.Key).ToList();
 
-                var key = Console.ReadKey();
-                if (int.TryParse(key.KeyChar.ToString(), out dependencyId))
-                {
-                    dependencyId--;
-                }
+
+
+            Console.WriteLine("Frameworks");
+            for (var index = 0; index < frameworks.Count; index++)
+            {
+                var framework = frameworks[index];
+                Console.WriteLine($"[{index + 1}] - {framework}");
             }
 
-            var targetFramework = packageDependencySets[dependencyId].TargetFramework ?? new FrameworkName(".NETFramework", new Version(4, 5));
+            var key = Console.ReadKey();
+            if (int.TryParse(key.KeyChar.ToString(), out dependencyId))
+            {
+                dependencyId--;
+            }
+
+            var targetFramework = frameworks[dependencyId];
             var packges = GetDependentPackagesAndSelf(newset, packa, targetFramework, repo);
 
-            var packageInfo = packges.Where(val => Directory.Exists(Path.Combine(path, $"{val.Id.ToString()}.{val.Version}", "lib", ToFolderName(targetFramework)))).Select(val => new
-            {
-                package = val,
-                files = new DirectoryInfo(Path.Combine(path, $"{val.Id.ToString()}.{val.Version}", "lib", ToFolderName(targetFramework))).GetFiles("*.dll", SearchOption.AllDirectories)
-            }).ToList();
-
-            var currentPath = packageInfo.Single(val => val.package == newset);
 
             Console.WriteLine(packges);
 
 
-            var assemblies = currentPath.files.Select(val => Assembly.LoadFrom(val.FullName)).ToList();
+            var assemblies = newset.GetFiles().OfType<PhysicalPackageFile>().Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll")).Select(val => Assembly.LoadFrom(val.SourcePath)).ToList();
 
 
             var zzz = new Class1();
@@ -93,13 +89,13 @@ namespace Cake.Intellisense
             var result = zzz.Genrate(types);
             var x = result.ToFullString();
 
-            var referencesass = packageInfo.SelectMany(f => f.files).SelectMany(ff => GetReferencesAssemblies(Assembly.LoadFrom(ff.FullName))).Except(assemblies).Select(val => MetadataReference.CreateFromFile(val.Location)).ToList();
+            var referencesass = packges.SelectMany(f => f.GetFiles().OfType<PhysicalPackageFile>().Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))).SelectMany(ff => GetReferencesAssemblies(Assembly.LoadFrom(ff.SourcePath))).Except(assemblies).Select(val => MetadataReference.CreateFromFile(val.Location)).ToList();
 
             var formattableString = $"{options.Package}.AliasesMetadata";
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName: formattableString,
                 syntaxTrees: new[] { CSharpSyntaxTree.ParseText(x) },
-                references: referencesass.Union(packageInfo.SelectMany(val => val.files.Select(y => MetadataReference.CreateFromFile(y.FullName)))),
+                references: referencesass.Union(assemblies.Select(y => MetadataReference.CreateFromFile(y.Location))),
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             zzz.Compile(compilation, $"{formattableString}.dll");
@@ -115,12 +111,16 @@ namespace Cake.Intellisense
                 return new List<IPackage>();
 
             return
-                new List<IPackage> { package }.Union(package.DependencySets.Where(val => val.TargetFramework == framework)
-                    .SelectMany(
-                        val =>
-                            val.Dependencies.SelectMany(
-                                x =>
-                                    GetDependentPackagesAndSelf(repo.ResolveDependency(x, false, true), localPackages, framework, repo))))
+                new List<IPackage> { package }.Union(package.DependencySets.SelectMany(x => x.Dependencies)
+                        .Where(
+                            dep =>
+                                repo.ResolveDependency(dep, false, true)
+                                    .GetFiles()
+                                    .Any(file => file.SupportedFrameworks.Contains(framework)))
+                        .SelectMany(
+                            x =>
+                                GetDependentPackagesAndSelf(repo.ResolveDependency(x, false, true), localPackages,
+                                    framework, repo)))
                     .ToList();
         }
 
