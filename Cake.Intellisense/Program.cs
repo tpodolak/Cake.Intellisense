@@ -13,6 +13,7 @@ using Cake.Core.Scripting;
 using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using NLog;
 using NuGet;
 
 namespace Cake.Intellisense
@@ -34,8 +35,8 @@ namespace Cake.Intellisense
                 return;
             }
 
-            IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
-
+            PackageRepositoryBase repo = (PackageRepositoryBase)PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
+            repo.Logger = new NLogNugetAdapterLogger(LogManager.GetLogger(repo.GetType().FullName));
             //Get the list of all NuGet packages with ID 'EntityFramework'       
             List<IPackage> packages = repo.FindPackagesById(options.Package).ToList();
 
@@ -46,6 +47,7 @@ namespace Cake.Intellisense
 
             string path = "C:\\Temp";
             PackageManager packageManager = new PackageManager(repo, path);
+            packageManager.Logger = new NLogNugetAdapterLogger(LogManager.GetLogger(repo.GetType().FullName));
             var packa = packageManager.LocalRepository.GetPackages().ToList();
             //Download and unzip the package
             packageManager.InstallPackage(newset.Id, newset.Version);
