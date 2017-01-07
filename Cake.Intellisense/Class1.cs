@@ -254,7 +254,7 @@ namespace Cake.Intellisense
                 ClassDeclaration(type.Name + "Metadata").WithModifiers(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)))
                     .AddMembers(
                         type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                            .Where(val => val.GetCustomAttributes<CakeMethodAliasAttribute>().Any() || val.DeclaringType == typeof(ScriptHost))
+                            .Where(val => val.GetCustomAttributes<CakeMethodAliasAttribute>().Any() || val.DeclaringType?.FullName == typeof(ScriptHost).FullName)
                             .Select(CreateMethodDeclaration)
                             .ToArray());
         }
