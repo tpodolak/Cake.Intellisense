@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using NLog;
 using NuGet;
 using ILogger = NuGet.ILogger;
 
-namespace Cake.Intellisense
+namespace Cake.MetadataGenerator.Logging
 {
-    public class NLogNugetAdapterLogger : ILogger
+    public class NLogNugetLoggerAdapter : ILogger
     {
         private readonly NLog.ILogger _logger;
 
-        public NLogNugetAdapterLogger(NLog.ILogger logger)
+        public NLogNugetLoggerAdapter(NLog.ILogger logger)
         {
             _logger = logger;
         }

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Cake.MetadataGenerator")]
+[assembly: AssemblyTitle("Cake.MetadataGenerator.Tests.Integration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Cake.MetadataGenerator")]
+[assembly: AssemblyProduct("Cake.MetadataGenerator.Tests.Integration")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a3e93fb9-e1af-4279-a2f5-5b60810e007f")]
+[assembly: Guid("c6613fe9-b68b-4b12-af57-bf191ed4fb70")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.Intellisense", "Cake.Intellisense\Cake.Intellisense.csproj", "{A3E93FB9-E1AF-4279-A2F5-5B60810E007F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.MetadataGenerator", "Cake.Intellisense\Cake.MetadataGenerator.csproj", "{A3E93FB9-E1AF-4279-A2F5-5B60810E007F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake.MetadataGenerator.Tests.Integration", "Cake.MetadataGenerator.Tests.Integration\Cake.MetadataGenerator.Tests.Integration.csproj", "{C6613FE9-B68B-4B12-AF57-BF191ED4FB70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A3E93FB9-E1AF-4279-A2F5-5B60810E007F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3E93FB9-E1AF-4279-A2F5-5B60810E007F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3E93FB9-E1AF-4279-A2F5-5B60810E007F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6613FE9-B68B-4B12-AF57-BF191ED4FB70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6613FE9-B68B-4B12-AF57-BF191ED4FB70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6613FE9-B68B-4B12-AF57-BF191ED4FB70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6613FE9-B68B-4B12-AF57-BF191ED4FB70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

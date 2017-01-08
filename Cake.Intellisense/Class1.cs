@@ -3,23 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using Cake.Core.Annotations;
 using Cake.Core.Scripting;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-namespace Cake.Intellisense
+using NLog;
+
+namespace Cake.MetadataGenerator
 {
     public class Class1
     {
-        private static XDocument documentation = XDocument.Load("Cake.Common.xml");
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private static Type[] excludedAttributes = new[]
         {
@@ -27,56 +25,9 @@ namespace Cake.Intellisense
             typeof(CakeNamespaceImportAttribute), typeof(CakeMethodAliasAttribute)
         };
 
-
-        //        public void Foo()
-        //        {
-        //
-        //            var parameterList = new[]
-        //            {
-        //                Parameter(Identifier("name")).WithType(ParseTypeName("int"))
-        //            };
-        //
-        //            var comp = CompilationUnit()
-        //                .AddMembers(
-        //                    NamespaceDeclaration(IdentifierName("ACO"))
-        //                        .AddMembers(
-        //                            ClassDeclaration("MainForm")
-        //                                .AddMembers(
-        //                                    MethodDeclaration(ParseTypeName("int"), "Main")
-        //                                        .AddModifiers(Token(SyntaxKind.PublicKeyword))
-        //                                        .AddParameterListParameters(parameterList)
-        //                                        .AddTypeParameterListParameters(TypeParameter("T"))
-        //                                        .AddConstraintClauses(TypeParameterConstraintClause("T").AddConstraints(TypeConstraint(ParseTypeName("class"))))
-        //                                        .WithBody(
-        //                                            Block(
-        //                                                ReturnStatement(
-        //                                                    DefaultExpression(ParseTypeName("int"))))))
-        //                        )
-        //                ).NormalizeWhitespace();
-        //
-        //
-        //            MetadataReference[] references =
-        //            {
-        //                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-        //                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
-        //            };
-        //
-        //            var x = comp.ToFullString();
-        //
-        //            CSharpCompilation compilation = CSharpCompilation.Create(
-        //                assemblyName: "Cake.Intellisense",
-        //                syntaxTrees: new[] { CSharpSyntaxTree.Create(comp) },
-        //                references: references,
-        //                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        //            );
-        //
-        //
-        //            Compile(compilation);
-        //        }
-
-        public void Compile(CSharpCompilation compilation, string output)
+        public Assembly Compile(CSharpCompilation compilation, string output)
         {
-            EmitResult result = compilation.Emit(output, null, Path.ChangeExtension(output, "xml"));
+            var result = compilation.Emit(output, null, Path.ChangeExtension(output, "xml"));
 
             if (!result.Success)
             {
@@ -86,14 +37,18 @@ namespace Cake.Intellisense
 
                 foreach (var diagnostic in failures)
                 {
-                    Console.Error.WriteLine(diagnostic);
+                    Logger.Error(diagnostic);
                 }
+
+                return null;
             }
+
+            return Assembly.LoadFrom(output);
         }
 
         public CompilationUnitSyntax Genrate(List<Type> types)
         {
-            var cu = CompilationUnit();
+            var cu = SyntaxFactory.CompilationUnit();
             foreach (var grouping in types.GroupBy(val => val.Namespace))
             {
                 cu = cu.AddMembers(CreateNamespace(grouping.Key).AddMembers(grouping.Select(CreateClass).ToArray()));
@@ -108,7 +63,7 @@ namespace Cake.Intellisense
         /// <returns></returns>
         public MemberDeclarationSyntax CreateMethodDeclaration(MethodInfo methodInfo)
         {
-            var methodDeclarationSyntax = MethodDeclaration(ParseTypeName(PrettyTypeName(methodInfo.ReturnType)), methodInfo.Name)
+            var methodDeclarationSyntax = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(PrettyTypeName(methodInfo.ReturnType)), methodInfo.Name)
                 .AddModifiers(CreateModifiers(methodInfo).ToArray())
                 .AddParameterListParameters(CreateParameters(methodInfo))
                 .AddConstraintClauses(CreateConstraintClauses(methodInfo))
@@ -131,14 +86,14 @@ namespace Cake.Intellisense
                     .Where(val => !excludedAttributes.Contains(val.AttributeType))
                     .Select(val => CreateAttribute(val));
 
-            return new[] { AttributeList(SeparatedList(res)) };
+            return new[] { SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(res)) };
         }
 
         private static AttributeSyntax CreateAttribute(CustomAttributeData data)
         {
-            var props = data.ConstructorArguments.Select(x => x.Value).Select(val => AttributeArgument(IdentifierName(val is string ? $"\"{val.ToString()}\"" : val.ToString().ToLower())));
+            var props = data.ConstructorArguments.Select(x => x.Value).Select(val => SyntaxFactory.AttributeArgument(SyntaxFactory.IdentifierName(val is string ? $"\"{val.ToString()}\"" : val.ToString().ToLower())));
 
-            return Attribute(IdentifierName(PrettyTypeName(data.AttributeType))).WithArgumentList(AttributeArgumentList(SeparatedList(props)));
+            return SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(PrettyTypeName(data.AttributeType))).WithArgumentList(SyntaxFactory.AttributeArgumentList(SyntaxFactory.SeparatedList(props)));
         }
 
         public ParameterSyntax[] CreateParameters(MethodInfo methodInfo)
@@ -152,15 +107,15 @@ namespace Cake.Intellisense
             var modifiers = new SyntaxTokenList();
 
             if (val.GetCustomAttributes(typeof(ParamArrayAttribute), false).Length > 0)
-                modifiers = modifiers.Add(Token(SyntaxKind.ParamsKeyword));
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.ParamsKeyword));
 
             if (val.IsOut)
-                modifiers = modifiers.Add(Token(SyntaxKind.OutKeyword));
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OutKeyword));
             else if (val.ParameterType.IsByRef)
-                modifiers = modifiers.Add(Token(SyntaxKind.RefKeyword));
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.RefKeyword));
 
-            var parameterSyntax = Parameter(Identifier(val.Name))
-                                               .WithType(ParseTypeName(PrettyTypeName(val.ParameterType)))
+            var parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(val.Name))
+                                               .WithType(SyntaxFactory.ParseTypeName(PrettyTypeName(val.ParameterType)))
                                                .WithModifiers(modifiers);
 
             return parameterSyntax;
@@ -170,19 +125,19 @@ namespace Cake.Intellisense
         {
             var statements = new SyntaxList<StatementSyntax>();
 
-            statements = statements.AddRange(methodInfo.GetParameters().Where(val => val.IsOut).Select(val => ExpressionStatement(
-                 AssignmentExpression(
+            statements = statements.AddRange(methodInfo.GetParameters().Where(val => val.IsOut).Select(val => SyntaxFactory.ExpressionStatement(
+                 SyntaxFactory.AssignmentExpression(
                      SyntaxKind.SimpleAssignmentExpression,
-                     IdentifierName(val.Name),
-                     DefaultExpression(ParseTypeName(PrettyTypeName(val.ParameterType)))))));
+                     SyntaxFactory.IdentifierName(val.Name),
+                     SyntaxFactory.DefaultExpression(SyntaxFactory.ParseTypeName(PrettyTypeName(val.ParameterType)))))));
 
             if (methodInfo.ReturnType != typeof(void))
             {
-                statements = statements.Add(ReturnStatement(
-                    DefaultExpression(ParseTypeName(PrettyTypeName(methodInfo.ReturnType)))));
+                statements = statements.Add(SyntaxFactory.ReturnStatement(
+                    SyntaxFactory.DefaultExpression(SyntaxFactory.ParseTypeName(PrettyTypeName(methodInfo.ReturnType)))));
             }
 
-            var block = Block(statements);
+            var block = SyntaxFactory.Block(statements);
             return block;
         }
 
@@ -207,9 +162,9 @@ namespace Cake.Intellisense
             //
             //            yield return Token(TriviaList(comment), SyntaxKind.None, TriviaList(CarriageReturn));
 
-            yield return Token(SyntaxKind.PublicKeyword);
+            yield return SyntaxFactory.Token(SyntaxKind.PublicKeyword);
 
-            yield return Token(SyntaxKind.StaticKeyword);
+            yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
 
         }
 
@@ -218,22 +173,22 @@ namespace Cake.Intellisense
             return new TypeParameterConstraintClauseSyntax[0];
             return new[]
             {
-                TypeParameterConstraintClause("T")
+                SyntaxFactory.TypeParameterConstraintClause("T")
                     .AddConstraints(
-                        TypeConstraint(ParseTypeName("class")))
+                        SyntaxFactory.TypeConstraint(SyntaxFactory.ParseTypeName("class")))
             };
         }
 
         public NamespaceDeclarationSyntax CreateNamespace(string @namespace)
         {
-            return NamespaceDeclaration(IdentifierName(@namespace));
+            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(@namespace));
         }
 
         public TypeParameterSyntax[] CreateTypeParameters(MethodInfo methodInfo)
         {
             if (methodInfo.IsGenericMethod)
             {
-                return methodInfo.GetGenericArguments().Select(val => TypeParameter(PrettyTypeName(val))).ToArray();
+                return methodInfo.GetGenericArguments().Select(val => SyntaxFactory.TypeParameter(PrettyTypeName(val))).ToArray();
             }
 
             return new TypeParameterSyntax[0];
@@ -242,7 +197,7 @@ namespace Cake.Intellisense
         public ClassDeclarationSyntax CreateClass(Type type)
         {
             return
-                ClassDeclaration(type.Name + "Metadata").WithModifiers(SyntaxTokenList.Create(Token(SyntaxKind.PublicKeyword)))
+                SyntaxFactory.ClassDeclaration(type.Name + "Metadata").WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
                     .AddMembers(
                         type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                             .Where(val => val.GetCustomAttributes<CakeMethodAliasAttribute>().Any() || val.DeclaringType?.FullName == typeof(ScriptHost).FullName)
