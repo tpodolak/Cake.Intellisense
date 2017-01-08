@@ -200,7 +200,7 @@ namespace Cake.MetadataGenerator
                 SyntaxFactory.ClassDeclaration(type.Name + "Metadata").WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
                     .AddMembers(
                         type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                            .Where(val => val.GetCustomAttributes<CakeMethodAliasAttribute>().Any() || val.DeclaringType?.FullName == typeof(ScriptHost).FullName)
+                            .Where(val => val.GetCustomAttributes<CakeMethodAliasAttribute>().Any() || (val.DeclaringType?.FullName == typeof(ScriptHost).FullName && !val.IsSpecialName))
                             .Select(CreateMethodDeclaration)
                             .ToArray());
         }
