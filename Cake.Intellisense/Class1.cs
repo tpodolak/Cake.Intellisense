@@ -27,6 +27,7 @@ namespace Cake.MetadataGenerator
 
         public Assembly Compile(CSharpCompilation compilation, string output)
         {
+            var res = compilation.GetMetadataReference(compilation.Assembly);
             var result = compilation.Emit(output, null, Path.ChangeExtension(output, "xml"));
 
             if (!result.Success)
@@ -44,6 +45,18 @@ namespace Cake.MetadataGenerator
             }
 
             return Assembly.LoadFrom(output);
+        }
+
+        public CompilationUnitSyntax Generate(CSharpCompilation original)
+        {
+            var cu = SyntaxFactory.CompilationUnit();
+
+
+            var symbols = original.GlobalNamespace.GetNamespaceMembers().ToList();
+            var member = symbols[3].GetMembers().ToList()[1].GetTypeMembers()[4].GetMembers()[0];
+            
+
+            return null;
         }
 
         public CompilationUnitSyntax Genrate(List<Type> types)

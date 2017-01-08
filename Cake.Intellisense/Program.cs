@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Microsoft.CodeAnalysis;
+using NLog;
 
 namespace Cake.MetadataGenerator
 {
@@ -6,6 +7,7 @@ namespace Cake.MetadataGenerator
     {
         static void Main(string[] args)
         {
+            Workspace workspace = new AdhocWorkspace();
             var generator = new MetadataGenerator();
             generator.Generate(args);
         }

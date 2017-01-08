@@ -6,7 +6,6 @@ using System.Reflection;
 using Cake.MetadataGenerator.CommandLine;
 using FluentAssertions;
 using Xunit;
-
 namespace Cake.MetadataGenerator.Tests.Integration
 {
     public class MetadataGeneratorTests
