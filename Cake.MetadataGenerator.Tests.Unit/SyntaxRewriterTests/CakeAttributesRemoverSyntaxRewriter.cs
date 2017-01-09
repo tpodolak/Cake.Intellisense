@@ -24,13 +24,18 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterTests
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
+            if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakeMethodAliasAttribute"))))
+            {
+                var newParams = RemoveCakeContextParameter(node.ParameterList);
+                node = node.WithParameterList(newParams);
+            }
+
             var newAttributes = RemoveAttributes(node.AttributeLists, "CakeMethodAliasAttribute");
             var leadTriv = node.GetLeadingTrivia();
             node = node.WithAttributeLists(newAttributes)
                 .WithLeadingTrivia(leadTriv);
 
-            var newParams = RemoveCakeContextParameter(node.ParameterList);
-            node = node.WithParameterList(newParams);
+
             return base.VisitMethodDeclaration(node);
         }
 

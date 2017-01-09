@@ -27,6 +27,10 @@ public static class ArgumentAliases : global::System.Object
     public static System.Boolean HasArgument(this global::Cake.Core.ICakeContext context, System.String name)
     {
     }
+
+    public static System.Boolean HasArgument2(this global::Cake.Core.ICakeContext context, System.String name)
+    {
+    }
 }";
 
         [Fact]
