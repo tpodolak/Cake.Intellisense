@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading;
 using Cake.Core.Annotations;
 using Cake.Core.Scripting;
+using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
 using Cake.MetadataGenerator.Logging;
 using CommandLine;
@@ -23,7 +25,13 @@ namespace Cake.MetadataGenerator
 {
     public class MetadataGenerator
     {
+        private readonly ICSharpCodeGenerationService _codeGenerationService;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public MetadataGenerator(ICSharpCodeGenerationService codeGenerationService)
+        {
+            _codeGenerationService = codeGenerationService;
+        }
 
         public void Generate(string[] args)
         {
@@ -45,9 +53,6 @@ namespace Cake.MetadataGenerator
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
         {
-
-
-
             if (!string.IsNullOrWhiteSpace(options.OutputFolder) && !Directory.Exists(options.OutputFolder))
             {
                 Directory.CreateDirectory(options.OutputFolder);
@@ -116,20 +121,21 @@ namespace Cake.MetadataGenerator
             var metadataReference = assemblies.Select(val => MetadataReference.CreateFromFile(val.Location)).ToList();
 
 
-            var zzz = new Class1();
-            var types =
-                assemblies.SelectMany(val => val.GetExportedTypes())
-                    .Where(
-                        val =>
-                            val.FullName == typeof(ScriptHost).FullName ||
-                            val.GetCustomAttributes<CakeAliasCategoryAttribute>().Any())
-                    .Select(val => val)
-                    .ToList();
-            var namespaces = string.Join(Environment.NewLine,
-                types.Select(val => $"using static {val.Namespace}.{val.Name}Metadata;"));
-            var result = zzz.Genrate(types);
-            var x = result.ToFullString();
-            logger.Debug(x);
+            //            var zzz = new Class1();
+            //            var types =
+            //                assemblies.SelectMany(val => val.GetExportedTypes())
+            //                    .Where(
+            //                        val =>
+            //                            val.FullName == typeof(ScriptHost).FullName ||
+            //                            val.GetCustomAttributes<CakeAliasCategoryAttribute>().Any())
+            //                    .Select(val => val)
+            //                    .ToList();
+            //            var namespaces = string.Join(Environment.NewLine,
+            //                types.Select(val => $"using static {val.Namespace}.{val.Name}Metadata;"));
+            //            var result = zzz.Genrate(types);
+            //            var x = result.ToFullString();
+            //            logger.Debug(x);
+
             var referencesass =
                 packges.SelectMany(
                         f =>
@@ -144,61 +150,30 @@ namespace Cake.MetadataGenerator
             var formattableString = $"{options.Package}.AliasesMetadata";
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName: formattableString,
-                syntaxTrees: new SyntaxTree[0] { },
-                references: referencesass.Union(assemblies.Select(y => MetadataReference.CreateFromFile(y.Location))),
+                syntaxTrees: new SyntaxTree[] { },
+                references: assemblies.Select(y => MetadataReference.CreateFromFile(y.Location)),
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
 
-            zzz.Generate(compilation);
+            // zzz.Generate(compilation);
 
-            var symbols = compilation.GlobalNamespace.GetNamespaceMembers().ToList();
-            var member = symbols[3].GetMembers().ToList()[1].GetTypeMembers()[4].GetMembers()[0];
-            var memberComment = member.GetDocumentationCommentXml();
-            var memberCommentId = member.GetDocumentationCommentId();
-            var someStuff = typeof(SymbolFinder).Assembly.GetType("Microsoft.CodeAnalysis.Shared.Extensions.ICompilationExtensions");
-            var type = Type.GetType("Microsoft.CodeAnalysis.Shared.Extensions.ICompilationExtensions");
-            var method = someStuff.GetMethods(BindingFlags.Public | BindingFlags.Static).SingleOrDefault(val => val.Name == "GetReferencedAssemblySymbols");
+            var namespaceSymbols = compilation.GlobalNamespace
+                .GetNamespaceMembers()
+                .Where(val => val.ContainingAssembly?.Name == options.Package)
+                .SelectMany(val => val.GetMembers()).ToList();
 
-            var assemblySymbols = (IEnumerable<IAssemblySymbol>)method.Invoke(null, new[] { compilation });
-            var refsf = compilation.GetMetadataReference(compilation.Assembly);
-            var emitedAssemlby = zzz.Compile(compilation, Path.Combine(options.OutputFolder ?? string.Empty, $"{formattableString}.dll"));
-            var assemblySymbol = assemblySymbols.ToList()[4];
-            var typeNames = assemblySymbol.TypeNames.ToList();
-            var comments = assemblySymbol.GetDocumentationCommentXml();
-            var someType = assemblySymbol.GetTypeByMetadataName("Cake.SqlServer" + "." + typeNames[5]);
-            var members = someType.GetMembers();
-            var firstMember = members[0];
-            var methodDeclarationSymbol = (IMethodSymbol)members.First(val => val.Kind == SymbolKind.Method);
+            var symbols =
+                namespaceSymbols.SelectMany(
+                    namepace =>
+                        namepace.GetTypeMembers()
+                            .Where(val => val.Kind == SymbolKind.NamedType && val.GetAttributes().Any(x => x.AttributeClass.Name == "CakeAliasCategoryAttribute"))
+                            .Select(val => _codeGenerationService.CreateNamedTypeDeclaration(val))).ToList();
 
-            var workspace = new AdhocWorkspace().AddSolution(SolutionInfo.Create(SolutionId.CreateNewId("MySolution"),
-                    VersionStamp.Default))
-                .AddProject("MyProject", "MyAssemblyName", LanguageNames.CSharp)
-                .AddMetadataReferences(metadataReference);
+            var all = symbols.Aggregate(new StringBuilder(), (builder, syntax) => builder.Append(syntax.NormalizeWhitespace().ToFullString()));
 
-            var hostLanguageServices = workspace.Solution.Projects.First().LanguageServices;
-
-            var host = nameof(hostLanguageServices.GetService);
-            var iservice = typeof(ILanguageService).Assembly.GetType("Microsoft.CodeAnalysis.CodeGeneration.ICodeGenerationService");
-
-            var cos = hostLanguageServices.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).SingleOrDefault(val => val.Name == host);
-            var csharpHostLanguageService = cos.MakeGenericMethod(iservice).Invoke(hostLanguageServices, null);
-
-
-            var metadata = (AssemblyMetadata)metadataReference[0].GetMetadata();
-            var methodDeclaration = csharpHostLanguageService.GetType().GetMethods().Single(val => val.Name == "CreateMethodDeclaration");
-            var typeDeclaration = csharpHostLanguageService.GetType().GetMethods().Single(val => val.Name == "CreateNamedTypeDeclaration");
-            var namespaceDeclaration = csharpHostLanguageService.GetType().GetMethods().Single(val => val.Name == "CreateNamespaceDeclaration");
-            var methodSyntax = (SyntaxNode)methodDeclaration.Invoke(csharpHostLanguageService, new object[] { methodDeclarationSymbol, 0, null });
-            var resultxxx = methodSyntax.NormalizeWhitespace().ToFullString();
-
-            var typeResult = (SyntaxNode)typeDeclaration.Invoke(csharpHostLanguageService, new object[] { someType, 0, null, CancellationToken.None });
-            var typeResultXxx = typeResult.NormalizeWhitespace().ToFullString();
-
-            var namespaceResult = (SyntaxNode)namespaceDeclaration.Invoke(csharpHostLanguageService, new object[] { assemblySymbol.GlobalNamespace, 0, null, CancellationToken.None });
-            var namespaceFormat = namespaceResult.NormalizeWhitespace().ToFullString();
             return new GeneratorResult
             {
-                EmitedAssembly = emitedAssemlby,
+                EmitedAssembly = null,
                 SourceAssemblies = assemblies.ToArray()
             };
 

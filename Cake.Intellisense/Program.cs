@@ -1,4 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using System.Reflection;
+using Cake.MetadataGenerator.CodeGeneration;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Host;
 using NLog;
 
 namespace Cake.MetadataGenerator
@@ -7,8 +11,8 @@ namespace Cake.MetadataGenerator
     {
         static void Main(string[] args)
         {
-            Workspace workspace = new AdhocWorkspace();
-            var generator = new MetadataGenerator();
+            var service = new CSharpCodeGenerationServiceProvider().Get();
+            var generator = new MetadataGenerator(new RoslynCSharpCodeGenerationService(service));
             generator.Generate(args);
         }
     }

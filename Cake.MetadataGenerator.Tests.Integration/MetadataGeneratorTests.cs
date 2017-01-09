@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
 using FluentAssertions;
 using Xunit;
@@ -15,7 +16,8 @@ namespace Cake.MetadataGenerator.Tests.Integration
 
         public MetadataGeneratorTests()
         {
-            generator = new MetadataGenerator();
+            var service = new CSharpCodeGenerationServiceProvider().Get();
+            generator = new MetadataGenerator(new RoslynCSharpCodeGenerationService(service));
         }
 
         [Theory]

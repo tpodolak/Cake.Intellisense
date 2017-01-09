@@ -133,13 +133,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="CodeGeneration\CSharpCodeGenerationServiceProvider.cs" />
     <Compile Include="CodeGeneration\ICSharpCodeGenerationService.cs" />
+    <Compile Include="CodeGeneration\ICSharpCodeGenerationServiceProvider.cs" />
     <Compile Include="CodeGeneration\RoslynCSharpCodeGenerationService.cs" />
     <Compile Include="CommandLine\IArgumentParser.cs" />
     <Compile Include="CommandLine\MetadataGeneratorOptions.cs" />
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="CommandLine\ParserError.cs" />
     <Compile Include="CommandLine\ParserResult.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="FileSystem\IFileSystem.cs" />
     <Compile Include="FileSystem\PhysicalFileSystem.cs" />
     <Compile Include="Generated.cs" />
@@ -162,6 +165,10 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+    <Folder Include="SyntaxRewriters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
