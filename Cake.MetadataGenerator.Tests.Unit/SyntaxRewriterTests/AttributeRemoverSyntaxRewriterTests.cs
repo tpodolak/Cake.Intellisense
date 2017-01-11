@@ -1,5 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using Cake.MetadataGenerator.Documentation;
+using Cake.MetadataGenerator.SyntaxRewriters;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using NSubstitute;
 using Xunit;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -9,26 +14,26 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterTests
     {
         private string code = @"
 [global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
-public static class ArgumentAliases : global::System.Object
+public static class ArgumentAliases
 {
     public static string MyProp { get; set; }
 
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
-    public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
+    public static T Argument<T>(this global::Cake.Core.ICakeContext context, out System.String name)
     {
     }
 
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
-    public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name, T defaultValue)
+    public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name, out T defaultValue)
     {
     }
 
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
-    public static System.Boolean HasArgument(this global::Cake.Core.ICakeContext context, System.String name)
+    public static System.Boolean HasArgument(this global::Cake.Core.ICakeContext context, out System.String name)
     {
     }
 
-    public static System.Boolean HasArgument2(this global::Cake.Core.ICakeContext context, System.String name)
+    public static System.Boolean HasArgument2(this global::Cake.Core.ICakeContext context, out System.String name)
     {
     }
 }";
@@ -37,9 +42,47 @@ public static class ArgumentAliases : global::System.Object
         public void Foo()
         {
             var syntax = ParseSyntaxTree(code);
-            var rewriter = new CakeAttributesRemoverSyntaxRewriter();
-            var result = rewriter.Visit(syntax.GetRoot());
-            var stringResult = result.NormalizeWhitespace().ToFullString();
+
+            CSharpCompilation compilation = CSharpCompilation.Create(
+                assemblyName: "name",
+                syntaxTrees: new[] { syntax },
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+            var syntaxTree = compilation.SyntaxTrees.First();
+            var semanticModel = compilation.GetSemanticModel(syntaxTree);
+
+            // var rewriter = new CakeAttributesRemoverSyntaxRewriter(semanticModel);
+
+            var provider = Substitute.For<IDocumentationProvider>();
+            provider.Get(Arg.Any<string>()).Returns(@"
+            ///<summary>
+            ///Determines whether or not the specified argument exist.
+            ///</summary>
+            ///<param name=""context"">The context.</param>
+            ///<param name=""name"">The argument name.</param>
+            ///<returns>Whether or not the specified argument exist.</returns>
+            ///<example>
+            ///This sample shows how to call the <see cref=""M:Cake.Common.ArgumentAliases.HasArgument(Cake.Core.ICakeContext,System.String)""/> method.
+            ///<code>
+            ///var argumentName = ""myArgument"";
+            /////Cake.exe .\hasargument.cake -myArgument=""is specified""
+            ///if (HasArgument(argumentName))
+            ///{
+            ///    Information(""{0} is specified"", argumentName);
+            ///}
+            /////Cake.exe .\hasargument.cake
+            ///else
+            ///{
+            ///    Warning(""{0} not specified"", argumentName);
+            ///}
+            ///</code>
+            ///</example>");
+
+            var rewriter = new CakeMethodBodySyntaxRewriter(semanticModel, provider);
+
+            var result2 = rewriter.Visit(syntaxTree.GetRoot());
+            // var result = rewriter.Visit(syntaxTree);
+            // var stringResult = result.NormalizeWhitespace().ToFullString();
         }
 
     }

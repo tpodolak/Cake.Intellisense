@@ -11,9 +11,11 @@ using Cake.Core.Scripting;
 using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
 using Cake.MetadataGenerator.Logging;
+using Cake.MetadataGenerator.SyntaxRewriters;
 using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Host;
 using NLog;
@@ -171,6 +173,14 @@ namespace Cake.MetadataGenerator
 
             var all = symbols.Aggregate(new StringBuilder(), (builder, syntax) => builder.Append(syntax.NormalizeWhitespace().ToFullString()));
 
+            var tree = SyntaxFactory.ParseSyntaxTree(all.ToString());
+            
+            compilation = compilation.AddSyntaxTrees(tree);
+            var semanticModel = compilation.GetSemanticModel(compilation.SyntaxTrees.First());
+            var symbol = semanticModel.GetSymbolInfo(tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>().First());
+
+            var rewriter = new CakeAttributesRemoverSyntaxRewriter(semanticModel);
+            rewriter.Visit(tree.GetRoot());
             return new GeneratorResult
             {
                 EmitedAssembly = null,

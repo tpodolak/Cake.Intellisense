@@ -143,6 +143,8 @@
     <Compile Include="CommandLine\ParserError.cs" />
     <Compile Include="CommandLine\ParserResult.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Documentation\AssemblyDocumentationReader.cs" />
+    <Compile Include="Documentation\XmlDocumentationProvider.cs" />
     <Compile Include="FileSystem\IFileSystem.cs" />
     <Compile Include="FileSystem\PhysicalFileSystem.cs" />
     <Compile Include="Generated.cs" />
@@ -151,6 +153,8 @@
     <Compile Include="MetadataGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxRewriters\CakeMethodBodySyntaxRewriter.cs" />
+    <Compile Include="SyntaxRewriters\CakeAttributesRemoverSyntaxRewriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -168,7 +172,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Infrastructure\" />
-    <Folder Include="SyntaxRewriters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

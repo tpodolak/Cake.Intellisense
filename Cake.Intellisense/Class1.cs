@@ -138,11 +138,13 @@ namespace Cake.MetadataGenerator
         {
             var statements = new SyntaxList<StatementSyntax>();
 
-            statements = statements.AddRange(methodInfo.GetParameters().Where(val => val.IsOut).Select(val => SyntaxFactory.ExpressionStatement(
-                 SyntaxFactory.AssignmentExpression(
-                     SyntaxKind.SimpleAssignmentExpression,
-                     SyntaxFactory.IdentifierName(val.Name),
-                     SyntaxFactory.DefaultExpression(SyntaxFactory.ParseTypeName(PrettyTypeName(val.ParameterType)))))));
+            var expressionStatementSyntaxs = methodInfo.GetParameters().Where(val => val.IsOut).Select(val => SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    SyntaxFactory.IdentifierName(val.Name),
+                    SyntaxFactory.DefaultExpression(SyntaxFactory.ParseTypeName(PrettyTypeName(val.ParameterType))))));
+
+            statements = statements.AddRange(expressionStatementSyntaxs);
 
             if (methodInfo.ReturnType != typeof(void))
             {

@@ -1,13 +1,19 @@
-﻿using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterTests
+namespace Cake.MetadataGenerator.SyntaxRewriters
 {
     public class CakeAttributesRemoverSyntaxRewriter : CSharpSyntaxRewriter
     {
+        private readonly SemanticModel _semanticModel;
+
+        public CakeAttributesRemoverSyntaxRewriter(SemanticModel semanticModel)
+        {
+            _semanticModel = semanticModel;
+        }
+
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
             return null;
@@ -21,7 +27,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterTests
                 .WithLeadingTrivia(leadTriv);
             return base.VisitClassDeclaration(node);
         }
-
+        
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
             if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakeMethodAliasAttribute"))))
@@ -34,7 +40,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterTests
             var leadTriv = node.GetLeadingTrivia();
             node = node.WithAttributeLists(newAttributes)
                 .WithLeadingTrivia(leadTriv);
-
 
             return base.VisitMethodDeclaration(node);
         }
