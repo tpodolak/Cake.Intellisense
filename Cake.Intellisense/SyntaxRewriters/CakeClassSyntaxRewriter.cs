@@ -34,7 +34,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
 //            var leadTriv = node.GetLeadingTrivia();
 //            node = node.WithAttributeLists(newAttributes)
 //                .WithLeadingTrivia(leadTriv);
-            return base.VisitClassDeclaration(node);
+            return base.VisitClassDeclaration(node.WithIdentifier(SyntaxFactory.Identifier(node.Identifier.Text + "Metadata")));
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)

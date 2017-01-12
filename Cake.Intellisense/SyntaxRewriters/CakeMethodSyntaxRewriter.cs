@@ -57,7 +57,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                 bodyStatements.AddRange(outAssignments);
             }
 
-            if (node.ReturnType != PredefinedType(Token(SyntaxKind.VoidKeyword)))
+            if ((node.ReturnType as PredefinedTypeSyntax)?.Keyword.Kind() != SyntaxKind.VoidKeyword)
             {
                 bodyStatements.Add(ReturnStatement(DefaultExpression(node.ReturnType)));
             }

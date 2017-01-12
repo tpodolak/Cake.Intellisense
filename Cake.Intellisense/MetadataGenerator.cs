@@ -182,15 +182,19 @@ namespace Cake.MetadataGenerator
             var rewriter = new CakeClassSyntaxRewriter();
             var result = rewriter.Visit(tree.GetRoot());
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
-
-            var semanticModel = compilation.GetSemanticModel(compilation.SyntaxTrees.First());
-            var symbol = semanticModel.GetSymbolInfo(tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>().First());
+            tree = compilation.SyntaxTrees.First();
+            var semanticModel = compilation.GetSemanticModel(tree);
             var methodRewriter = new CakeMethodBodySyntaxRewriter(semanticModel, new XmlDocumentationProvider(new AssemblyDocumentationReader()));
             var nextResult = methodRewriter.Visit(compilation.SyntaxTrees.First().GetRoot());
 
+            compilation = compilation.AddReferences(referencesass);
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(nextResult));
+
+            var res = new Class1().Compile(compilation, "someoutput.dll");
+
             return new GeneratorResult
             {
-                EmitedAssembly = null,
+                EmitedAssembly = res,
                 SourceAssemblies = assemblies.ToArray()
             };
 
