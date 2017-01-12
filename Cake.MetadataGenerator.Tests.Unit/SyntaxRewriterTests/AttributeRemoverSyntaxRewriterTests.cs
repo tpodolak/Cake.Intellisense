@@ -33,7 +33,15 @@ public static class ArgumentAliases
     {
     }
 
-    public static System.Boolean HasArgument2(this global::Cake.Core.ICakeContext context, out System.String name)
+    public System.Boolean HasArgument2(this global::Cake.Core.ICakeContext context, out System.String name)
+    {
+    }
+
+    private static System.Boolean HasArgument2(this global::Cake.Core.ICakeContext context, out System.String name)
+    {
+    }
+
+    internal static System.Boolean HasArgument23(this global::Cake.Core.ICakeContext context, out System.String name)
     {
     }
 }";
@@ -50,8 +58,7 @@ public static class ArgumentAliases
 
             var syntaxTree = compilation.SyntaxTrees.First();
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
-
-            // var rewriter = new CakeAttributesRemoverSyntaxRewriter(semanticModel);
+            // var rewriter = new CakeAttributeRemover(semanticModel);
 
             var provider = Substitute.For<IDocumentationProvider>();
             provider.Get(Arg.Any<string>()).Returns(@"

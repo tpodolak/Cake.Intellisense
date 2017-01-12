@@ -10,6 +10,7 @@ using Cake.Core.Annotations;
 using Cake.Core.Scripting;
 using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
+using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.Logging;
 using Cake.MetadataGenerator.SyntaxRewriters;
 using CommandLine;
@@ -174,13 +175,19 @@ namespace Cake.MetadataGenerator
             var all = symbols.Aggregate(new StringBuilder(), (builder, syntax) => builder.Append(syntax.NormalizeWhitespace().ToFullString()));
 
             var tree = SyntaxFactory.ParseSyntaxTree(all.ToString());
-            
+
             compilation = compilation.AddSyntaxTrees(tree);
+
+
+            var rewriter = new CakeClassSyntaxRewriter();
+            var result = rewriter.Visit(tree.GetRoot());
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
+
             var semanticModel = compilation.GetSemanticModel(compilation.SyntaxTrees.First());
             var symbol = semanticModel.GetSymbolInfo(tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>().First());
+            var methodRewriter = new CakeMethodBodySyntaxRewriter(semanticModel, new XmlDocumentationProvider(new AssemblyDocumentationReader()));
+            var nextResult = methodRewriter.Visit(compilation.SyntaxTrees.First().GetRoot());
 
-            var rewriter = new CakeAttributesRemoverSyntaxRewriter(semanticModel);
-            rewriter.Visit(tree.GetRoot());
             return new GeneratorResult
             {
                 EmitedAssembly = null,

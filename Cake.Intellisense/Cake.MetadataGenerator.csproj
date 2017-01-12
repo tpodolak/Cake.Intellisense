@@ -153,8 +153,9 @@
     <Compile Include="MetadataGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SyntaxRewriters\CakeMethodBodySyntaxRewriter.cs" />
-    <Compile Include="SyntaxRewriters\CakeAttributesRemoverSyntaxRewriter.cs" />
+    <Compile Include="SyntaxRewriters\CakeMethodSyntaxRewriter.cs" />
+    <Compile Include="SyntaxRewriters\CakeClassSyntaxRewriter.cs" />
+    <Compile Include="Utils\SymbolExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

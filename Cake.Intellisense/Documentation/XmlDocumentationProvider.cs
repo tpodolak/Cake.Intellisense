@@ -8,7 +8,13 @@
 
         public string Get(string commentId)
         {
-            return null;
+            return @"
+                    /// <summary>
+                    /// 
+                    /// </summary>
+                    /// <typeparam name=""T""></typeparam>
+                    /// <param name=""name""></param>
+                    /// <returns></returns>";
         }
     }
 

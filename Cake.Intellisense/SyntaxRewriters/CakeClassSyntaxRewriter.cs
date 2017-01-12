@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -5,41 +6,48 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Cake.MetadataGenerator.SyntaxRewriters
 {
-    public class CakeAttributesRemoverSyntaxRewriter : CSharpSyntaxRewriter
+    public class CakeClassSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly SemanticModel _semanticModel;
-
-        public CakeAttributesRemoverSyntaxRewriter(SemanticModel semanticModel)
+        private static readonly List<SyntaxKind> tabuModifiers = new List<SyntaxKind>
         {
-            _semanticModel = semanticModel;
-        }
+            SyntaxKind.ProtectedKeyword,
+            SyntaxKind.PrivateKeyword,
+            SyntaxKind.InternalKeyword
+        };
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
             return null;
         }
 
+        public override SyntaxNode VisitFieldDeclaration(FieldDeclarationSyntax node)
+        {
+            return null;
+        }
+
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeAliasCategoryAttribute");
-            var leadTriv = node.GetLeadingTrivia();
-            node = node.WithAttributeLists(newAttributes)
-                .WithLeadingTrivia(leadTriv);
+            if (node.Modifiers.All(val => val.Kind() != SyntaxKind.PublicKeyword))
+                return null;
+
+//            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeAliasCategoryAttribute");
+//            var leadTriv = node.GetLeadingTrivia();
+//            node = node.WithAttributeLists(newAttributes)
+//                .WithLeadingTrivia(leadTriv);
             return base.VisitClassDeclaration(node);
         }
-        
+
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
-            if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakeMethodAliasAttribute"))))
+            if (node.Modifiers.Any(modifier => tabuModifiers.Any(tabu => tabu == modifier.Kind())))
             {
-                var newParams = RemoveCakeContextParameter(node.ParameterList);
-                node = node.WithParameterList(newParams);
+                return null;
             }
 
-            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeMethodAliasAttribute");
-            var leadTriv = node.GetLeadingTrivia();
-            node = node.WithAttributeLists(newAttributes)
-                .WithLeadingTrivia(leadTriv);
+//            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeMethodAliasAttribute");
+//            var leadTriv = node.GetLeadingTrivia();
+//            node = node.WithAttributeLists(newAttributes)
+//                .WithLeadingTrivia(leadTriv);
 
             return base.VisitMethodDeclaration(node);
         }
@@ -59,17 +67,6 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             }
 
             return newAttributes;
-        }
-
-        private ParameterListSyntax RemoveCakeContextParameter(ParameterListSyntax originalParameters)
-        {
-            ParameterListSyntax parameterListSyntax;
-            if (originalParameters.Parameters.Count > 0)
-                parameterListSyntax = SyntaxFactory.ParameterList(originalParameters.Parameters.RemoveAt(0));
-            else
-                parameterListSyntax = SyntaxFactory.ParameterList();
-
-            return parameterListSyntax;
         }
 
         private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)
