@@ -61,18 +61,18 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             {
                 bodyStatements.Add(ReturnStatement(DefaultExpression(node.ReturnType)));
             }
-            var text = _documentationProvider.Get(comment);
+//            var text = _documentationProvider.Get(comment);
+//
+//            var commentTrivia = TriviaList(Comment(text), CarriageReturn);
 
-            var commentTrivia = TriviaList(Comment(text), CarriageReturn);
 
+//            if (node.AttributeLists.Any())
+//            {
+//                var attributeListSyntax = node.AttributeLists.First();
+//                attributeList = attributeList.Replace(attributeListSyntax, attributeListSyntax.WithLeadingTrivia(TriviaList(Comment(text))));
+//            }
 
-            if (node.AttributeLists.Any())
-            {
-                var attributeListSyntax = node.AttributeLists.First();
-                attributeList = attributeList.Replace(attributeListSyntax, attributeListSyntax.WithLeadingTrivia(TriviaList(Comment(text))));
-            }
-
-            node = node.WithLeadingTrivia(commentTrivia).WithParameterList(GetParameterList(node))
+            node = node.WithParameterList(GetParameterList(node))
                        .WithBody(Block(bodyStatements))
                        .WithAttributeLists(attributeList)
                        .WithModifiers(TokenList(modifierTokens));
@@ -80,7 +80,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
 
             if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakePropertyAliasAttribute"))))
             {
-                return PropertyDeclaration(node.ReturnType, node.Identifier).WithLeadingTrivia(commentTrivia)
+                return PropertyDeclaration(node.ReturnType, node.Identifier)
                     .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
                     .AddAccessorListAccessors(
                         AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));

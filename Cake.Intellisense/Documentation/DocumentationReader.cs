@@ -2,7 +2,7 @@
 
 namespace Cake.MetadataGenerator.Documentation
 {
-    public class AssemblyDocumentationReader : IDocumentationReader
+    public class DocumentationReader : IDocumentationReader
     {
         public XDocument Read(string id)
         {

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Xml.Linq;
 using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.SyntaxRewriters;
 using Microsoft.CodeAnalysis;
@@ -61,7 +62,7 @@ public static class ArgumentAliases
             // var rewriter = new CakeAttributeRemover(semanticModel);
 
             var provider = Substitute.For<IDocumentationProvider>();
-            provider.Get(Arg.Any<string>()).Returns(@"
+            provider.Get(Arg.Any<XDocument>(), Arg.Any<string>()).Returns(@"
             /// <summary>
             /// Determines whether or not the specified argument exist.
             /// </summary>

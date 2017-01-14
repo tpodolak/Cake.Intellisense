@@ -143,8 +143,8 @@
     <Compile Include="CommandLine\ParserError.cs" />
     <Compile Include="CommandLine\ParserResult.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Documentation\AssemblyDocumentationReader.cs" />
-    <Compile Include="Documentation\XmlDocumentationProvider.cs" />
+    <Compile Include="Documentation\DocumentationReader.cs" />
+    <Compile Include="Documentation\XmlCommentProvider.cs" />
     <Compile Include="FileSystem\IFileSystem.cs" />
     <Compile Include="FileSystem\PhysicalFileSystem.cs" />
     <Compile Include="Generated.cs" />

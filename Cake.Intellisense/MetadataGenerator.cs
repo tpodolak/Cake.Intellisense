@@ -17,6 +17,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NLog;
 using NuGet;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using System.Xml.XPath;
 
 namespace Cake.MetadataGenerator
 {
@@ -128,7 +130,7 @@ namespace Cake.MetadataGenerator
                     .Select(val => MetadataReference.CreateFromFile(val.Location))
                     .ToList();
 
-            var formattableString = $"{options.Package}.AliasesMetadata";
+            var formattableString = $"{assemblies.First().GetName().Name}";
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName: formattableString,
                 syntaxTrees: new SyntaxTree[] { },
@@ -138,7 +140,7 @@ namespace Cake.MetadataGenerator
 
             var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace).ToList();
 
-            var compilationSyntax = SyntaxFactory.CompilationUnit();
+            var compilationSyntax = CompilationUnit();
 
             foreach (var namespaceSymbol in namespaceSymbols)
             {
@@ -154,14 +156,44 @@ namespace Cake.MetadataGenerator
 
             compilation = compilation.AddSyntaxTrees(tree);
 
+            var replace = new Dictionary<MethodDeclarationSyntax, MethodDeclarationSyntax>();
+            var xml = new DocumentationReader().Read(Path.ChangeExtension(assemblies.First().Location, "xml"));
+            var comment = new XmlCommentProvider();
+            var semanticModel = compilation.GetSemanticModel(tree);
 
+            foreach (var node in tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>())
+            {
+                var commentId = semanticModel.GetDeclaredSymbol(node).GetDocumentationCommentId();
+                var currentNode = node;
+                var attributeList = node.AttributeLists;
+                var commentTrivia = TriviaList(Comment(comment.Get(xml, commentId)), CarriageReturn);
+
+                if (node.AttributeLists.Any())
+                {
+                    var attributeListSyntax = node.AttributeLists.First();
+                    attributeList = attributeList.Replace(attributeListSyntax, attributeListSyntax.WithLeadingTrivia(commentTrivia));
+                    currentNode = node.WithAttributeLists(attributeList);
+                }
+                else
+                {
+                    currentNode = node.WithLeadingTrivia(commentTrivia);
+                }
+
+                replace.Add(node, currentNode);
+            }
+
+            var resxxxx = tree.GetRoot().ReplaceNodes(replace.Keys, (syntax, declarationSyntax) => replace[syntax]);
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(resxxxx));
+            tree = compilation.SyntaxTrees.FirstOrDefault();
             var rewriter = new CakeClassSyntaxRewriter();
             var result = rewriter.Visit(tree.GetRoot());
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
 
             tree = compilation.SyntaxTrees.First();
-            var semanticModel = compilation.GetSemanticModel(tree);
-            var methodRewriter = new CakeMethodBodySyntaxRewriter(semanticModel, new XmlDocumentationProvider(new AssemblyDocumentationReader()));
+
+            
+            semanticModel = compilation.GetSemanticModel(tree);
+            var methodRewriter = new CakeMethodBodySyntaxRewriter(semanticModel, new XmlCommentProvider());
             result = methodRewriter.Visit(tree.GetRoot());
 
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
