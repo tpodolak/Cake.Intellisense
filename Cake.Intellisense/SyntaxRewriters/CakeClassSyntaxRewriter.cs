@@ -46,14 +46,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                 return null;
             }
 
-            if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakePropertyAliasAttribute"))))
-            {
-                return PropertyDeclaration(node.ReturnType, node.Identifier)
-                    .AddModifiers(
-                        Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
-                    .AddAccessorListAccessors(
-                        AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
-            }
+           
 
             //            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeMethodAliasAttribute");
             //            var leadTriv = node.GetLeadingTrivia();

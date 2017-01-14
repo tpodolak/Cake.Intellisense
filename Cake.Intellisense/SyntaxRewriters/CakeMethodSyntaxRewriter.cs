@@ -63,19 +63,28 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             }
             var text = _documentationProvider.Get(comment);
 
-            var commentTrivia = Token(TriviaList(Comment(text)), SyntaxKind.None, TriviaList(CarriageReturn));
-            if (!node.AttributeLists.Any())
-                modifierTokens.Insert(0, commentTrivia);
-            else
+            var commentTrivia = TriviaList(Comment(text), CarriageReturn);
+
+
+            if (node.AttributeLists.Any())
             {
                 var attributeListSyntax = node.AttributeLists.First();
                 attributeList = attributeList.Replace(attributeListSyntax, attributeListSyntax.WithLeadingTrivia(TriviaList(Comment(text))));
             }
 
-            node = node.WithParameterList(GetParameterList(node))
+            node = node.WithLeadingTrivia(commentTrivia).WithParameterList(GetParameterList(node))
                        .WithBody(Block(bodyStatements))
                        .WithAttributeLists(attributeList)
                        .WithModifiers(TokenList(modifierTokens));
+
+
+            if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakePropertyAliasAttribute"))))
+            {
+                return PropertyDeclaration(node.ReturnType, node.Identifier).WithLeadingTrivia(commentTrivia)
+                    .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
+                    .AddAccessorListAccessors(
+                        AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+            }
 
             return base.VisitMethodDeclaration(node);
         }

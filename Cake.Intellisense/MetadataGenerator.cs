@@ -169,6 +169,9 @@ namespace Cake.MetadataGenerator
             tree = compilation.SyntaxTrees.First();
             var attributeRewriter = new CakeAttributesRewriter();
             result = attributeRewriter.Visit(tree.GetRoot());
+
+            var diagnostics = result.GetDiagnostics().ToList();
+
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
 
             compilation = compilation.AddReferences(referencesass);
