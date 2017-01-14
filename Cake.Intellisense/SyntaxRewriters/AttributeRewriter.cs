@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Cake.MetadataGenerator.SyntaxRewriters
 {
-    public class CakeAttributesRewriter : CSharpSyntaxRewriter
+    public class AttributeRewriter : CSharpSyntaxRewriter
     {
         private static readonly string[] AttributeToRemove =
         {
@@ -16,8 +16,6 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             CakeAttributes.CakeNamespaceImport,
             CakeAttributes.CakePropertyAlias
         };
-
-
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
@@ -55,14 +53,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                 var syntax = attributeList.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia);
 
                 if (syntax.Attributes.Any())
-                {
-                    //                    var obosoleteAttributes = syntax.Attributes.Where(attr => AttributeNameMatches(attr, typeof(ObsoleteAttribute).FullName));
-                    //                    if (obosoleteAttributes.Any())
-                    //                    {
-                    //                        syntax.Attributes
-                    //                    }
                     newAttributes = newAttributes.Add(syntax);
-                }
             }
 
             return newAttributes;

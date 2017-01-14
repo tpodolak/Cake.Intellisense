@@ -61,8 +61,8 @@ public static class ArgumentAliases
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             // var rewriter = new CakeAttributeRemover(semanticModel);
 
-            var provider = Substitute.For<IDocumentationProvider>();
-            provider.Get(Arg.Any<XDocument>(), Arg.Any<string>()).Returns(@"
+            var provider = Substitute.For<ICommentProvider>();
+            provider.Get(Arg.Any<XDocument>(), Arg.Any<ISymbol>()).Returns(@"
             /// <summary>
             /// Determines whether or not the specified argument exist.
             /// </summary>
@@ -86,7 +86,7 @@ public static class ArgumentAliases
             /// </code>
             /// </example>");
 
-            var rewriter = new CakeMethodBodySyntaxRewriter(semanticModel, provider);
+            var rewriter = new MethodSyntaxRewriter(semanticModel);
 
             var result2 = rewriter.Visit(syntaxTree.GetRoot());
             // var result = rewriter.Visit(syntaxTree);

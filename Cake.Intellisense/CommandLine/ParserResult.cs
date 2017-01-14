@@ -10,8 +10,8 @@ namespace Cake.MetadataGenerator.CommandLine
     {
         public ParserResult(T result, IList<ParserError> errors)
         {
-            this.Result = result;
-            this.Errors = errors;
+            Result = result;
+            Errors = errors;
         }
 
         public T Result { get; private set; }

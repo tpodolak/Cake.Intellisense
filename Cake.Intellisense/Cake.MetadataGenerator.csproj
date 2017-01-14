@@ -144,6 +144,7 @@
     <Compile Include="CommandLine\ParserResult.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Documentation\DocumentationReader.cs" />
+    <Compile Include="Documentation\ICommentProvider.cs" />
     <Compile Include="Documentation\XmlCommentProvider.cs" />
     <Compile Include="FileSystem\IFileSystem.cs" />
     <Compile Include="FileSystem\PhysicalFileSystem.cs" />
@@ -153,10 +154,13 @@
     <Compile Include="MetadataGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SyntaxRewriters\CakeAttributesRewriter.cs" />
-    <Compile Include="SyntaxRewriters\CakeMethodSyntaxRewriter.cs" />
-    <Compile Include="SyntaxRewriters\CakeClassSyntaxRewriter.cs" />
-    <Compile Include="Utils\SymbolExtensions.cs" />
+    <Compile Include="SyntaxRewriters\AttributeRewriter.cs" />
+    <Compile Include="SyntaxRewriters\CommentsSyntaxRewriterRewriter.cs" />
+    <Compile Include="SyntaxRewriters\CompilationContext.cs" />
+    <Compile Include="SyntaxRewriters\CurrentCompilationContextProvider.cs" />
+    <Compile Include="SyntaxRewriters\ICurrentCompilationContext.cs" />
+    <Compile Include="SyntaxRewriters\MethodSyntaxRewriter.cs" />
+    <Compile Include="SyntaxRewriters\ClassSyntaxRewriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

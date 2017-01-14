@@ -7,7 +7,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator.SyntaxRewriters
 {
-    public class CakeClassSyntaxRewriter : CSharpSyntaxRewriter
+    public class ClassSyntaxRewriter : CSharpSyntaxRewriter
     {
         private static readonly List<SyntaxKind> tabuModifiers = new List<SyntaxKind>
         {
@@ -54,28 +54,6 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             //                .WithLeadingTrivia(leadTriv);
 
             return base.VisitMethodDeclaration(node);
-        }
-
-        private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)
-        {
-            return
-                GetSimpleNameFromNode(attribute)
-                .Identifier
-                .Text
-                .StartsWith(attributeName);
-        }
-
-        private SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
-        {
-            var identifierNameSyntax = node.Name as IdentifierNameSyntax;
-            var qualifiedNameSyntax = node.Name as QualifiedNameSyntax;
-
-            return
-                identifierNameSyntax
-                ??
-                qualifiedNameSyntax?.Right
-                ??
-                (node.Name as AliasQualifiedNameSyntax).Name;
         }
     }
 }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using System.Text;
 using Cake.Core.Scripting;
 using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
@@ -18,7 +17,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NLog;
 using NuGet;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using System.Xml.XPath;
 
 namespace Cake.MetadataGenerator
 {
@@ -36,7 +34,7 @@ namespace Cake.MetadataGenerator
         {
             MetadataGeneratorOptions options = null;
             IEnumerable<Error> errorList = new List<Error>();
-            // args = new[] { "" };
+
             var parser = new Parser(val => val.HelpWriter = Console.Out);
             var parserResult = parser.ParseArguments<MetadataGeneratorOptions>(args);
             parserResult.WithParsed(lineOptions => options = lineOptions);
@@ -131,6 +129,7 @@ namespace Cake.MetadataGenerator
                     .ToList();
 
             var formattableString = $"{assemblies.First().GetName().Name}";
+
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName: formattableString,
                 syntaxTrees: new SyntaxTree[] { },
@@ -153,58 +152,32 @@ namespace Cake.MetadataGenerator
             }
 
             var tree = CSharpSyntaxTree.Create(compilationSyntax);
-
             compilation = compilation.AddSyntaxTrees(tree);
-
-            var replace = new Dictionary<MethodDeclarationSyntax, MethodDeclarationSyntax>();
-            var xml = new DocumentationReader().Read(Path.ChangeExtension(assemblies.First().Location, "xml"));
-            var comment = new XmlCommentProvider();
             var semanticModel = compilation.GetSemanticModel(tree);
-
-            foreach (var node in tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>())
-            {
-                var commentId = semanticModel.GetDeclaredSymbol(node).GetDocumentationCommentId();
-                var currentNode = node;
-                var attributeList = node.AttributeLists;
-                var commentTrivia = TriviaList(Comment(comment.Get(xml, commentId)), CarriageReturn);
-
-                if (node.AttributeLists.Any())
-                {
-                    var attributeListSyntax = node.AttributeLists.First();
-                    attributeList = attributeList.Replace(attributeListSyntax, attributeListSyntax.WithLeadingTrivia(commentTrivia));
-                    currentNode = node.WithAttributeLists(attributeList);
-                }
-                else
-                {
-                    currentNode = node.WithLeadingTrivia(commentTrivia);
-                }
-
-                replace.Add(node, currentNode);
-            }
-
-            var resxxxx = tree.GetRoot().ReplaceNodes(replace.Keys, (syntax, declarationSyntax) => replace[syntax]);
+            var commentsRewriter = new CommentsSyntaxRewriterRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
+            var resxxxx = commentsRewriter.Visit(assemblies.Single(), tree.GetRoot());
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(resxxxx));
             tree = compilation.SyntaxTrees.FirstOrDefault();
-            var rewriter = new CakeClassSyntaxRewriter();
+            var rewriter = new ClassSyntaxRewriter();
             var result = rewriter.Visit(tree.GetRoot());
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
 
             tree = compilation.SyntaxTrees.First();
 
-            
+
             semanticModel = compilation.GetSemanticModel(tree);
-            var methodRewriter = new CakeMethodBodySyntaxRewriter(semanticModel, new XmlCommentProvider());
+            var methodRewriter = new MethodSyntaxRewriter(semanticModel);
             result = methodRewriter.Visit(tree.GetRoot());
 
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
 
             tree = compilation.SyntaxTrees.First();
-            var attributeRewriter = new CakeAttributesRewriter();
+            var attributeRewriter = new AttributeRewriter();
             result = attributeRewriter.Visit(tree.GetRoot());
 
             var diagnostics = result.GetDiagnostics().ToList();
 
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
 
             compilation = compilation.AddReferences(referencesass);
 
@@ -227,7 +200,7 @@ namespace Cake.MetadataGenerator
 
         public NamespaceDeclarationSyntax CreateNamespace(string @namespace)
         {
-            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(@namespace));
+            return NamespaceDeclaration(IdentifierName(@namespace));
         }
 
         private static IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
@@ -262,53 +235,6 @@ namespace Cake.MetadataGenerator
                                 GetDependentPackagesAndSelf(repo.ResolveDependency(x, false, true), localPackages,
                                     framework, repo)))
                     .ToList();
-        }
-
-
-        static void ShowMethods(MethodInfo method)
-        {
-            var parameters = method.GetParameters();
-            var parameterDescriptions = string.Join
-                (", ", method.GetParameters()
-                             .Select(x => PrettyTypeName(x.ParameterType) + " " + x.Name)
-                             .ToArray());
-
-            Console.WriteLine("{0} {1} ({2})",
-                              PrettyTypeName(method.ReturnType),
-                              PrettyTypeName(method),
-                              parameterDescriptions);
-
-        }
-
-        public static string GetOriginalName(Type type)
-        {
-            string TypeName = type.FullName.Replace(type.Namespace + ".", "");//Removing the namespace
-
-            var provider = System.CodeDom.Compiler.CodeDomProvider.CreateProvider("CSharp"); //You can also use "VisualBasic"
-            var reference = new System.CodeDom.CodeTypeReference(TypeName);
-            return provider.GetTypeOutput(reference);
-        }
-
-        static string PrettyTypeName(MethodInfo t)
-        {
-            if (t.IsGenericMethod)
-            {
-                return $"{t.Name}<{string.Join(", ", t.GetGenericArguments().Select(PrettyTypeName))}>";
-            }
-
-            return t.Name;
-        }
-
-        static string PrettyTypeName(Type t)
-        {
-            var x = !string.IsNullOrWhiteSpace(t.FullName) ? t.Namespace + "." : string.Empty;
-
-            if (t.IsGenericType)
-            {
-                return $"{x + t.Name.Substring(0, t.Name.LastIndexOf("`", StringComparison.InvariantCulture))}<{string.Join(", ", t.GetGenericArguments().Select(PrettyTypeName))}>";
-            }
-
-            return t == typeof(void) ? "void" : x + t.Name;
         }
 
         public static IEnumerable<Assembly> GetReferencesAssemblies(Assembly assembly)
