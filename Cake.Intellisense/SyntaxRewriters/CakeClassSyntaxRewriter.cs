@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator.SyntaxRewriters
 {
@@ -30,11 +31,12 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             if (node.Modifiers.All(val => val.Kind() != SyntaxKind.PublicKeyword))
                 return null;
 
-//            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeAliasCategoryAttribute");
-//            var leadTriv = node.GetLeadingTrivia();
-//            node = node.WithAttributeLists(newAttributes)
-//                .WithLeadingTrivia(leadTriv);
-            return base.VisitClassDeclaration(node.WithIdentifier(SyntaxFactory.Identifier(node.Identifier.Text + "Metadata")));
+            //            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeAliasCategoryAttribute");
+            //            var leadTriv = node.GetLeadingTrivia();
+            //            node = node.WithAttributeLists(newAttributes)
+            //                .WithLeadingTrivia(leadTriv);
+            node = node.WithIdentifier(Identifier(node.Identifier.Text + "Metadata"));
+            return base.VisitClassDeclaration(node);
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
@@ -44,29 +46,21 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                 return null;
             }
 
-//            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeMethodAliasAttribute");
-//            var leadTriv = node.GetLeadingTrivia();
-//            node = node.WithAttributeLists(newAttributes)
-//                .WithLeadingTrivia(leadTriv);
-
-            return base.VisitMethodDeclaration(node);
-        }
-
-        private SyntaxList<AttributeListSyntax> RemoveAttributes(SyntaxList<AttributeListSyntax> originalAttributes, string attributeToRemove)
-        {
-            var newAttributes = new SyntaxList<AttributeListSyntax>();
-
-            foreach (var attributeList in originalAttributes)
+            if (node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, "CakePropertyAliasAttribute"))))
             {
-                var nodesToRemove = attributeList.Attributes.Where(attribute => AttributeNameMatches(attribute, attributeToRemove)).ToArray();
-                var syntax = attributeList.RemoveNodes(nodesToRemove,
-                    SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepLeadingTrivia |
-                    SyntaxRemoveOptions.KeepTrailingTrivia);
-                if (syntax.Attributes.Any())
-                    newAttributes = newAttributes.Add(syntax);
+                return PropertyDeclaration(node.ReturnType, node.Identifier)
+                    .AddModifiers(
+                        Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
+                    .AddAccessorListAccessors(
+                        AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
             }
 
-            return newAttributes;
+            //            var newAttributes = RemoveAttributes(node.AttributeLists, "CakeMethodAliasAttribute");
+            //            var leadTriv = node.GetLeadingTrivia();
+            //            node = node.WithAttributeLists(newAttributes)
+            //                .WithLeadingTrivia(leadTriv);
+
+            return base.VisitMethodDeclaration(node);
         }
 
         private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)
@@ -78,7 +72,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                 .StartsWith(attributeName);
         }
 
-        private static SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
+        private SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
         {
             var identifierNameSyntax = node.Name as IdentifierNameSyntax;
             var qualifiedNameSyntax = node.Name as QualifiedNameSyntax;

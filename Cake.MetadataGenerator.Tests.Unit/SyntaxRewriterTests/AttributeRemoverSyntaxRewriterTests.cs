@@ -62,28 +62,28 @@ public static class ArgumentAliases
 
             var provider = Substitute.For<IDocumentationProvider>();
             provider.Get(Arg.Any<string>()).Returns(@"
-            ///<summary>
-            ///Determines whether or not the specified argument exist.
-            ///</summary>
-            ///<param name=""context"">The context.</param>
-            ///<param name=""name"">The argument name.</param>
-            ///<returns>Whether or not the specified argument exist.</returns>
-            ///<example>
-            ///This sample shows how to call the <see cref=""M:Cake.Common.ArgumentAliases.HasArgument(Cake.Core.ICakeContext,System.String)""/> method.
-            ///<code>
-            ///var argumentName = ""myArgument"";
-            /////Cake.exe .\hasargument.cake -myArgument=""is specified""
-            ///if (HasArgument(argumentName))
-            ///{
-            ///    Information(""{0} is specified"", argumentName);
-            ///}
-            /////Cake.exe .\hasargument.cake
-            ///else
-            ///{
-            ///    Warning(""{0} not specified"", argumentName);
-            ///}
-            ///</code>
-            ///</example>");
+            /// <summary>
+            /// Determines whether or not the specified argument exist.
+            /// </summary>
+            /// <param name=""context"">The context.</param>
+            /// <param name=""name"">The argument name.</param>
+            /// <returns>Whether or not the specified argument exist.</returns>
+            /// <example>
+            /// This sample shows how to call the <see cref=""M:Cake.Common.ArgumentAliases.HasArgument(Cake.Core.ICakeContext,System.String)""/> method.
+            /// <code>
+            /// var argumentName = ""myArgument"";
+            /// //Cake.exe .\hasargument.cake -myArgument=""is specified""
+            /// if (HasArgument(argumentName))
+            /// {
+            ///     Information(""{0} is specified"", argumentName);
+            /// }
+            /// //Cake.exe .\hasargument.cake
+            /// else
+            /// {
+            ///     Warning(""{0} not specified"", argumentName);
+            /// }
+            /// </code>
+            /// </example>");
 
             var rewriter = new CakeMethodBodySyntaxRewriter(semanticModel, provider);
 

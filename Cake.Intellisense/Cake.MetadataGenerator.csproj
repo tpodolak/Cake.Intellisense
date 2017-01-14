@@ -153,6 +153,7 @@
     <Compile Include="MetadataGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxRewriters\CakeAttributesRewriter.cs" />
     <Compile Include="SyntaxRewriters\CakeMethodSyntaxRewriter.cs" />
     <Compile Include="SyntaxRewriters\CakeClassSyntaxRewriter.cs" />
     <Compile Include="Utils\SymbolExtensions.cs" />

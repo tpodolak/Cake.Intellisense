@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text;
-using System.Threading;
-using Cake.Core.Annotations;
 using Cake.Core.Scripting;
 using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
@@ -17,12 +15,8 @@ using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.FindSymbols;
-using Microsoft.CodeAnalysis.Host;
 using NLog;
 using NuGet;
-using AssemblyMetadata = Microsoft.CodeAnalysis.AssemblyMetadata;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Cake.MetadataGenerator
 {
@@ -123,22 +117,6 @@ namespace Cake.MetadataGenerator
 
             var metadataReference = assemblies.Select(val => MetadataReference.CreateFromFile(val.Location)).ToList();
 
-
-            //            var zzz = new Class1();
-            //            var types =
-            //                assemblies.SelectMany(val => val.GetExportedTypes())
-            //                    .Where(
-            //                        val =>
-            //                            val.FullName == typeof(ScriptHost).FullName ||
-            //                            val.GetCustomAttributes<CakeAliasCategoryAttribute>().Any())
-            //                    .Select(val => val)
-            //                    .ToList();
-            //            var namespaces = string.Join(Environment.NewLine,
-            //                types.Select(val => $"using static {val.Namespace}.{val.Name}Metadata;"));
-            //            var result = zzz.Genrate(types);
-            //            var x = result.ToFullString();
-            //            logger.Debug(x);
-
             var referencesass =
                 packges.SelectMany(
                         f =>
@@ -158,23 +136,21 @@ namespace Cake.MetadataGenerator
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
 
-            // zzz.Generate(compilation);
+            var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace).ToList();
 
-            var namespaceSymbols = compilation.GlobalNamespace
-                .GetNamespaceMembers()
-                .Where(val => val.ContainingAssembly?.Name == options.Package)
-                .SelectMany(val => val.GetMembers()).ToList();
+            var compilationSyntax = SyntaxFactory.CompilationUnit();
 
-            var symbols =
-                namespaceSymbols.SelectMany(
-                    namepace =>
-                        namepace.GetTypeMembers()
-                            .Where(val => val.Kind == SymbolKind.NamedType && val.GetAttributes().Any(x => x.AttributeClass.Name == "CakeAliasCategoryAttribute"))
-                            .Select(val => _codeGenerationService.CreateNamedTypeDeclaration(val))).ToList();
+            foreach (var namespaceSymbol in namespaceSymbols)
+            {
+                var classSymbols = CreateNamedTypeDeclaration(namespaceSymbol).ToArray();
+                if (classSymbols.Any())
+                {
+                    var namespaceSyntax = CreateNamespace(namespaceSymbol.ToString()).AddMembers(classSymbols);
+                    compilationSyntax = compilationSyntax.AddMembers(namespaceSyntax);
+                }
+            }
 
-            var all = symbols.Aggregate(new StringBuilder(), (builder, syntax) => builder.Append(syntax.NormalizeWhitespace().ToFullString()));
-
-            var tree = SyntaxFactory.ParseSyntaxTree(all.ToString());
+            var tree = CSharpSyntaxTree.Create(compilationSyntax);
 
             compilation = compilation.AddSyntaxTrees(tree);
 
@@ -182,13 +158,20 @@ namespace Cake.MetadataGenerator
             var rewriter = new CakeClassSyntaxRewriter();
             var result = rewriter.Visit(tree.GetRoot());
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
+
             tree = compilation.SyntaxTrees.First();
             var semanticModel = compilation.GetSemanticModel(tree);
             var methodRewriter = new CakeMethodBodySyntaxRewriter(semanticModel, new XmlDocumentationProvider(new AssemblyDocumentationReader()));
-            var nextResult = methodRewriter.Visit(compilation.SyntaxTrees.First().GetRoot());
+            result = methodRewriter.Visit(tree.GetRoot());
+
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
+
+            tree = compilation.SyntaxTrees.First();
+            var attributeRewriter = new CakeAttributesRewriter();
+            result = attributeRewriter.Visit(tree.GetRoot());
+            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(result));
 
             compilation = compilation.AddReferences(referencesass);
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxFactory.SyntaxTree(nextResult));
 
             var res = new Class1().Compile(compilation, "someoutput.dll");
 
@@ -198,6 +181,33 @@ namespace Cake.MetadataGenerator
                 SourceAssemblies = assemblies.ToArray()
             };
 
+        }
+
+        private IEnumerable<ClassDeclarationSyntax> CreateNamedTypeDeclaration(INamespaceOrTypeSymbol namepace)
+        {
+            return namepace.GetTypeMembers()
+                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == typeof(ScriptHost).Name || val.GetAttributes().Any(x => x.AttributeClass.Name == "CakeAliasCategoryAttribute")))
+                .Select(val => _codeGenerationService.CreateNamedTypeDeclaration(val));
+        }
+
+        public NamespaceDeclarationSyntax CreateNamespace(string @namespace)
+        {
+            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(@namespace));
+        }
+
+        private static IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
+        {
+            yield return symbol;
+            if (symbol.GetNamespaceMembers().Any())
+            {
+                foreach (var innerSymbol in symbol.GetNamespaceMembers())
+                {
+                    foreach (var reccured in GetNamespaceMembers(innerSymbol))
+                    {
+                        yield return reccured;
+                    }
+                }
+            }
         }
 
         public static List<IPackage> GetDependentPackagesAndSelf(IPackage package, List<IPackage> localPackages, FrameworkName framework, IPackageRepository repo)
