@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;
 
-namespace Cake.MetadataGenerator.CodeGeneration
+namespace Cake.MetadataGenerator.CodeGeneration.LanguageServices
 {
     public class CSharpCodeGenerationServiceProvider : ICSharpCodeGenerationServiceProvider
     {

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Cake.Core.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.SyntaxRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 {
-    public class AttributeRewriter : CSharpSyntaxRewriter
+    public class AttributesSyntaxRewriter : CSharpSyntaxRewriter
     {
         private static readonly string[] AttributeToRemove =
         {

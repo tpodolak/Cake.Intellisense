@@ -13,4 +13,9 @@
             CakePropertyAlias = "CakePropertyAliasAttribute",
             CakeNamespaceImport = "CakeNamespaceImportAttribute";
     }
+
+    public static class PackageSources
+    {
+        public const string NuGetPackageSource = "https://packages.nuget.org/api/v2";
+    }
 }

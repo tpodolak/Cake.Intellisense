@@ -4,17 +4,18 @@ using System.Linq;
 using System.Reflection;
 using Cake.MetadataGenerator.Documentation;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-namespace Cake.MetadataGenerator.SyntaxRewriters
+
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 {
-    public class CommentsSyntaxRewriterRewriter
+    public class CommentsSyntaxRewriter
     {
         private readonly IDocumentationReader _documentationReader;
         private readonly ICommentProvider _provider;
         private readonly SemanticModel _semanticModel;
 
-        public CommentsSyntaxRewriterRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
+        public CommentsSyntaxRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
         {
             _documentationReader = documentationReader;
             _provider = provider;
@@ -23,14 +24,15 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
 
         public SyntaxNode Visit(Assembly assembly, SyntaxNode rootNode)
         {
+            var nodesDict = new Dictionary<MethodDeclarationSyntax, MethodDeclarationSyntax>();
             var xml = _documentationReader.Read(Path.ChangeExtension(assembly.Location, "xml"));
-            var replace = new Dictionary<MethodDeclarationSyntax, MethodDeclarationSyntax>();
+
             foreach (var node in rootNode.DescendantNodes().OfType<MethodDeclarationSyntax>())
             {
                 var currentNode = node;
-                var declaredSymbol = _semanticModel.GetDeclaredSymbol(node);
+                var declaredSymbol = ModelExtensions.GetDeclaredSymbol(_semanticModel, node);
                 var attributeList = node.AttributeLists;
-                var commentTrivia = TriviaList(Comment(_provider.Get(xml, declaredSymbol)), CarriageReturn);
+                var commentTrivia = SyntaxFactory.TriviaList(SyntaxFactory.Comment(_provider.Get(xml, declaredSymbol)), SyntaxFactory.CarriageReturn);
 
                 if (node.AttributeLists.Any())
                 {
@@ -39,14 +41,12 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                     currentNode = node.WithAttributeLists(attributeList);
                 }
                 else
-                {
                     currentNode = node.WithLeadingTrivia(commentTrivia);
-                }
 
-                replace.Add(node, currentNode);
+                nodesDict.Add(node, currentNode);
             }
 
-            return rootNode.ReplaceNodes(replace.Keys, (syntax, declarationSyntax) => replace[syntax]);
+            return rootNode.ReplaceNodes(nodesDict.Keys, (originalNode, declarationSyntax) => nodesDict[originalNode]);
         }
     }
 }

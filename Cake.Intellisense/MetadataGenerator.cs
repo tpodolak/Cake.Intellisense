@@ -6,11 +6,11 @@ using System.Reflection;
 using System.Runtime.Versioning;
 using Cake.Core.Scripting;
 using Cake.MetadataGenerator.CodeGeneration;
+using Cake.MetadataGenerator.CodeGeneration.LanguageServices;
+using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters;
 using Cake.MetadataGenerator.CommandLine;
 using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.Logging;
-using Cake.MetadataGenerator.SyntaxRewriters;
-using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,32 +20,30 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator
 {
-    public class MetadataGenerator
+    public class MetadataGenerator : IMetadataGenerator
     {
-        private readonly ICSharpCodeGenerationService _codeGenerationService;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public MetadataGenerator(ICSharpCodeGenerationService codeGenerationService)
+        private readonly ICSharpCodeGenerationService _codeGenerationService;
+        private readonly IArgumentParser _argumentParser;
+
+        public MetadataGenerator(ICSharpCodeGenerationService codeGenerationService, IArgumentParser argumentParser)
         {
             _codeGenerationService = codeGenerationService;
+            _argumentParser = argumentParser;
         }
 
         public void Generate(string[] args)
         {
-            MetadataGeneratorOptions options = null;
-            IEnumerable<Error> errorList = new List<Error>();
+            var parserResult = _argumentParser.Parse<MetadataGeneratorOptions>(args);
 
-            var parser = new Parser(val => val.HelpWriter = Console.Out);
-            var parserResult = parser.ParseArguments<MetadataGeneratorOptions>(args);
-            parserResult.WithParsed(lineOptions => options = lineOptions);
-            parserResult.WithNotParsed(errors => errorList = errors.ToList());
-
-            if (errorList.Any())
+            if (parserResult.Errors.Any())
             {
+                logger.Error("Error while parsing arguments");
                 return;
             }
 
-            Generate(options);
+            Generate(parserResult.Result);
         }
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
@@ -56,7 +54,7 @@ namespace Cake.MetadataGenerator
             }
 
             PackageRepositoryBase repo =
-                (PackageRepositoryBase)PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
+                (PackageRepositoryBase)PackageRepositoryFactory.Default.CreateRepository(PackageSources.NuGetPackageSource);
             repo.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(repo.GetType().FullName));
             //Get the list of all NuGet packages with ID 'EntityFramework'       
             List<IPackage> packages = repo.FindPackagesById(options.Package).ToList();
@@ -154,7 +152,7 @@ namespace Cake.MetadataGenerator
             var tree = CSharpSyntaxTree.Create(compilationSyntax);
             compilation = compilation.AddSyntaxTrees(tree);
             var semanticModel = compilation.GetSemanticModel(tree);
-            var commentsRewriter = new CommentsSyntaxRewriterRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
+            var commentsRewriter = new CommentsSyntaxRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
             var resxxxx = commentsRewriter.Visit(assemblies.Single(), tree.GetRoot());
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(resxxxx));
             tree = compilation.SyntaxTrees.FirstOrDefault();
@@ -172,7 +170,7 @@ namespace Cake.MetadataGenerator
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
 
             tree = compilation.SyntaxTrees.First();
-            var attributeRewriter = new AttributeRewriter();
+            var attributeRewriter = new AttributesSyntaxRewriter();
             result = attributeRewriter.Visit(tree.GetRoot());
 
             var diagnostics = result.GetDiagnostics().ToList();
@@ -181,7 +179,7 @@ namespace Cake.MetadataGenerator
 
             compilation = compilation.AddReferences(referencesass);
 
-            var res = new Class1().Compile(compilation, "someoutput.dll");
+            var res = new Compiler().Compile(compilation, "someoutput.dll");
 
             return new GeneratorResult
             {

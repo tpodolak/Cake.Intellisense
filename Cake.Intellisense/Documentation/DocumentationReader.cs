@@ -9,9 +9,4 @@ namespace Cake.MetadataGenerator.Documentation
             return XDocument.Load(id);
         }
     }
-
-    public interface IDocumentationReader
-    {
-        XDocument Read(string id);
-    }
 }

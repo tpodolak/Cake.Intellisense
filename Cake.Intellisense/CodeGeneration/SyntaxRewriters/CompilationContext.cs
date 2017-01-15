@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 
-namespace Cake.MetadataGenerator.SyntaxRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 {
     public class CompilationContext : ICurrentCompilationContext
     {

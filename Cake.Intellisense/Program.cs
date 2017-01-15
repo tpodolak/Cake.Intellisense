@@ -1,19 +1,25 @@
-﻿using System.Linq;
-using System.Reflection;
-using Cake.MetadataGenerator.CodeGeneration;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Host;
+﻿using System.Reflection;
+using Autofac;
+using Cake.MetadataGenerator.Infrastructure;
 using NLog;
 
 namespace Cake.MetadataGenerator
 {
-    partial class Program
+    public class Program
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         static void Main(string[] args)
         {
-            var service = new CSharpCodeGenerationServiceProvider().Get();
-            var generator = new MetadataGenerator(new RoslynCSharpCodeGenerationService(service));
-            generator.Generate(args);
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new MetadataGeneratorModule(Assembly.GetExecutingAssembly()));
+            var container = builder.Build();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var metadataGenerator = scope.Resolve<IMetadataGenerator>();
+                metadataGenerator.Generate(args);
+            }
         }
     }
 }

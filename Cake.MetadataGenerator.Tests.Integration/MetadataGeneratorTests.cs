@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
 using FluentAssertions;
 using Xunit;
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public class MetadataGeneratorTests
+    public class MetadataGeneratorTests : IClassFixture<MetadataGenerator>
     {
         private const string defaultFramework = ".NETFramework,Version=v4.5";
         private readonly MetadataGenerator generator;
 
-        public MetadataGeneratorTests()
+        public MetadataGeneratorTests(MetadataGenerator generator)
         {
-            var service = new CSharpCodeGenerationServiceProvider().Get();
-            generator = new MetadataGenerator(new RoslynCSharpCodeGenerationService(service));
+            this.generator = generator;
         }
 
         [Theory]

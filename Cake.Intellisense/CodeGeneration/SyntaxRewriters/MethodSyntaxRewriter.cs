@@ -3,9 +3,8 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Cake.MetadataGenerator.SyntaxRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 {
     public class MethodSyntaxRewriter : CSharpSyntaxRewriter
     {
@@ -23,7 +22,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
             var parameterListSyntax = GetParameterList(node);
 
             node = node.WithParameterList(parameterListSyntax)
-                       .WithBody(Block(bodyStatements))
+                       .WithBody(SyntaxFactory.Block(bodyStatements))
                        .WithModifiers(modifiers);
 
 
@@ -37,11 +36,11 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
         {
             var modifierTokens = new List<SyntaxToken>
             {
-                Token(SyntaxKind.PublicKeyword),
-                Token(SyntaxKind.StaticKeyword)
+                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                SyntaxFactory.Token(SyntaxKind.StaticKeyword)
             };
 
-            var syntaxTokenList = TokenList(modifierTokens);
+            var syntaxTokenList = SyntaxFactory.TokenList(modifierTokens);
             return syntaxTokenList;
         }
 
@@ -55,17 +54,17 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
 
             if (outParams.Any())
             {
-                var outAssignments = outParams.Select(val => ExpressionStatement(AssignmentExpression(
+                var outAssignments = outParams.Select(val => SyntaxFactory.ExpressionStatement(SyntaxFactory.AssignmentExpression(
                     SyntaxKind.SimpleAssignmentExpression,
-                    IdentifierName(val.Identifier),
-                    DefaultExpression(val.Type))));
+                    SyntaxFactory.IdentifierName(val.Identifier),
+                    SyntaxFactory.DefaultExpression(val.Type))));
 
                 bodyStatements.AddRange(outAssignments);
             }
 
             if ((node.ReturnType as PredefinedTypeSyntax)?.Keyword.Kind() != SyntaxKind.VoidKeyword)
             {
-                bodyStatements.Add(ReturnStatement(DefaultExpression(node.ReturnType)));
+                bodyStatements.Add(SyntaxFactory.ReturnStatement(SyntaxFactory.DefaultExpression(node.ReturnType)));
             }
 
             return bodyStatements;
@@ -73,10 +72,10 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
 
         private PropertyDeclarationSyntax GetPropertyDeclaration(MethodDeclarationSyntax node)
         {
-            return PropertyDeclaration(node.ReturnType, node.Identifier)
-                .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
+            return SyntaxFactory.PropertyDeclaration(node.ReturnType, node.Identifier)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword))
                 .AddAccessorListAccessors(
-                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                    SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
         }
 
         private bool IsProperty(MethodDeclarationSyntax node)
@@ -91,7 +90,7 @@ namespace Cake.MetadataGenerator.SyntaxRewriters
                     attrs =>
                         attrs.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributes.CakeMethodAlias)));
 
-            return ParameterList(SeparatedList(node.ParameterList.Parameters.Skip(aliasAttributes ? 1 : 0)));
+            return SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(node.ParameterList.Parameters.Skip(aliasAttributes ? 1 : 0)));
         }
 
         private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)

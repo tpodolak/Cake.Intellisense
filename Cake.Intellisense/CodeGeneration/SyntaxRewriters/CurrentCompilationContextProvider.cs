@@ -1,8 +1,4 @@
-﻿using Cake.MetadataGenerator.CommandLine;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-
-namespace Cake.MetadataGenerator.SyntaxRewriters
+﻿namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 {
     public class CurrentCompilationContextProvider : ICurrentCompilationContextProvider
     {
