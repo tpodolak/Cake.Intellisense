@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RIDER_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../..">
+      <sourceFolder url="file://$MODULE_DIR$/../../Cake.Intellisense" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Cake.MetadataGenerator.Tests.Integration" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Cake.MetadataGenerator.Tests.Unit" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/Microsoft.CodeAnalysis.Analyzers.1.1.0/analyzers/dotnet/cs" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Cake.Intellisense/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Cake.Intellisense/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Cake.MetadataGenerator.Tests.Integration/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Cake.MetadataGenerator.Tests.Integration/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Cake.MetadataGenerator.Tests.Unit/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Cake.MetadataGenerator.Tests.Unit/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../packages" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

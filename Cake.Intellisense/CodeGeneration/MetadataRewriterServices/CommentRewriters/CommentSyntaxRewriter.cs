@@ -7,15 +7,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters
 {
-    public class CommentsSyntaxRewriter
+    internal class CommentSyntaxRewriter
     {
         private readonly IDocumentationReader _documentationReader;
         private readonly ICommentProvider _provider;
         private readonly SemanticModel _semanticModel;
 
-        public CommentsSyntaxRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
+        public CommentSyntaxRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
         {
             _documentationReader = documentationReader;
             _provider = provider;
@@ -24,13 +24,13 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 
         public SyntaxNode Visit(Assembly assembly, SyntaxNode rootNode)
         {
-            var nodesDict = new Dictionary<MethodDeclarationSyntax, MethodDeclarationSyntax>();
+            var nodesDict = new Dictionary<CSharpSyntaxNode, CSharpSyntaxNode>();
             var xml = _documentationReader.Read(Path.ChangeExtension(assembly.Location, "xml"));
 
             foreach (var node in rootNode.DescendantNodes().OfType<MethodDeclarationSyntax>())
             {
                 var currentNode = node;
-                var declaredSymbol = ModelExtensions.GetDeclaredSymbol(_semanticModel, node);
+                var declaredSymbol = _semanticModel.GetDeclaredSymbol(node);
                 var attributeList = node.AttributeLists;
                 var commentTrivia = SyntaxFactory.TriviaList(SyntaxFactory.Comment(_provider.Get(xml, declaredSymbol)), SyntaxFactory.CarriageReturn);
 

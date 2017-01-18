@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters;
+using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodRewriters;
 using Cake.MetadataGenerator.Documentation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

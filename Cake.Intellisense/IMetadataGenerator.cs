@@ -1,5 +1,3 @@
-using Cake.MetadataGenerator.CommandLine;
-
 namespace Cake.MetadataGenerator
 {
     public interface IMetadataGenerator

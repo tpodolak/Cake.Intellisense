@@ -2,9 +2,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 
-namespace Cake.MetadataGenerator.CodeGeneration.LanguageServices
+namespace Cake.MetadataGenerator.CodeGeneration.MetadataGenerators
 {
-    public class CSharpCodeGenerationServiceProvider : ICSharpCodeGenerationServiceProvider
+    public class CSharpCodeGenerationServiceProvider : ILanguageServiceProvider
     {
         public ILanguageService Get()
         {

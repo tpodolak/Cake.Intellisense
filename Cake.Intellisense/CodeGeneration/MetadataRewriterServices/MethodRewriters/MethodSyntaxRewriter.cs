@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodRewriters
 {
-    public class MethodSyntaxRewriter : CSharpSyntaxRewriter
+    internal class MethodSyntaxRewriter : CSharpSyntaxRewriter
     {
         private readonly SemanticModel _semanticModel;
 

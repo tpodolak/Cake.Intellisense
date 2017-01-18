@@ -5,9 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using Cake.Core.Scripting;
-using Cake.MetadataGenerator.CodeGeneration;
-using Cake.MetadataGenerator.CodeGeneration.LanguageServices;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters;
+using Cake.MetadataGenerator.CodeGeneration.MetadataGenerators;
+using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRewriters;
+using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters;
+using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodRewriters;
 using Cake.MetadataGenerator.CommandLine;
 using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.Logging;
@@ -24,10 +25,10 @@ namespace Cake.MetadataGenerator
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ICSharpCodeGenerationService _codeGenerationService;
+        private readonly IMetadataGeneratorService _codeGenerationService;
         private readonly IArgumentParser _argumentParser;
 
-        public MetadataGenerator(ICSharpCodeGenerationService codeGenerationService, IArgumentParser argumentParser)
+        public MetadataGenerator(IMetadataGeneratorService codeGenerationService, IArgumentParser argumentParser)
         {
             _codeGenerationService = codeGenerationService;
             _argumentParser = argumentParser;
@@ -152,7 +153,7 @@ namespace Cake.MetadataGenerator
             var tree = CSharpSyntaxTree.Create(compilationSyntax);
             compilation = compilation.AddSyntaxTrees(tree);
             var semanticModel = compilation.GetSemanticModel(tree);
-            var commentsRewriter = new CommentsSyntaxRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
+            var commentsRewriter = new CommentSyntaxRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
             var resxxxx = commentsRewriter.Visit(assemblies.Single(), tree.GetRoot());
             compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(resxxxx));
             tree = compilation.SyntaxTrees.FirstOrDefault();

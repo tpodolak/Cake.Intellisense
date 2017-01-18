@@ -1,20 +1,19 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.AttributeRewriters
 {
-    public class AttributesSyntaxRewriter : CSharpSyntaxRewriter
+    internal class AttributeSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private static readonly string[] AttributeToRemove =
+        private readonly string[] _attributesToRemove;
+
+        public AttributeSyntaxRewriter(string[] attributesToRemove)
         {
-            CakeAttributes.CakeAliasCategory,
-            CakeAttributes.CakeMethodAlias,
-            CakeAttributes.CakeNamespaceImport,
-            CakeAttributes.CakePropertyAlias
-        };
+            _attributesToRemove = attributesToRemove;
+        }
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
@@ -48,7 +47,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
 
             foreach (var attributeList in originalAttributes)
             {
-                var nodesToRemove = attributeList.Attributes.Where(attribute => AttributeToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
+                var nodesToRemove = attributeList.Attributes.Where(attribute => _attributesToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
                 var syntax = attributeList.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia);
 
                 if (syntax.Attributes.Any())
@@ -62,9 +61,9 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriters
         {
             return
                 GetSimpleNameFromNode(attribute)
-                .Identifier
-                .Text
-                .StartsWith(attributeName);
+                    .Identifier
+                    .Text
+                    .StartsWith(attributeName);
         }
 
         private static SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)

@@ -18,4 +18,9 @@
     {
         public const string NuGetPackageSource = "https://packages.nuget.org/api/v2";
     }
+
+    public static class MetadataGeneration
+    {
+        public const string MetadataClassSufix = "Metadata";
+    }
 }

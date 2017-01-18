@@ -4,15 +4,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;
 
-namespace Cake.MetadataGenerator.CodeGeneration.LanguageServices
+namespace Cake.MetadataGenerator.CodeGeneration.MetadataGenerators
 {
-    public class RoslynCSharpCodeGenerationService : ICSharpCodeGenerationService
+    public class RoslynMetadataGeneratorService : IMetadataGeneratorService
     {
         private readonly ILanguageService _languageService;
 
         private readonly MethodInfo _namedTypeDeclarationMethod;
 
-        public RoslynCSharpCodeGenerationService(ICSharpCodeGenerationServiceProvider languageServiceProvider)
+        public RoslynMetadataGeneratorService(ILanguageServiceProvider languageServiceProvider)
         {
             _languageService = languageServiceProvider.Get();
             _namedTypeDeclarationMethod = _languageService.GetType().GetMethod("CreateNamedTypeDeclaration");
