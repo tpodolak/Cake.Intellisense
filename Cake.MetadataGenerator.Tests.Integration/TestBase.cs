@@ -3,11 +3,11 @@ using Cake.MetadataGenerator.Infrastructure;
 
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public class MetadataGeneratorFixture
+    public abstract class TestBase
     {
-        public IMetadataGenerator MetadataGenerator { get; }
+        protected IMetadataGenerator MetadataGenerator { get; }
 
-        public MetadataGeneratorFixture()
+        protected TestBase()
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule(new MetadataGeneratorModule(typeof(IMetadataGenerator).Assembly));

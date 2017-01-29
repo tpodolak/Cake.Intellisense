@@ -4,20 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.Core.Scripting;
-using Cake.MetadataGenerator.CodeGeneration.MetadataGenerators;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRewriters;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodRewriters;
+using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
-using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NLog;
 using NuGet;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator
 {
@@ -25,12 +18,12 @@ namespace Cake.MetadataGenerator
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IMetadataGeneratorService _codeGenerationService;
+        private readonly ICakeMetadataGenerator _cakeMetadataGenerator;
         private readonly IArgumentParser _argumentParser;
 
-        public MetadataGenerator(IMetadataGeneratorService codeGenerationService, IArgumentParser argumentParser)
+        public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator, IArgumentParser argumentParser)
         {
-            _codeGenerationService = codeGenerationService;
+            _cakeMetadataGenerator = cakeMetadataGenerator;
             _argumentParser = argumentParser;
         }
 
@@ -123,98 +116,25 @@ namespace Cake.MetadataGenerator
                                 .OfType<PhysicalPackageFile>()
                                 .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll")))
                     .SelectMany(ff => GetReferencesAssemblies(Assembly.LoadFrom(ff.SourcePath)))
-                    .Except(assemblies)
                     .Select(val => MetadataReference.CreateFromFile(val.Location))
                     .ToList();
 
-            var formattableString = $"{assemblies.First().GetName().Name}";
+            var result = _cakeMetadataGenerator.Generate(assemblies.First());
 
             CSharpCompilation compilation = CSharpCompilation.Create(
-                assemblyName: formattableString,
-                syntaxTrees: new SyntaxTree[] { },
-                references: assemblies.Select(y => MetadataReference.CreateFromFile(y.Location)),
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+               assemblyName: assemblies.First().GetName().Name + ".Metadata",
+               syntaxTrees: new[] { SyntaxFactory.ParseSyntaxTree(result.GetRoot().NormalizeWhitespace().ToFullString()) },
+               references: referencesass.Union(metadataReference),
+               options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-
-            var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace).ToList();
-
-            var compilationSyntax = CompilationUnit();
-
-            foreach (var namespaceSymbol in namespaceSymbols)
-            {
-                var classSymbols = CreateNamedTypeDeclaration(namespaceSymbol).ToArray();
-                if (classSymbols.Any())
-                {
-                    var namespaceSyntax = CreateNamespace(namespaceSymbol.ToString()).AddMembers(classSymbols);
-                    compilationSyntax = compilationSyntax.AddMembers(namespaceSyntax);
-                }
-            }
-
-            var tree = CSharpSyntaxTree.Create(compilationSyntax);
-            compilation = compilation.AddSyntaxTrees(tree);
-            var semanticModel = compilation.GetSemanticModel(tree);
-            var commentsRewriter = new CommentSyntaxRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
-            var resxxxx = commentsRewriter.Visit(assemblies.Single(), tree.GetRoot());
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(resxxxx));
-            tree = compilation.SyntaxTrees.FirstOrDefault();
-            var rewriter = new ClassSyntaxRewriter();
-            var result = rewriter.Visit(tree.GetRoot());
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
-
-            tree = compilation.SyntaxTrees.First();
-
-
-            semanticModel = compilation.GetSemanticModel(tree);
-            var methodRewriter = new MethodSyntaxRewriter(semanticModel);
-            result = methodRewriter.Visit(tree.GetRoot());
-
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
-
-            tree = compilation.SyntaxTrees.First();
-            var attributeRewriter = new AttributesSyntaxRewriter();
-            result = attributeRewriter.Visit(tree.GetRoot());
-
-            var diagnostics = result.GetDiagnostics().ToList();
-
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
-
-            compilation = compilation.AddReferences(referencesass);
-
-            var res = new Compiler().Compile(compilation, "someoutput.dll");
+            var compiler = new Compiler().Compile(compilation, assemblies.First().GetName().Name + ".Metadata.dll");
 
             return new GeneratorResult
             {
-                EmitedAssembly = res,
+                EmitedAssembly = compiler,
                 SourceAssemblies = assemblies.ToArray()
             };
 
-        }
-
-        private IEnumerable<ClassDeclarationSyntax> CreateNamedTypeDeclaration(INamespaceOrTypeSymbol namepace)
-        {
-            return namepace.GetTypeMembers()
-                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == typeof(ScriptHost).Name || val.GetAttributes().Any(x => x.AttributeClass.Name == "CakeAliasCategoryAttribute")))
-                .Select(val => _codeGenerationService.CreateNamedTypeDeclaration(val));
-        }
-
-        public NamespaceDeclarationSyntax CreateNamespace(string @namespace)
-        {
-            return NamespaceDeclaration(IdentifierName(@namespace));
-        }
-
-        private static IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
-        {
-            yield return symbol;
-            if (symbol.GetNamespaceMembers().Any())
-            {
-                foreach (var innerSymbol in symbol.GetNamespaceMembers())
-                {
-                    foreach (var reccured in GetNamespaceMembers(innerSymbol))
-                    {
-                        yield return reccured;
-                    }
-                }
-            }
         }
 
         public static List<IPackage> GetDependentPackagesAndSelf(IPackage package, List<IPackage> localPackages, FrameworkName framework, IPackageRepository repo)

@@ -7,22 +7,16 @@ using FluentAssertions;
 using Xunit;
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public class MetadataGeneratorTests : IClassFixture<MetadataGenerator>
+    public class MetadataGeneratorTests : TestBase
     {
         private const string defaultFramework = ".NETFramework,Version=v4.5";
-        private readonly MetadataGenerator generator;
-
-        public MetadataGeneratorTests(MetadataGenerator generator)
-        {
-            this.generator = generator;
-        }
-
+        
         [Theory]
         [InlineData("Cake.Common", defaultFramework)]
         public void GenerateCanGenerateMetadataForPackageTest(string package, string framework)
         {
             var options = CreateMetadataGeneratorOptions(package, framework);
-            var result = generator.Generate(options);
+            var result = MetadataGenerator.Generate(options);
             VerifyGeneratorResult(result, VerifyAliasAssemblyContent);
         }
 
@@ -31,7 +25,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
         public void GenerateCanGenerateMetadataForCakeCoreLibTest(string framework)
         {
             var options = CreateMetadataGeneratorOptions("Cake.Core", framework);
-            var result = generator.Generate(options);
+            var result = MetadataGenerator.Generate(options);
             VerifyGeneratorResult(result, VerifyScriptEngineAssemblyContent);
         }
 

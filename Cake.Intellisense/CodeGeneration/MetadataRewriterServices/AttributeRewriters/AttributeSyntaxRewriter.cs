@@ -8,11 +8,11 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.Attribu
 {
     internal class AttributeSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly string[] _attributesToRemove;
+        private readonly string[] attributesToRemove;
 
         public AttributeSyntaxRewriter(string[] attributesToRemove)
         {
-            _attributesToRemove = attributesToRemove;
+            this.attributesToRemove = attributesToRemove;
         }
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
@@ -35,8 +35,9 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.Attribu
 
         public override SyntaxNode VisitAttribute(AttributeSyntax node)
         {
-            if (AttributeNameMatches(node, typeof(ObsoleteAttribute).Name))
-                node = node.WithArgumentList(SyntaxFactory.AttributeArgumentList());
+            var obosoleteAttributeName = typeof(ObsoleteAttribute).Name;
+            if (AttributeNameMatches(node, obosoleteAttributeName) || AttributeNameMatches(node, obosoleteAttributeName.Substring(0, obosoleteAttributeName.IndexOf("Attribute"))))
+                node = node.WithArgumentList(null);
 
             return base.VisitAttribute(node);
         }
@@ -47,7 +48,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.Attribu
 
             foreach (var attributeList in originalAttributes)
             {
-                var nodesToRemove = attributeList.Attributes.Where(attribute => _attributesToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
+                var nodesToRemove = attributeList.Attributes.Where(attribute => attributesToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
                 var syntax = attributeList.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia);
 
                 if (syntax.Attributes.Any())

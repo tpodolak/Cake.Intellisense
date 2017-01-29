@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,7 +13,7 @@ namespace Cake.MetadataGenerator
 
         public Assembly Compile(CSharpCompilation compilation, string outputPath)
         {
-            var result = compilation.Emit(outputPath);
+            var result = compilation.Emit(outputPath, Path.ChangeExtension(outputPath, "pdb"), Path.ChangeExtension(outputPath, "xml"));
 
             if (!result.Success)
             {

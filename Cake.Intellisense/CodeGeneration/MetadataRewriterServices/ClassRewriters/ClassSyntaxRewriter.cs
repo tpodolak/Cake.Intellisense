@@ -8,7 +8,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRe
 {
     internal class ClassSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly string _classSuffix;
+        private readonly string classSuffix;
 
         private static readonly List<SyntaxKind> TabuModifiers = new List<SyntaxKind>
         {
@@ -19,7 +19,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRe
 
         public ClassSyntaxRewriter(string classSuffix)
         {
-            _classSuffix = classSuffix;
+            this.classSuffix = classSuffix;
         }
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
@@ -32,12 +32,32 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRe
             return null;
         }
 
+        public override SyntaxNode VisitBaseList(BaseListSyntax node)
+        {
+            return null;
+        }
+
+        public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
+        {
+            return null;
+        }
+
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
             if (node.Modifiers.All(val => val.Kind() != SyntaxKind.PublicKeyword))
                 return null;
 
-            node = node.WithIdentifier(SyntaxFactory.Identifier(node.Identifier.Text + _classSuffix));
+            var modifierTokens = new List<SyntaxToken>
+            {
+                SyntaxFactory.Token(SyntaxKind.PublicKeyword)
+            };
+
+            if (node.Modifiers.Any(val => val.Kind() == SyntaxKind.StaticKeyword))
+                modifierTokens.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+
+            node = node.WithModifiers(SyntaxFactory.TokenList(modifierTokens))
+                       .WithIdentifier(SyntaxFactory.Identifier(node.Identifier.Text + classSuffix));
+
             return base.VisitClassDeclaration(node);
         }
 

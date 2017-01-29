@@ -7,7 +7,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodR
     {
         public int Order { get; } = 2;
 
-        public override SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
+        public SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
         {
             var rewriter = new MethodSyntaxRewriter(semanticModel);
             return rewriter.Visit(node);

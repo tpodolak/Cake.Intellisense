@@ -7,10 +7,10 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRe
     {
         public int Order { get; } = 1;
 
-        public override SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
+        public SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
         {
             var classRewriter = new ClassSyntaxRewriter(MetadataGeneration.MetadataClassSufix);
-            return classRewriter.Visit(node);
+            return classRewriter.Visit(node).NormalizeWhitespace();
         }
     }
 }

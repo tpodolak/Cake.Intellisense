@@ -22,9 +22,13 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodR
             var parameterListSyntax = GetParameterList(node);
 
             node = node.WithParameterList(parameterListSyntax)
-                       .WithBody(SyntaxFactory.Block(bodyStatements))
-                       .WithModifiers(modifiers);
-
+                .WithBody(SyntaxFactory.Block(bodyStatements))
+                .WithModifiers(modifiers)
+                .WithoutTrailingTrivia()
+                .WithSemicolonToken(
+                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)
+                        .WithLeadingTrivia(node.SemicolonToken.LeadingTrivia)
+                        .WithTrailingTrivia(node.SemicolonToken.TrailingTrivia));
 
             if (IsProperty(node))
                 return GetPropertyDeclaration(node);

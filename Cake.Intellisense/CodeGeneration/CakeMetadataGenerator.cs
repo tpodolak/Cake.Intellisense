@@ -2,11 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using Cake.Core.Scripting;
+using Cake.MetadataGenerator.CodeGeneration.MetadataGenerators;
 using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRewriters;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodRewriters;
-using Cake.MetadataGenerator.Documentation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,17 +13,19 @@ namespace Cake.MetadataGenerator.CodeGeneration
 {
     public class CakeMetadataGenerator : ICakeMetadataGenerator
     {
-        private readonly IEnumerable<IMetadataRewriterService> _metadataRewriterServices;
+        private readonly IMetadataGeneratorService metadataGeneratorService;
+        private readonly IEnumerable<IMetadataRewriterService> metadataRewriterServices;
 
-        public CakeMetadataGenerator(IEnumerable<IMetadataRewriterService> metadataRewriterServices)
+        public CakeMetadataGenerator(IMetadataGeneratorService metadataGeneratorService, IEnumerable<IMetadataRewriterService> metadataRewriterServices)
         {
-            _metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order).ToList();
+            this.metadataGeneratorService = metadataGeneratorService;
+            this.metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order).ToList();
         }
 
         public SyntaxTree Generate(Assembly assembly)
         {
             CSharpCompilation compilation = CSharpCompilation.Create(
-                assemblyName: "temp",
+                assemblyName: assembly.GetName().Name,
                 references: new[] { MetadataReference.CreateFromFile(assembly.Location) });
 
 
@@ -46,33 +45,16 @@ namespace Cake.MetadataGenerator.CodeGeneration
 
             var tree = CSharpSyntaxTree.Create(compilationSyntax);
             compilation = compilation.AddSyntaxTrees(tree);
-            var semanticModel = compilation.GetSemanticModel(tree);
-            var commentsRewriter = new CommentSyntaxRewriter(new DocumentationReader(), new XmlCommentProvider(), semanticModel);
-            var resxxxx = commentsRewriter.Visit(assemblies.Single(), tree.GetRoot());
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(resxxxx));
-            tree = compilation.SyntaxTrees.FirstOrDefault();
-            var rewriter = new ClassSyntaxRewriter();
-            var result = rewriter.Visit(tree.GetRoot());
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
 
-            tree = compilation.SyntaxTrees.First();
+            foreach (var metadataRewriterService in metadataRewriterServices)
+            {
+                var currentTree = compilation.SyntaxTrees.Single();
+                var semanticModel = compilation.GetSemanticModel(currentTree);
+                var rewrittenNode = metadataRewriterService.Rewrite(assembly, semanticModel, currentTree.GetRoot());
+                compilation = compilation.ReplaceSyntaxTree(currentTree, SyntaxTree(rewrittenNode));
+            }
 
-
-            semanticModel = compilation.GetSemanticModel(tree);
-            var methodRewriter = new MethodSyntaxRewriter(semanticModel);
-            result = methodRewriter.Visit(tree.GetRoot());
-
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
-
-            tree = compilation.SyntaxTrees.First();
-            var attributeRewriter = new AttributesSyntaxRewriter();
-            result = attributeRewriter.Visit(tree.GetRoot());
-
-            var diagnostics = result.GetDiagnostics().ToList();
-
-            compilation = compilation.ReplaceSyntaxTree(tree, SyntaxTree(result));
-
-            compilation = compilation.AddReferences(referencesass);
+            return compilation.SyntaxTrees.Single();
         }
 
 
@@ -80,7 +62,7 @@ namespace Cake.MetadataGenerator.CodeGeneration
         {
             return namepace.GetTypeMembers()
                 .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == typeof(ScriptHost).Name || val.GetAttributes().Any(x => x.AttributeClass.Name == "CakeAliasCategoryAttribute")))
-                .Select(val => _codeGenerationService.CreateNamedTypeDeclaration(val));
+                .Select(val => metadataGeneratorService.CreateNamedTypeDeclaration(val));
         }
 
         private static IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
@@ -107,6 +89,6 @@ namespace Cake.MetadataGenerator.CodeGeneration
 
     public interface ICakeMetadataGenerator
     {
-
+        SyntaxTree Generate(Assembly assembly);
     }
 }

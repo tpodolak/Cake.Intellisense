@@ -19,6 +19,8 @@ dotnet-install.sh*
 launchSettings.json
 project.lock.json
 
+.[Ii]dea/
+
 # Build related
 build-results/
 tools/Cake/
