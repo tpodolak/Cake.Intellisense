@@ -183,10 +183,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGenerationTests\AttributeMetadataRewriterServiceTestData.cs" />
+    <Compile Include="CodeGenerationTests\CommentMetadataRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\AttributeMetadataRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\ClassMetadataRewriterServiceTestData.cs" />
     <Compile Include="CodeGenerationTests\ClassMetadataRewriterServiceTests.cs" />
+    <Compile Include="CodeGenerationTests\CommentMetadataRewriterServiceTestData.cs" />
     <Compile Include="CodeGenerationTests\MetadataRewriterServiceTests.cs" />
+    <Compile Include="CodeGenerationTests\MethodMetadataRewriterServiceTestData.cs" />
+    <Compile Include="CodeGenerationTests\MethodMetadataRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\ServiceRewriterTestCase.cs" />
     <Compile Include="CodeGenerationTests\TestData.cs" />
     <Compile Include="ExtensionPoints\CustomMemberDataAttribute.cs" />

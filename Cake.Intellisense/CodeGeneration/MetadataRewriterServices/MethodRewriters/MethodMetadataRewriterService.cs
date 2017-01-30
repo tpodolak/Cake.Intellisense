@@ -10,7 +10,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodR
         public SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
         {
             var rewriter = new MethodSyntaxRewriter(semanticModel);
-            return rewriter.Visit(node);
+            return rewriter.Visit(node).NormalizeWhitespace();
         }
     }
 }

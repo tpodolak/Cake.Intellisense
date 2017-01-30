@@ -11,28 +11,28 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.Comment
 {
     internal class CommentSyntaxRewriter
     {
-        private readonly IDocumentationReader _documentationReader;
-        private readonly ICommentProvider _provider;
-        private readonly SemanticModel _semanticModel;
+        private readonly IDocumentationReader documentationReader;
+        private readonly ICommentProvider provider;
+        private readonly SemanticModel semanticModel;
 
         public CommentSyntaxRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
         {
-            _documentationReader = documentationReader;
-            _provider = provider;
-            _semanticModel = semanticModel;
+            this.documentationReader = documentationReader;
+            this.provider = provider;
+            this.semanticModel = semanticModel;
         }
 
         public SyntaxNode Visit(Assembly assembly, SyntaxNode rootNode)
         {
             var nodesDict = new Dictionary<CSharpSyntaxNode, CSharpSyntaxNode>();
-            var xml = _documentationReader.Read(Path.ChangeExtension(assembly.Location, "xml"));
+            var xml = documentationReader.Read(Path.ChangeExtension(assembly.Location, "xml"));
 
             foreach (var node in rootNode.DescendantNodes().OfType<MethodDeclarationSyntax>())
             {
                 var currentNode = node;
-                var declaredSymbol = _semanticModel.GetDeclaredSymbol(node);
+                var declaredSymbol = semanticModel.GetDeclaredSymbol(node);
                 var attributeList = node.AttributeLists;
-                var commentTrivia = SyntaxFactory.TriviaList(SyntaxFactory.Comment(_provider.Get(xml, declaredSymbol)), SyntaxFactory.CarriageReturn);
+                var commentTrivia = SyntaxFactory.TriviaList(SyntaxFactory.Comment(provider.Get(xml, declaredSymbol)), SyntaxFactory.CarriageReturn, SyntaxFactory.LineFeed);
 
                 if (node.AttributeLists.Any())
                 {
