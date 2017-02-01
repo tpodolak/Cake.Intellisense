@@ -32,13 +32,14 @@ namespace Cake.MetadataGenerator.Tests.Integration
 
         private void VerifyGeneratorResult(GeneratorResult result, Action<Assembly[], Assembly> assemblyVerifier)
         {
+            result.Should().NotBeNull();
+            result.SourceAssemblies.Should().HaveCount(count => count > 0);
+            result.EmitedAssembly.Should().NotBeNull();
+
             var referencedAssemblies = result.EmitedAssembly.GetReferencedAssemblies().Select(val => val.FullName);
             var locations = AppDomain.CurrentDomain.GetAssemblies().Where(val => referencedAssemblies.Contains(val.FullName)).Select(val => val.Location).ToList();
             locations.ForEach(val => File.Copy(val, Path.Combine(Environment.CurrentDirectory, Path.GetFileName(val)), true));
 
-            result.Should().NotBeNull();
-            result.SourceAssemblies.Should().HaveCount(count => count > 0);
-            result.EmitedAssembly.Should().NotBeNull();
             assemblyVerifier(result.SourceAssemblies, result.EmitedAssembly);
         }
 
