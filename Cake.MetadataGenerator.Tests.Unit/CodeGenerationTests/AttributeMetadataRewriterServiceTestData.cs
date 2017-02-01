@@ -11,7 +11,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
                 yield return new object[] { RemovesCakeMethodAliasAttribute() };
                 yield return new object[] { RemovesCakeAliasCategoryAttribute() };
                 yield return new object[] { RemovesCakeNamespaceImportAttribue() };
-                yield return new object[] { RemovesCakePropertyAttributesTest() };
+                yield return new object[] { RemovesCakePropertyAttributesFromMethodsTest() };
+                yield return new object[] { RemovesCakePropertyAttributesFromPropertiesTest() };
                 yield return new object[] { KeepsCommentTriviaWhenRemovingCakeAttributes() };
                 yield return new object[] { KeepsAttributesNotRelatedWithCakeIntact() };
                 yield return new object[] { RemovesParametersFromObosoleteAttribute() };
@@ -99,10 +100,10 @@ public static class EnvironmentAliases
             );
         }
 
-        private static ServiceRewriterTestCase RemovesCakePropertyAttributesTest()
+        private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromMethodsTest()
         {
             return new ServiceRewriterTestCase(
-                nameof(RemovesCakePropertyAttributesTest),
+                nameof(RemovesCakePropertyAttributesFromMethodsTest),
 @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
@@ -114,6 +115,28 @@ public static class EnvironmentAliases
 {
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
+    }
+}"
+            );
+        }
+
+        private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromPropertiesTest()
+        {
+            return new ServiceRewriterTestCase(
+                nameof(RemovesCakePropertyAttributesFromPropertiesTest),
+@"public static class BuildSystemAliases
+{
+    [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
+    public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo
+    {
+        get;
+    }
+}",
+@"public static class BuildSystemAliases
+{
+    public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo
+    {
+        get;
     }
 }"
             );

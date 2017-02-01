@@ -15,6 +15,15 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.Attribu
             this.attributesToRemove = attributesToRemove;
         }
 
+        public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+        {
+            var newAttributes = RewriteAttributeList(node.AttributeLists);
+            var leadTriv = node.GetLeadingTrivia();
+            node = node.WithAttributeLists(newAttributes).WithLeadingTrivia(leadTriv);
+
+            return base.VisitPropertyDeclaration(node);
+        }
+
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
             var newAttributes = RewriteAttributeList(node.AttributeLists);

@@ -99,32 +99,37 @@ namespace Cake.MetadataGenerator
 
             Console.WriteLine(packges);
 
-            var assemblies =
-                newset.GetFiles()
-                    .OfType<PhysicalPackageFile>()
-                    .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))
-                    .Select(val => Assembly.LoadFrom(val.SourcePath))
-                    .ToList();
+            var physicalPackageFiles = packges.SelectMany(
+                    f =>
+                        f.GetFiles()
+                            .OfType<PhysicalPackageFile>()
+                            .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll")))
+                .ToList();
 
+            var assemblies =
+              newset.GetFiles()
+                  .OfType<PhysicalPackageFile>()
+                  .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))
+                  .Select(val => Assembly.LoadFrom(val.SourcePath))
+                  .ToList();
 
             var metadataReference = assemblies.Select(val => MetadataReference.CreateFromFile(val.Location)).ToList();
 
+            physicalPackageFiles.ForEach(val => Assembly.LoadFrom(val.SourcePath));
             var referencesass =
-                packges.SelectMany(
-                        f =>
-                            f.GetFiles()
-                                .OfType<PhysicalPackageFile>()
-                                .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll")))
+                physicalPackageFiles
                     .SelectMany(ff => GetReferencesAssemblies(Assembly.LoadFrom(ff.SourcePath)))
                     .Select(val => MetadataReference.CreateFromFile(val.Location))
                     .ToList();
+
+            var more = physicalPackageFiles.Select(val => MetadataReference.CreateFromFile(val.SourcePath)).ToList();
 
             var result = _cakeMetadataGenerator.Generate(assemblies.First());
 
             CSharpCompilation compilation = CSharpCompilation.Create(
                assemblyName: assemblies.First().GetName().Name + ".Metadata",
                syntaxTrees: new[] { SyntaxFactory.ParseSyntaxTree(result.GetRoot().NormalizeWhitespace().ToFullString()) },
-               references: referencesass.Union(metadataReference),
+               references: referencesass.Union(metadataReference).Union(more),
                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             var compiler = new Compiler().Compile(compilation, assemblies.First().GetName().Name + ".Metadata.dll");
@@ -158,9 +163,19 @@ namespace Cake.MetadataGenerator
 
         public static IEnumerable<Assembly> GetReferencesAssemblies(Assembly assembly)
         {
-            foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies())
+            return assembly.GetReferencedAssemblies().Select(ReflectionOnlyLoad).Where(val => val != null);
+        }
+
+        private static Assembly ReflectionOnlyLoad(AssemblyName assemblyName)
+        {
+            try
             {
-                yield return Assembly.ReflectionOnlyLoad(assemblyName.FullName);
+                var assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(x => x.FullName == assemblyName.FullName);
+                return assembly ?? Assembly.ReflectionOnlyLoad(assemblyName.FullName);
+            }
+            catch (Exception e)
+            {
+                return null;
             }
         }
     }

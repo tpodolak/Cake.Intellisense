@@ -9,10 +9,10 @@ namespace Cake.MetadataGenerator.Tests.Integration
 {
     public class MetadataGeneratorTests : TestBase
     {
-        private const string defaultFramework = ".NETFramework,Version=v4.5";
-        
+        private const string DefaultFramework = ".NETFramework,Version=v4.5";
+
         [Theory]
-        [InlineData("Cake.Common", defaultFramework)]
+        [InlineData("Cake.Common", DefaultFramework)]
         public void GenerateCanGenerateMetadataForPackageTest(string package, string framework)
         {
             var options = CreateMetadataGeneratorOptions(package, framework);
@@ -21,20 +21,25 @@ namespace Cake.MetadataGenerator.Tests.Integration
         }
 
         [Theory]
-        [InlineData(defaultFramework)]
+        [InlineData(DefaultFramework)]
         public void GenerateCanGenerateMetadataForCakeCoreLibTest(string framework)
         {
             var options = CreateMetadataGeneratorOptions("Cake.Core", framework);
             var result = MetadataGenerator.Generate(options);
+
             VerifyGeneratorResult(result, VerifyScriptEngineAssemblyContent);
         }
 
         private void VerifyGeneratorResult(GeneratorResult result, Action<Assembly[], Assembly> assemblyVerifier)
         {
+            var referencedAssemblies = result.EmitedAssembly.GetReferencedAssemblies().Select(val => val.FullName);
+            var locations = AppDomain.CurrentDomain.GetAssemblies().Where(val => referencedAssemblies.Contains(val.FullName)).Select(val => val.Location).ToList();
+            locations.ForEach(val => File.Copy(val, Path.Combine(Environment.CurrentDirectory, Path.GetFileName(val)), true));
+
             result.Should().NotBeNull();
             result.SourceAssemblies.Should().HaveCount(count => count > 0);
             result.EmitedAssembly.Should().NotBeNull();
-            VerifyAliasAssemblyContent(result.SourceAssemblies, result.EmitedAssembly);
+            assemblyVerifier(result.SourceAssemblies, result.EmitedAssembly);
         }
 
         private void VerifyAliasAssemblyContent(IEnumerable<Assembly> sourceAssemblies, Assembly emitedAssembly)
@@ -49,28 +54,47 @@ namespace Cake.MetadataGenerator.Tests.Integration
 
         private void VerifyAssemblyContent(IEnumerable<Assembly> sourceAssemblies, Assembly emitedAssembly, Func<Assembly, List<Type>> typeExtractor, Func<Type, List<MethodInfo>> sourceMethodExtract, Func<MethodInfo, MethodInfo, bool> methodMatcher)
         {
-            var sourceTypes = sourceAssemblies.SelectMany(typeExtractor).ToList();
+            var wrongGeneratedMethods = new List<MethodInfo>();
+            var missingMethods = new List<MethodInfo>();
+            var wrongGeneratedProperties = new List<MethodInfo>();
+            var missingProperies = new List<MethodInfo>();
 
+            var sourceTypes = sourceAssemblies.SelectMany(typeExtractor).ToList();
             var emitedTypes = emitedAssembly.GetExportedTypes().ToDictionary(key => key.FullName);
 
-            var generatedTypes = sourceTypes.Where(val => emitedTypes.ContainsKey(val.FullName + "Metadata")).Select(val => emitedTypes[val.FullName + "Metadata"]).ToList();
+            emitedTypes.Values.Should().HaveSameCount(sourceTypes);
+            emitedTypes.Values.Should().OnlyContain(type => type.IsPublic);
 
-            generatedTypes.Should().HaveSameCount(sourceTypes);
-            generatedTypes.All(type => type.IsPublic).Should().BeTrue();
-            var wrongGeneratedMethods = new Dictionary<MethodInfo, List<MethodInfo>>();
             foreach (var sourceType in sourceTypes)
             {
                 var generatedType = emitedTypes[sourceType.FullName + "Metadata"];
                 var sourceMethods = sourceMethodExtract(sourceType);
-                var emitedMethods = generatedType.GetMethods(BindingFlags.Public | BindingFlags.Static).ToList();
+                var emitedMethods = generatedType.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(val => !val.IsSpecialName).ToList();
+                var emitedProperties = generatedType.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(val => val.IsSpecialName).ToList();
+                var sourceProperties =
+                    sourceType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                        .Where(
+                            val =>
+                                val.GetCustomAttributes().Any(x => x.GetType().Name == CakeAttributes.CakePropertyAlias))
+                        .ToList();
 
-                foreach (var methodInfo in sourceMethods.Where(sourceMethod => !emitedMethods.Any(val => methodMatcher(sourceMethod, val))))
-                {
-                    wrongGeneratedMethods.Add(methodInfo, emitedMethods);
-                }
+                if (!sourceMethods.Any() && emitedMethods.Any())
+                    wrongGeneratedMethods.AddRange(emitedMethods);
+
+                missingMethods.AddRange(sourceMethods.Where(sourceMethod => !emitedMethods.Any(val => methodMatcher(sourceMethod, val))));
+                wrongGeneratedMethods.AddRange(emitedMethods.Where(emitedMethod => !sourceMethods.Any(val => methodMatcher(val, emitedMethod))));
+
+                if (!sourceProperties.Any() && emitedProperties.Any())
+                    wrongGeneratedProperties.AddRange(emitedMethods);
+
+                missingProperies.AddRange(sourceProperties.Where(sourceMethod => emitedProperties.All(val => $"get_{sourceMethod.Name}" != val.Name)));
+                wrongGeneratedProperties.AddRange(emitedProperties.Where(emitedMethod => sourceProperties.All(val => emitedMethod.Name != $"get_{val.Name}")));
             }
 
             wrongGeneratedMethods.Should().BeEmpty();
+            missingMethods.Should().BeEmpty();
+            missingProperies.Should().BeEmpty();
+            wrongGeneratedProperties.Should().BeEmpty();
         }
 
         private MetadataGeneratorOptions CreateMetadataGeneratorOptions(string package, string packageTargetFramework, string version = null)
@@ -124,7 +148,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
         private static List<MethodInfo> GetCakeScriptEngineMethods(Type type)
         {
             return type.FullName == "Cake.Core.Scripting.ScriptHost"
-                ? type.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(val => !val.IsSpecialName).ToList()
+                ? type.GetMethods().Where(val => !val.IsSpecialName && val.DeclaringType != typeof(object)).ToList()
                 : new List<MethodInfo>();
         }
     }
