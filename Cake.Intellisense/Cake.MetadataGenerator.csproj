@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGeneration\CakeMetadataGenerator.cs" />
+    <Compile Include="CodeGeneration\ICakeMetadataGenerator.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\AttributeRewriters\AttributeMetadataRewriterService.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\AttributeRewriters\AttributeSyntaxRewriter.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\IMetadataRewriterService.cs" />
@@ -136,9 +137,7 @@
     <Compile Include="CodeGeneration\MetadataRewriterServices\CommentRewriters\CommentMetadataRewriterService.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\MethodRewriters\MethodMetadataRewriterService.cs" />
     <Compile Include="Compiler.cs" />
-    <Compile Include="CodeGeneration\MetadataGenerators\CSharpCodeGenerationServiceProvider.cs" />
     <Compile Include="CodeGeneration\MetadataGenerators\IMetadataGeneratorService.cs" />
-    <Compile Include="CodeGeneration\MetadataGenerators\ILanguageServiceProvider.cs" />
     <Compile Include="CodeGeneration\MetadataGenerators\RoslynMetadataGeneratorService.cs" />
     <Compile Include="CommandLine\IArgumentParser.cs" />
     <Compile Include="MetadataGeneratorOptions.cs" />

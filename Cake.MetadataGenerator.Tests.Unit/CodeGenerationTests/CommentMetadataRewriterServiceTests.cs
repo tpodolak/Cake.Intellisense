@@ -9,7 +9,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
     public class CommentMetadataRewriterServiceTests : MetadataRewriterServiceTests<CommentMetadataRewriterService>
     {
-        private static string xmlComment = @"///<summary>
+        private static string _xmlComment = @"///<summary>
 ///Registers a new task.
 ///</summary>
 ///<param name=""name"">The name of the task.</param>
@@ -27,7 +27,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
         public CommentMetadataRewriterServiceTests()
         {
             FakeOf<ICommentProvider>().Get(Arg.Any<XDocument>(), Arg.Any<ISymbol>())
-                                      .Returns(xmlComment);
+                                      .Returns(_xmlComment);
         }
 
         private static ServiceRewriterTestCase ProperlyAppendsXmlCommentToMethodWithoutAttributes()
@@ -42,7 +42,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 }",
 $@"public abstract class ScriptHost
 {{
-{xmlComment}
+{_xmlComment}
 public void Task(System.String name)
     {{
     }}
@@ -63,7 +63,7 @@ public void Task(System.String name)
 }",
 $@"public abstract class ScriptHost
 {{
-{xmlComment}
+{_xmlComment}
 [CakeMethodAliasAttribute]
     public void Task(System.String name)
     {{

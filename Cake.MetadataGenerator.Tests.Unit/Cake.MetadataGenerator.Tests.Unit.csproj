@@ -195,7 +195,7 @@
     <Compile Include="CodeGenerationTests\TestData.cs" />
     <Compile Include="ExtensionPoints\CustomMemberDataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestOf.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -6,16 +6,16 @@ namespace Cake.MetadataGenerator.Infrastructure
 {
     public class MetadataGeneratorModule : Module
     {
-        private readonly Assembly _assembly;
+        private readonly Assembly assembly;
 
         public MetadataGeneratorModule(Assembly assembly)
         {
-            _assembly = assembly;
+            this.assembly = assembly;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(_assembly)
+            builder.RegisterAssemblyTypes(assembly)
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
         }

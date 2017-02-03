@@ -9,11 +9,11 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodR
 {
     internal class MethodSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly SemanticModel _semanticModel;
+        private readonly SemanticModel semanticModel;
 
         public MethodSyntaxRewriter(SemanticModel semanticModel)
         {
-            _semanticModel = semanticModel;
+            this.semanticModel = semanticModel;
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
@@ -54,7 +54,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.MethodR
             var bodyStatements = new List<StatementSyntax>();
 
             var outParams = node.ParameterList.Parameters
-                .Where(val => _semanticModel.GetDeclaredSymbol(val).RefKind == RefKind.Out)
+                .Where(val => semanticModel.GetDeclaredSymbol(val).RefKind == RefKind.Out)
                 .ToList();
 
             if (outParams.Any())

@@ -83,11 +83,5 @@ namespace Cake.MetadataGenerator.CodeGeneration
         {
             return NamespaceDeclaration(IdentifierName(@namespace));
         }
-
-    }
-
-    public interface ICakeMetadataGenerator
-    {
-        SyntaxTree Generate(Assembly assembly);
     }
 }

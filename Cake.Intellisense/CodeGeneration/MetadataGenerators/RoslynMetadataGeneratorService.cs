@@ -8,19 +8,31 @@ namespace Cake.MetadataGenerator.CodeGeneration.MetadataGenerators
 {
     public class RoslynMetadataGeneratorService : IMetadataGeneratorService
     {
-        private readonly ILanguageService _languageService;
+        private readonly ILanguageService languageService;
 
-        private readonly MethodInfo _namedTypeDeclarationMethod;
+        private readonly MethodInfo namedTypeDeclarationMethod;
 
-        public RoslynMetadataGeneratorService(ILanguageServiceProvider languageServiceProvider)
+        public RoslynMetadataGeneratorService()
         {
-            _languageService = languageServiceProvider.Get();
-            _namedTypeDeclarationMethod = _languageService.GetType().GetMethod("CreateNamedTypeDeclaration");
+            languageService = CreateLanguageService();
+            namedTypeDeclarationMethod = languageService.GetType().GetMethod("CreateNamedTypeDeclaration");
         }
 
         public ClassDeclarationSyntax CreateNamedTypeDeclaration(INamedTypeSymbol namedTypeSymbol)
         {
-            return (ClassDeclarationSyntax)_namedTypeDeclarationMethod.Invoke(_languageService, new object[] { namedTypeSymbol, 0, null, CancellationToken.None });
+            return (ClassDeclarationSyntax)namedTypeDeclarationMethod.Invoke(languageService, new object[] { namedTypeSymbol, 0, null, CancellationToken.None });
+        }
+
+        private ILanguageService CreateLanguageService()
+        {
+            var project = new AdhocWorkspace().AddSolution(SolutionInfo.Create(SolutionId.CreateNewId("MetadataGenerator"), VersionStamp.Default))
+                                              .AddProject("Project", "Assembly", LanguageNames.CSharp);
+
+            var languageServices = project.LanguageServices;
+            var host = nameof(languageServices.GetService);
+            var iservice = typeof(ILanguageService).Assembly.GetType("Microsoft.CodeAnalysis.CodeGeneration.ICodeGenerationService");
+            
+            return (ILanguageService)languageServices.GetType().GetMethod(host).MakeGenericMethod(iservice).Invoke(languageServices, null);
         }
     }
 }

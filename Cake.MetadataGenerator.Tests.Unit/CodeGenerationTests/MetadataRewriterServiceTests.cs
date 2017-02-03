@@ -8,7 +8,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
-    public abstract class MetadataRewriterServiceTests<T> : TestOf<T> where T : class, IMetadataRewriterService
+    public abstract class MetadataRewriterServiceTests<T> : Test<T> where T : class, IMetadataRewriterService
     {
         public static IEnumerable<object[]> TestCases { get; set; }
 

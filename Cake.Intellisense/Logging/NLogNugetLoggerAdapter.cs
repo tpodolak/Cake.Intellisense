@@ -7,11 +7,11 @@ namespace Cake.MetadataGenerator.Logging
 {
     public class NLogNugetLoggerAdapter : ILogger
     {
-        private readonly NLog.ILogger _logger;
+        private readonly NLog.ILogger logger;
 
         public NLogNugetLoggerAdapter(NLog.ILogger logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         public FileConflictResolution ResolveFileConflict(string message)
@@ -21,7 +21,7 @@ namespace Cake.MetadataGenerator.Logging
 
         public void Log(MessageLevel level, string message, params object[] args)
         {
-            _logger.Log(Convert(level), message, args);
+            logger.Log(Convert(level), message, args);
         }
 
         private LogLevel Convert(MessageLevel level)

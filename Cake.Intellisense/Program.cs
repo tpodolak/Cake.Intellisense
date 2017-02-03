@@ -7,7 +7,7 @@ namespace Cake.MetadataGenerator
 {
     public class Program
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         static void Main(string[] args)
         {

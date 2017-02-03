@@ -16,24 +16,24 @@ namespace Cake.MetadataGenerator
 {
     public class MetadataGenerator : IMetadataGenerator
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ICakeMetadataGenerator _cakeMetadataGenerator;
-        private readonly IArgumentParser _argumentParser;
+        private readonly ICakeMetadataGenerator cakeMetadataGenerator;
+        private readonly IArgumentParser argumentParser;
 
         public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator, IArgumentParser argumentParser)
         {
-            _cakeMetadataGenerator = cakeMetadataGenerator;
-            _argumentParser = argumentParser;
+            this.cakeMetadataGenerator = cakeMetadataGenerator;
+            this.argumentParser = argumentParser;
         }
 
         public void Generate(string[] args)
         {
-            var parserResult = _argumentParser.Parse<MetadataGeneratorOptions>(args);
+            var parserResult = argumentParser.Parse<MetadataGeneratorOptions>(args);
 
             if (parserResult.Errors.Any())
             {
-                logger.Error("Error while parsing arguments");
+                Logger.Error("Error while parsing arguments");
                 return;
             }
 
@@ -124,7 +124,7 @@ namespace Cake.MetadataGenerator
 
             var more = physicalPackageFiles.Select(val => MetadataReference.CreateFromFile(val.SourcePath)).ToList();
 
-            var result = _cakeMetadataGenerator.Generate(assemblies.First());
+            var result = cakeMetadataGenerator.Generate(assemblies.First());
 
             CSharpCompilation compilation = CSharpCompilation.Create(
                assemblyName: assemblies.First().GetName().Name + ".Metadata",

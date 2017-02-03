@@ -29,7 +29,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.ExtensionPoints
 
             var array = item as object[];
             if (array == null)
-                throw new ArgumentException($"Property {MemberName} on {MemberType ?? testMethod.DeclaringType} yielded an item that is not an object[]");
+                throw new ArgumentException($"Property {MemberName} on {MemberType ?? testMethod.ReflectedType} yielded an item that is not an object[]");
 
             return array;
         }
