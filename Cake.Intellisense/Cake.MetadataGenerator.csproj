@@ -141,6 +141,9 @@
     <Compile Include="CodeGeneration\MetadataRewriterServices\ClassRewriters\ClassMetadataRewriterService.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\CommentRewriters\CommentMetadataRewriterService.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\MethodRewriters\MethodMetadataRewriterService.cs" />
+    <Compile Include="CommandLine\Console.cs" />
+    <Compile Include="CommandLine\IConsoleReader.cs" />
+    <Compile Include="CommandLine\IConsoleWriter.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="CodeGeneration\MetadataGenerators\IMetadataGeneratorService.cs" />
     <Compile Include="CodeGeneration\MetadataGenerators\RoslynMetadataGeneratorService.cs" />

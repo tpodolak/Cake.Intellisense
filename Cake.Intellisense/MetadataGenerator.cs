@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -23,16 +22,22 @@ namespace Cake.MetadataGenerator
         private readonly IArgumentParser argumentParser;
         private readonly INuGetSettings nuGetSettings;
         private readonly IFileSystem fileSystem;
+        private readonly IConsoleReader consoleReader;
+        private readonly IConsoleWriter consoleWriter;
 
-        public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator, 
+        public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator,
             IArgumentParser argumentParser,
             INuGetSettings nuGetSettings,
-            IFileSystem fileSystem)
+            IFileSystem fileSystem,
+            IConsoleReader consoleReader,
+            IConsoleWriter consoleWriter)
         {
             this.cakeMetadataGenerator = cakeMetadataGenerator;
             this.argumentParser = argumentParser;
             this.nuGetSettings = nuGetSettings;
             this.fileSystem = fileSystem;
+            this.consoleReader = consoleReader;
+            this.consoleWriter = consoleWriter;
         }
 
         public void Generate(string[] args)
@@ -70,6 +75,7 @@ namespace Cake.MetadataGenerator
             {
                 Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(repo.GetType().FullName))
             };
+
             var packa = packageManager.LocalRepository.GetPackages().ToList();
             //Download and unzip the package
             packageManager.InstallPackage(newset.Id, newset.Version);
@@ -77,23 +83,24 @@ namespace Cake.MetadataGenerator
 
             var dependencyId = 0;
 
-            var files = newset.GetFiles();
-            var frameworks = files.GroupBy(val => val.TargetFramework).Select(fm => fm.Key).ToList();
+            var frameworks = local.GetFiles().GroupBy(val => val.TargetFramework).Select(fm => fm.Key).ToList();
 
             if (string.IsNullOrEmpty(options.PackageFrameworkTargetVersion))
             {
-                Console.WriteLine("Frameworks");
+                consoleWriter.WriteLine("Frameworks");
                 for (var index = 0; index < frameworks.Count; index++)
                 {
                     var framework = frameworks[index];
-                    Console.WriteLine($"[{index + 1}] - {framework}");
+                    consoleWriter.WriteLine($"[{index + 1}] - {framework}");
                 }
 
-                var key = Console.ReadKey();
-                if (int.TryParse(key.KeyChar.ToString(), out dependencyId))
+                do
                 {
-                    dependencyId--;
+                    consoleWriter.WriteLine("Please select framework");
                 }
+                while (!consoleReader.TryRead(out dependencyId));
+
+                dependencyId--;
             }
             else
             {
@@ -102,9 +109,6 @@ namespace Cake.MetadataGenerator
 
             var targetFramework = frameworks[dependencyId];
             var packges = GetDependentPackagesAndSelf(newset, packa, targetFramework, repo);
-
-
-            Console.WriteLine(packges);
 
             var physicalPackageFiles = packges.SelectMany(
                     f =>
