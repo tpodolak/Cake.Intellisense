@@ -7,11 +7,12 @@ using System.Runtime.Versioning;
 using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
 using Cake.MetadataGenerator.Logging;
+using Cake.MetadataGenerator.Settings;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NLog;
 using NuGet;
-
+using IFileSystem = Cake.MetadataGenerator.FileSystem.IFileSystem;
 namespace Cake.MetadataGenerator
 {
     public class MetadataGenerator : IMetadataGenerator
@@ -20,11 +21,18 @@ namespace Cake.MetadataGenerator
 
         private readonly ICakeMetadataGenerator cakeMetadataGenerator;
         private readonly IArgumentParser argumentParser;
+        private readonly INuGetSettings nuGetSettings;
+        private readonly IFileSystem fileSystem;
 
-        public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator, IArgumentParser argumentParser)
+        public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator, 
+            IArgumentParser argumentParser,
+            INuGetSettings nuGetSettings,
+            IFileSystem fileSystem)
         {
             this.cakeMetadataGenerator = cakeMetadataGenerator;
             this.argumentParser = argumentParser;
+            this.nuGetSettings = nuGetSettings;
+            this.fileSystem = fileSystem;
         }
 
         public void Generate(string[] args)
@@ -42,24 +50,23 @@ namespace Cake.MetadataGenerator
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
         {
-            if (!string.IsNullOrWhiteSpace(options.OutputFolder) && !Directory.Exists(options.OutputFolder))
+            if (!string.IsNullOrWhiteSpace(options.OutputFolder) && !fileSystem.DirectoryExists(options.OutputFolder))
             {
-                Directory.CreateDirectory(options.OutputFolder);
+                fileSystem.CreateDirectory(options.OutputFolder);
             }
 
-            PackageRepositoryBase repo =
-                (PackageRepositoryBase)PackageRepositoryFactory.Default.CreateRepository(PackageSources.NuGetPackageSource);
+            var repo =
+                (PackageRepositoryBase)PackageRepositoryFactory.Default.CreateRepository(nuGetSettings.PackageSource);
             repo.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(repo.GetType().FullName));
             //Get the list of all NuGet packages with ID 'EntityFramework'       
-            List<IPackage> packages = repo.FindPackagesById(options.Package).ToList();
+            var packages = repo.FindPackagesById(options.Package).ToList();
 
             //Filter the list of packages that are not Release (Stable) versions
             packages = packages.Where(item => item.IsReleaseVersion()).ToList();
 
             var newset = packages.Last();
 
-            string path = "C:\\Temp";
-            PackageManager packageManager = new PackageManager(repo, path)
+            var packageManager = new PackageManager(repo, nuGetSettings.LocalRepositoryPath)
             {
                 Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(repo.GetType().FullName))
             };
@@ -68,7 +75,7 @@ namespace Cake.MetadataGenerator
             packageManager.InstallPackage(newset.Id, newset.Version);
             var local = packageManager.LocalRepository.FindPackage(newset.Id, newset.Version);
 
-            int dependencyId = 0;
+            var dependencyId = 0;
 
             var files = newset.GetFiles();
             var frameworks = files.GroupBy(val => val.TargetFramework).Select(fm => fm.Key).ToList();
@@ -126,7 +133,7 @@ namespace Cake.MetadataGenerator
 
             var result = cakeMetadataGenerator.Generate(assemblies.First());
 
-            CSharpCompilation compilation = CSharpCompilation.Create(
+            var compilation = CSharpCompilation.Create(
                assemblyName: assemblies.First().GetName().Name + ".Metadata",
                syntaxTrees: new[] { SyntaxFactory.ParseSyntaxTree(result.GetRoot().NormalizeWhitespace().ToFullString()) },
                references: referencesass.Union(metadataReference).Union(more),

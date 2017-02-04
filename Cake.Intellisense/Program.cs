@@ -1,18 +1,17 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
 using Autofac;
 using Cake.MetadataGenerator.Infrastructure;
-using NLog;
 
 namespace Cake.MetadataGenerator
 {
     public class Program
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         static void Main(string[] args)
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new MetadataGeneratorModule(Assembly.GetExecutingAssembly()));
+            var module = new MetadataGeneratorModule(ConfigurationManager.AppSettings, Assembly.GetExecutingAssembly());
+            builder.RegisterModule(module);
             var container = builder.Build();
 
             using (var scope = container.BeginLifetimeScope())

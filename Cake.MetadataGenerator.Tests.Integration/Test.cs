@@ -1,16 +1,18 @@
-﻿using Autofac;
+﻿using System.Configuration;
+using Autofac;
 using Cake.MetadataGenerator.Infrastructure;
 
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public abstract class TestBase
+    public abstract class Test
     {
         protected IMetadataGenerator MetadataGenerator { get; }
 
-        protected TestBase()
+        protected Test()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new MetadataGeneratorModule(typeof(IMetadataGenerator).Assembly));
+            var metadataGeneratorModule = new MetadataGeneratorModule(ConfigurationManager.AppSettings, typeof(IMetadataGenerator).Assembly);
+            builder.RegisterModule(metadataGeneratorModule);
 
             var container = builder.Build();
 

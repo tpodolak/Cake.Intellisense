@@ -7,7 +7,7 @@ using FluentAssertions;
 using Xunit;
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public class MetadataGeneratorTests : TestBase
+    public class MetadataGeneratorTests : Test
     {
         private const string DefaultFramework = ".NETFramework,Version=v4.5";
 

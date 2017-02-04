@@ -23,7 +23,7 @@ namespace Cake.MetadataGenerator.CodeGeneration
 
         public SyntaxTree Generate(Assembly assembly)
         {
-            CSharpCompilation compilation = CSharpCompilation.Create(
+            var compilation = CSharpCompilation.Create(
                 assemblyName: assembly.GetName().Name,
                 references: new[] { MetadataReference.CreateFromFile(assembly.Location) });
 

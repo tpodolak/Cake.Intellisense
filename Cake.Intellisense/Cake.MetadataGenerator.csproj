@@ -38,6 +38,10 @@
       <HintPath>..\packages\Autofac.4.2.1\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CommandLine, Version=2.0.275.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.1.1-beta\lib\net45\CommandLine.dll</HintPath>
       <Private>True</Private>
@@ -115,6 +119,7 @@
       <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
@@ -140,6 +145,8 @@
     <Compile Include="CodeGeneration\MetadataGenerators\IMetadataGeneratorService.cs" />
     <Compile Include="CodeGeneration\MetadataGenerators\RoslynMetadataGeneratorService.cs" />
     <Compile Include="CommandLine\IArgumentParser.cs" />
+    <Compile Include="Settings\ISettings.cs" />
+    <Compile Include="Settings\SettingsBehavior.cs" />
     <Compile Include="MetadataGeneratorOptions.cs" />
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="CommandLine\ParserError.cs" />
@@ -162,6 +169,7 @@
     <Compile Include="CodeGeneration\MetadataRewriterServices\CommentRewriters\CommentSyntaxRewriter.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\MethodRewriters\MethodSyntaxRewriter.cs" />
     <Compile Include="CodeGeneration\MetadataRewriterServices\ClassRewriters\ClassSyntaxRewriter.cs" />
+    <Compile Include="Settings\INuGetSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -177,7 +185,9 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Reflection\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
