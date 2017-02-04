@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Cake.MetadataGenerator.CommandLine
 {
-    public class ConsoleReader : IConsoleReader
+    public class ConsoleReader : IConsoleReader, IConsoleWriter
     {
         public string Read()
         {
@@ -23,6 +23,11 @@ namespace Cake.MetadataGenerator.CommandLine
 
             result = default(T);
             return false;
+        }
+
+        public void WriteLine(string value)
+        {
+            Console.WriteLine(value);
         }
     }
 }

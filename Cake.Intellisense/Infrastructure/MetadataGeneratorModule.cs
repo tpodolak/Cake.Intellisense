@@ -4,6 +4,7 @@ using Autofac;
 using Cake.MetadataGenerator.Settings;
 using Castle.Components.DictionaryAdapter;
 using System.Linq;
+using Autofac.Extras.NLog;
 using Module = Autofac.Module;
 
 namespace Cake.MetadataGenerator.Infrastructure
@@ -21,7 +22,9 @@ namespace Cake.MetadataGenerator.Infrastructure
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(assembly)
+            var referencedAssemblies = assembly.GetReferencedAssemblies().Select(Assembly.Load);
+
+            builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { assembly }).ToArray())
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
 

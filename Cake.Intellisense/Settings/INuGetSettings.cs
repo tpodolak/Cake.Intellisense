@@ -5,5 +5,7 @@
         string PackageSource { get; set; }
 
         string LocalRepositoryPath { get; set; }
+
+        bool AllowPreReleaseVersions { get; set; }
     }
 }

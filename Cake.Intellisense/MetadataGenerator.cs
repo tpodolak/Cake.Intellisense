@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Versioning;
 using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CommandLine;
-using Cake.MetadataGenerator.Logging;
-using Cake.MetadataGenerator.Settings;
+using Cake.MetadataGenerator.NuGet;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NLog;
@@ -20,21 +18,24 @@ namespace Cake.MetadataGenerator
 
         private readonly ICakeMetadataGenerator cakeMetadataGenerator;
         private readonly IArgumentParser argumentParser;
-        private readonly INuGetSettings nuGetSettings;
+        private readonly INuGetPackageManager nuGetPackageManager;
+        private readonly INuGetDependencyResolver dependencyResolver;
         private readonly IFileSystem fileSystem;
         private readonly IConsoleReader consoleReader;
         private readonly IConsoleWriter consoleWriter;
 
         public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator,
             IArgumentParser argumentParser,
-            INuGetSettings nuGetSettings,
+            INuGetPackageManager nuGetPackageManager,
+            INuGetDependencyResolver dependencyResolver,
             IFileSystem fileSystem,
             IConsoleReader consoleReader,
             IConsoleWriter consoleWriter)
         {
             this.cakeMetadataGenerator = cakeMetadataGenerator;
             this.argumentParser = argumentParser;
-            this.nuGetSettings = nuGetSettings;
+            this.nuGetPackageManager = nuGetPackageManager;
+            this.dependencyResolver = dependencyResolver;
             this.fileSystem = fileSystem;
             this.consoleReader = consoleReader;
             this.consoleWriter = consoleWriter;
@@ -56,42 +57,25 @@ namespace Cake.MetadataGenerator
         public GeneratorResult Generate(MetadataGeneratorOptions options)
         {
             if (!string.IsNullOrWhiteSpace(options.OutputFolder) && !fileSystem.DirectoryExists(options.OutputFolder))
-            {
                 fileSystem.CreateDirectory(options.OutputFolder);
+
+            var package = nuGetPackageManager.InstallPackage(options.Package, options.PackageVersion);
+
+            if (package == null)
+            {
+                Logger.Error("Unable to find package {0} {1}", options.Package, options.PackageVersion ?? string.Empty);
+                return null;
             }
 
-            var repo =
-                (PackageRepositoryBase)PackageRepositoryFactory.Default.CreateRepository(nuGetSettings.PackageSource);
-            repo.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(repo.GetType().FullName));
-            //Get the list of all NuGet packages with ID 'EntityFramework'       
-            var packages = repo.FindPackagesById(options.Package).ToList();
-
-            //Filter the list of packages that are not Release (Stable) versions
-            packages = packages.Where(item => item.IsReleaseVersion()).ToList();
-
-            var newset = packages.Last();
-
-            var packageManager = new PackageManager(repo, nuGetSettings.LocalRepositoryPath)
-            {
-                Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(repo.GetType().FullName))
-            };
-
-            var packa = packageManager.LocalRepository.GetPackages().ToList();
-            //Download and unzip the package
-            packageManager.InstallPackage(newset.Id, newset.Version);
-            var local = packageManager.LocalRepository.FindPackage(newset.Id, newset.Version);
-
-            var dependencyId = 0;
-
-            var frameworks = local.GetFiles().GroupBy(val => val.TargetFramework).Select(fm => fm.Key).ToList();
-
+            var frameworks = nuGetPackageManager.GetTargetFrameworks(package);
+            int dependencyId;
             if (string.IsNullOrEmpty(options.PackageFrameworkTargetVersion))
             {
                 consoleWriter.WriteLine("Frameworks");
                 for (var index = 0; index < frameworks.Count; index++)
                 {
                     var framework = frameworks[index];
-                    consoleWriter.WriteLine($"[{index + 1}] - {framework}");
+                    consoleWriter.WriteLine($"[{index}] - {framework}");
                 }
 
                 do
@@ -99,8 +83,6 @@ namespace Cake.MetadataGenerator
                     consoleWriter.WriteLine("Please select framework");
                 }
                 while (!consoleReader.TryRead(out dependencyId));
-
-                dependencyId--;
             }
             else
             {
@@ -108,7 +90,7 @@ namespace Cake.MetadataGenerator
             }
 
             var targetFramework = frameworks[dependencyId];
-            var packges = GetDependentPackagesAndSelf(newset, packa, targetFramework, repo);
+            var packges = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework);
 
             var physicalPackageFiles = packges.SelectMany(
                     f =>
@@ -118,7 +100,7 @@ namespace Cake.MetadataGenerator
                 .ToList();
 
             var assemblies =
-              newset.GetFiles()
+              package.GetFiles()
                   .OfType<PhysicalPackageFile>()
                   .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))
                   .Select(val => Assembly.LoadFrom(val.SourcePath))
@@ -151,25 +133,6 @@ namespace Cake.MetadataGenerator
                 SourceAssemblies = assemblies.ToArray()
             };
 
-        }
-
-        public static List<IPackage> GetDependentPackagesAndSelf(IPackage package, List<IPackage> localPackages, FrameworkName framework, IPackageRepository repo)
-        {
-            if (package == null)
-                return new List<IPackage>();
-
-            return
-                new List<IPackage> { package }.Union(package.DependencySets.SelectMany(x => x.Dependencies)
-                        .Where(
-                            dep =>
-                                repo.ResolveDependency(dep, false, true)
-                                    .GetFiles().Where(file => file.Path.EndsWith(".dll"))
-                                    .Any(file => file.SupportedFrameworks.Contains(framework)))
-                        .SelectMany(
-                            x =>
-                                GetDependentPackagesAndSelf(repo.ResolveDependency(x, false, true), localPackages,
-                                    framework, repo)))
-                    .ToList();
         }
 
         public static IEnumerable<Assembly> GetReferencesAssemblies(Assembly assembly)
