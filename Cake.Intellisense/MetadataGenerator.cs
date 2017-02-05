@@ -1,65 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using Cake.MetadataGenerator.CodeGeneration;
-using Cake.MetadataGenerator.CommandLine;
+using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
 using Cake.MetadataGenerator.NuGet;
+using Cake.MetadataGenerator.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NLog;
 using NuGet;
-using IFileSystem = Cake.MetadataGenerator.FileSystem.IFileSystem;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
 namespace Cake.MetadataGenerator
 {
     public class MetadataGenerator : IMetadataGenerator
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ICakeMetadataGenerator cakeMetadataGenerator;
-        private readonly IArgumentParser argumentParser;
+        private readonly ICakeSourceGeneratorService cakeSourceGenerator;
+        private readonly ICakeSyntaxRewriterService cakeSyntaxRewriterService;
         private readonly INuGetPackageManager nuGetPackageManager;
         private readonly INuGetDependencyResolver dependencyResolver;
-        private readonly IFileSystem fileSystem;
-        private readonly IConsoleReader consoleReader;
-        private readonly IConsoleWriter consoleWriter;
+        private readonly IPackageAssemblyResolver packageAssemblyResolver;
+        private readonly ICompiler compiler;
+        private readonly IMetadataReferenceLoader metadataReferenceLoader;
+        private readonly IAssemblyLoader assemblyLoader;
 
-        public MetadataGenerator(ICakeMetadataGenerator cakeMetadataGenerator,
-            IArgumentParser argumentParser,
+        public MetadataGenerator(
+            ICakeSourceGeneratorService cakeSourceGenerator,
+            ICakeSyntaxRewriterService cakeSyntaxRewriterService,
             INuGetPackageManager nuGetPackageManager,
             INuGetDependencyResolver dependencyResolver,
-            IFileSystem fileSystem,
-            IConsoleReader consoleReader,
-            IConsoleWriter consoleWriter)
+            IPackageAssemblyResolver packageAssemblyResolver,
+            ICompiler compiler,
+            IMetadataReferenceLoader metadataReferenceLoader,
+            IAssemblyLoader assemblyLoader)
         {
-            this.cakeMetadataGenerator = cakeMetadataGenerator;
-            this.argumentParser = argumentParser;
+            this.cakeSourceGenerator = cakeSourceGenerator;
+            this.cakeSyntaxRewriterService = cakeSyntaxRewriterService;
             this.nuGetPackageManager = nuGetPackageManager;
             this.dependencyResolver = dependencyResolver;
-            this.fileSystem = fileSystem;
-            this.consoleReader = consoleReader;
-            this.consoleWriter = consoleWriter;
-        }
-
-        public void Generate(string[] args)
-        {
-            var parserResult = argumentParser.Parse<MetadataGeneratorOptions>(args);
-
-            if (parserResult.Errors.Any())
-            {
-                Logger.Error("Error while parsing arguments");
-                return;
-            }
-
-            Generate(parserResult.Result);
+            this.packageAssemblyResolver = packageAssemblyResolver;
+            this.compiler = compiler;
+            this.metadataReferenceLoader = metadataReferenceLoader;
+            this.assemblyLoader = assemblyLoader;
         }
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
         {
-            if (!string.IsNullOrWhiteSpace(options.OutputFolder) && !fileSystem.DirectoryExists(options.OutputFolder))
-                fileSystem.CreateDirectory(options.OutputFolder);
-
-            var package = nuGetPackageManager.InstallPackage(options.Package, options.PackageVersion);
+            var generatorResult = new GeneratorResult();
+            var targetFramework = new FrameworkName(options.TargetFramework);
+            var package = nuGetPackageManager.InstallPackage(options.Package, options.PackageVersion, targetFramework);
 
             if (package == null)
             {
@@ -67,90 +59,56 @@ namespace Cake.MetadataGenerator
                 return null;
             }
 
-            var frameworks = nuGetPackageManager.GetTargetFrameworks(package);
-            int dependencyId;
-            if (string.IsNullOrEmpty(options.PackageFrameworkTargetVersion))
+            var packages = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework);
+            var assemblies = packageAssemblyResolver.ResolveAssemblies(package, targetFramework);
+            var physicalPackageFiles = GetPhysicalPackages(packages, targetFramework);
+
+
+            foreach (var assembly in assemblies)
             {
-                consoleWriter.WriteLine("Frameworks");
-                for (var index = 0; index < frameworks.Count; index++)
-                {
-                    var framework = frameworks[index];
-                    consoleWriter.WriteLine($"[{index}] - {framework}");
-                }
+                var compilationUnit = cakeSourceGenerator.Generate(assemblies.First());
+                var rewritenNode = cakeSyntaxRewriterService.Rewrite(compilationUnit, assembly);
 
-                do
-                {
-                    consoleWriter.WriteLine("Please select framework");
-                }
-                while (!consoleReader.TryRead(out dependencyId));
-            }
-            else
-            {
-                dependencyId = frameworks.FindIndex(val => val.ToString() == options.PackageFrameworkTargetVersion);
+                var compilation = CSharpCompilation.Create(
+                   assemblyName: assembly.GetName().Name + ".Metadata",
+                   syntaxTrees: new[] { ParseSyntaxTree(rewritenNode.NormalizeWhitespace().ToFullString()) },
+                   references: PrepareMetadataReferences(assemblies, physicalPackageFiles),
+                   options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+                var result = compiler.Compile(compilation, assemblies.First().GetName().Name + ".Metadata.dll");
+                generatorResult.EmitedAssemblies.Add(result);
+                generatorResult.SourceAssemblies.Add(assembly);
+
             }
 
-            var targetFramework = frameworks[dependencyId];
-            var packges = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework);
+            return generatorResult;
+        }
 
-            var physicalPackageFiles = packges.SelectMany(
-                    f =>
-                        f.GetFiles()
-                            .OfType<PhysicalPackageFile>()
-                            .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll")))
-                .ToList();
+        private static List<PhysicalPackageFile> GetPhysicalPackages(List<IPackage> packages, FrameworkName targetFramework)
+        {
+            return packages.SelectMany(file => GetPhysicalPackages(file, targetFramework)).ToList();
+        }
 
-            var assemblies =
-              package.GetFiles()
-                  .OfType<PhysicalPackageFile>()
-                  .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))
-                  .Select(val => Assembly.LoadFrom(val.SourcePath))
-                  .ToList();
+        private static IEnumerable<PhysicalPackageFile> GetPhysicalPackages(IPackage file, FrameworkName targetFramework)
+        {
+            return file.GetFiles().OfType<PhysicalPackageFile>().Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"));
+        }
 
-            var metadataReference = assemblies.Select(val => MetadataReference.CreateFromFile(val.Location)).ToList();
+        private IEnumerable<PortableExecutableReference> PrepareMetadataReferences(List<Assembly> assemblies, List<PhysicalPackageFile> physicalPackageFiles)
+        {
+            physicalPackageFiles.ForEach(val => assemblyLoader.LoadFrom(val.SourcePath));
 
-            physicalPackageFiles.ForEach(val => Assembly.LoadFrom(val.SourcePath));
-            var referencesass =
+            var assemblyReferences = assemblies.Select(val => metadataReferenceLoader.CreateFromFile(val.Location));
+
+            var referencedAssemblyReferences =
                 physicalPackageFiles
-                    .SelectMany(ff => GetReferencesAssemblies(Assembly.LoadFrom(ff.SourcePath)))
-                    .Select(val => MetadataReference.CreateFromFile(val.Location))
+                    .SelectMany(ff => assemblyLoader.LoadReferencedAssemblies(ff.SourcePath))
+                    .Select(val => metadataReferenceLoader.CreateFromFile(val.Location))
                     .ToList();
 
-            var more = physicalPackageFiles.Select(val => MetadataReference.CreateFromFile(val.SourcePath)).ToList();
+            var physicalPackagesReferences = physicalPackageFiles.Select(val => metadataReferenceLoader.CreateFromFile(val.SourcePath));
 
-            var result = cakeMetadataGenerator.Generate(assemblies.First());
-
-            var compilation = CSharpCompilation.Create(
-               assemblyName: assemblies.First().GetName().Name + ".Metadata",
-               syntaxTrees: new[] { SyntaxFactory.ParseSyntaxTree(result.GetRoot().NormalizeWhitespace().ToFullString()) },
-               references: referencesass.Union(metadataReference).Union(more),
-               options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-            var compiler = new Compiler().Compile(compilation, assemblies.First().GetName().Name + ".Metadata.dll");
-
-            return new GeneratorResult
-            {
-                EmitedAssembly = compiler,
-                SourceAssemblies = assemblies.ToArray()
-            };
-
-        }
-
-        public static IEnumerable<Assembly> GetReferencesAssemblies(Assembly assembly)
-        {
-            return assembly.GetReferencedAssemblies().Select(ReflectionOnlyLoad).Where(val => val != null);
-        }
-
-        private static Assembly ReflectionOnlyLoad(AssemblyName assemblyName)
-        {
-            try
-            {
-                var assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(x => x.FullName == assemblyName.FullName);
-                return assembly ?? Assembly.ReflectionOnlyLoad(assemblyName.FullName);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            return assemblyReferences.Union(referencedAssemblyReferences).Union(physicalPackagesReferences);
         }
     }
 }

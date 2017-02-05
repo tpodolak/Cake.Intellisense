@@ -4,7 +4,6 @@ using Autofac;
 using Cake.MetadataGenerator.Settings;
 using Castle.Components.DictionaryAdapter;
 using System.Linq;
-using Autofac.Extras.NLog;
 using Module = Autofac.Module;
 
 namespace Cake.MetadataGenerator.Infrastructure

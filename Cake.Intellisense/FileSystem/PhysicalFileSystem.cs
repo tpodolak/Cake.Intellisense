@@ -9,6 +9,11 @@ namespace Cake.MetadataGenerator.FileSystem
             return Directory.Exists(directory);
         }
 
+        public bool FileExists(string path)
+        {
+            return File.Exists(path);
+        }
+
         public DirectoryInfo CreateDirectory(string path)
         {
             return Directory.CreateDirectory(path);

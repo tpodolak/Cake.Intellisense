@@ -4,16 +4,16 @@ namespace Cake.MetadataGenerator
 {
     public class MetadataGeneratorOptions
     {
-        [Option("Package", Required = true, HelpText = "Cake/Cake plugin package")]
+        [Option("Package", Required = true, HelpText = "Cake package")]
         public string Package { get; set; }
 
-        [Option("PackageVersion", Required = false, HelpText = "Cake/Cake plugin package version")]
+        [Option("PackageVersion", Required = false, HelpText = "Package version")]
         public string PackageVersion { get; set; }
         
         [Option("OutputFolder", Required = false, HelpText = "Output folder for generated dlls")]
         public string OutputFolder { get; set; }
 
-        [Option("PackageFrameworkTargetVersion", Required = false, HelpText = "Package's framework version")]
-        public string PackageFrameworkTargetVersion { get; set; }
+        [Option("TargetFramework", Required = false, HelpText = "Package's target framework")]
+        public string TargetFramework { get; set; }
     }
 }

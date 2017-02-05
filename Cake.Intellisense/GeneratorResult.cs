@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Cake.MetadataGenerator
 {
     public class GeneratorResult
     {
-        public Assembly[] SourceAssemblies { get; set; }
+        public List<Assembly> SourceAssemblies { get; set; } = new List<Assembly>();
 
-        public Assembly EmitedAssembly { get; set; }
+        public List<Assembly> EmitedAssemblies { get; set; } = new List<Assembly>();
     }
 }

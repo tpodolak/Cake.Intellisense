@@ -2,26 +2,23 @@
 using System.Linq;
 using System.Reflection;
 using Cake.MetadataGenerator.CodeGeneration.MetadataGenerators;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Cake.MetadataGenerator.CodeGeneration
+namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
 {
-    public class CakeMetadataGenerator : ICakeMetadataGenerator
+    public class CakeSourceGeneratorService : ICakeSourceGeneratorService
     {
         private readonly IMetadataGeneratorService metadataGeneratorService;
-        private readonly IEnumerable<IMetadataRewriterService> metadataRewriterServices;
 
-        public CakeMetadataGenerator(IMetadataGeneratorService metadataGeneratorService, IEnumerable<IMetadataRewriterService> metadataRewriterServices)
+        public CakeSourceGeneratorService(IMetadataGeneratorService metadataGeneratorService)
         {
             this.metadataGeneratorService = metadataGeneratorService;
-            this.metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order).ToList();
         }
 
-        public SyntaxTree Generate(Assembly assembly)
+        public CompilationUnitSyntax Generate(Assembly assembly)
         {
             var compilation = CSharpCompilation.Create(
                 assemblyName: assembly.GetName().Name,
@@ -37,25 +34,13 @@ namespace Cake.MetadataGenerator.CodeGeneration
                 var classSymbols = CreateNamedTypeDeclaration(namespaceSymbol).ToArray();
                 if (classSymbols.Any())
                 {
-                    var namespaceSyntax = CreateNamespace(namespaceSymbol.ToString()).AddMembers(classSymbols);
+                    var namespaceSyntax = NamespaceDeclaration(IdentifierName(namespaceSymbol.ToString())).AddMembers(classSymbols);
                     compilationSyntax = compilationSyntax.AddMembers(namespaceSyntax);
                 }
             }
 
-            var tree = CSharpSyntaxTree.Create(compilationSyntax);
-            compilation = compilation.AddSyntaxTrees(tree);
-
-            foreach (var metadataRewriterService in metadataRewriterServices)
-            {
-                var currentTree = compilation.SyntaxTrees.Single();
-                var semanticModel = compilation.GetSemanticModel(currentTree);
-                var rewrittenNode = metadataRewriterService.Rewrite(assembly, semanticModel, currentTree.GetRoot());
-                compilation = compilation.ReplaceSyntaxTree(currentTree, SyntaxTree(rewrittenNode));
-            }
-
-            return compilation.SyntaxTrees.Single();
+            return compilationSyntax;
         }
-
 
         private IEnumerable<ClassDeclarationSyntax> CreateNamedTypeDeclaration(INamespaceOrTypeSymbol namepace)
         {
@@ -77,11 +62,6 @@ namespace Cake.MetadataGenerator.CodeGeneration
                     }
                 }
             }
-        }
-
-        public NamespaceDeclarationSyntax CreateNamespace(string @namespace)
-        {
-            return NamespaceDeclaration(IdentifierName(@namespace));
         }
     }
 }

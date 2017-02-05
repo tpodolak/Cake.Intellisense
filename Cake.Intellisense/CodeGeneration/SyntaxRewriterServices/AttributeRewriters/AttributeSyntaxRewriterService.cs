@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Microsoft.CodeAnalysis;
 
-namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.AttributeRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.AttributeRewriters
 {
-    public class AttributeMetadataRewriterService : IMetadataRewriterService
+    public class AttributeSyntaxRewriterService : ISyntaxRewriterService
     {
         private static readonly string[] AttributesToRemove =
         {

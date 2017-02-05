@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices;
+using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices;
 using Cake.MetadataGenerator.Tests.Unit.ExtensionPoints;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,7 +8,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
-    public abstract class MetadataRewriterServiceTests<T> : Test<T> where T : class, IMetadataRewriterService
+    public abstract class MetadataRewriterServiceTests<T> : Test<T> where T : class, ISyntaxRewriterService
     {
         public static IEnumerable<object[]> TestCases { get; set; }
 

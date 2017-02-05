@@ -1,13 +1,13 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters;
+using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters;
 using Cake.MetadataGenerator.Documentation;
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
-    public class CommentMetadataRewriterServiceTests : MetadataRewriterServiceTests<CommentMetadataRewriterService>
+    public class CommentMetadataRewriterServiceTests : MetadataRewriterServiceTests<CommentSyntaxRewriterService>
     {
         private static string _xmlComment = @"///<summary>
 ///Registers a new task.

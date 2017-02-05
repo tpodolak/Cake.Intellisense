@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Microsoft.CodeAnalysis;
 
-namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.ClassRewriters
 {
-    public class ClassMetadataRewriterService : IMetadataRewriterService
+    public class ClassSyntaxRewriterService : ISyntaxRewriterService
     {
         public int Order { get; } = 1;
 

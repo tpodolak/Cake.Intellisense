@@ -22,9 +22,12 @@ namespace Cake.MetadataGenerator.NuGet
             this.packageRepository = packageRepositoryProvider.Get();
         }
 
-        public IPackage InstallPackage(string packageId, string version)
+        public IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework)
         {
-            var package = FindPackage(packageId, version);
+            var package = FindPackage(packageId, version, targetFramework);
+
+            if (package == null)
+                return null;
 
             this.packageManager.InstallPackage(package, false, true);
 
@@ -40,7 +43,17 @@ namespace Cake.MetadataGenerator.NuGet
                     .ToList();
         }
 
-        private IPackage FindPackage(string packageId, string version)
+        public IPackage FindPackage(string packageId, string version, FrameworkName targetFramework)
+        {
+            var package = FindPackage(packageId, version);
+
+            if (package != null && GetTargetFrameworks(package).Any(framework => framework == targetFramework))
+                return package;
+
+            return null;
+        }
+
+        public IPackage FindPackage(string packageId, string version)
         {
             var packages = packageRepository.FindPackagesById(packageId);
 

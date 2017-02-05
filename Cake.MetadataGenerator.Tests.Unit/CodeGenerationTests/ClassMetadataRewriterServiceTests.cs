@@ -1,8 +1,8 @@
-﻿using Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.ClassRewriters;
+﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.ClassRewriters;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
-    public class ClassMetadataRewriterServiceTests : MetadataRewriterServiceTests<ClassMetadataRewriterService>
+    public class ClassMetadataRewriterServiceTests : MetadataRewriterServiceTests<ClassSyntaxRewriterService>
     {
         static ClassMetadataRewriterServiceTests()
         {

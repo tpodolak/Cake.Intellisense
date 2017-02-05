@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NLog;
 
-namespace Cake.MetadataGenerator
+namespace Cake.MetadataGenerator.Compilation
 {
     public class Compiler : ICompiler
     {

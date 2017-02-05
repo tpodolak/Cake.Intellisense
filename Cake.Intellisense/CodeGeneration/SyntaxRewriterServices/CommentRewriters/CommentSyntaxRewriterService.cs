@@ -2,14 +2,14 @@
 using Cake.MetadataGenerator.Documentation;
 using Microsoft.CodeAnalysis;
 
-namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters
 {
-    public class CommentMetadataRewriterService : IMetadataRewriterService
+    public class CommentSyntaxRewriterService : ISyntaxRewriterService
     {
         private readonly IDocumentationReader documentationReader;
         private readonly ICommentProvider commentProvider;
 
-        public CommentMetadataRewriterService(IDocumentationReader documentationReader, ICommentProvider commentProvider)
+        public CommentSyntaxRewriterService(IDocumentationReader documentationReader, ICommentProvider commentProvider)
         {
             this.documentationReader = documentationReader;
             this.commentProvider = commentProvider;

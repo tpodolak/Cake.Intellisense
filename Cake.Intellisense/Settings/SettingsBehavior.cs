@@ -16,7 +16,7 @@ namespace Cake.MetadataGenerator.Settings
             PropertyDescriptor property, bool ifExists)
         {
             if (storedValue != null) return storedValue;
-            throw new InvalidOperationException($"App setting '{key.ToLowerInvariant()}' not found!");
+            throw new InvalidOperationException($"Application setting '{key.ToLowerInvariant()}' not found!");
         }
 
         public void Initialize(PropertyDescriptor propertyDescriptor, object[] behaviors)

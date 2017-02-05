@@ -5,11 +5,11 @@ using CommandLine;
 
 namespace Cake.MetadataGenerator.CommandLine
 {
-    public class CommandLineArgumentParser : IArgumentParser
+    public class ArgumentParser : IArgumentParser
     {
         private readonly Parser parser;
 
-        public CommandLineArgumentParser()
+        public ArgumentParser()
         {
             parser = new Parser(settings => settings.HelpWriter = Console.Out);
         }

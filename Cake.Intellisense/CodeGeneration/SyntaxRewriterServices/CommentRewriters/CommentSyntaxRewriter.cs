@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.CodeGeneration.MetadataRewriterServices.CommentRewriters
+namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters
 {
     internal class CommentSyntaxRewriter
     {

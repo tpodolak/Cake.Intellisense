@@ -7,16 +7,17 @@ using FluentAssertions;
 using Xunit;
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public class MetadataGeneratorTests : Test
+    public class MetadataGeneratorTests
     {
         private const string DefaultFramework = ".NETFramework,Version=v4.5";
+        private readonly Application installisenseGenerator = new Application();
 
         [Theory]
         [InlineData("Cake.Common", DefaultFramework)]
         public void GenerateCanGenerateMetadataForPackageTest(string package, string framework)
         {
             var options = CreateMetadataGeneratorOptions(package, framework);
-            var result = MetadataGenerator.Generate(options);
+            var result = installisenseGenerator.Run(options);
             VerifyGeneratorResult(result, VerifyAliasAssemblyContent);
         }
 
@@ -25,42 +26,58 @@ namespace Cake.MetadataGenerator.Tests.Integration
         public void GenerateCanGenerateMetadataForCakeCoreLibTest(string framework)
         {
             var options = CreateMetadataGeneratorOptions("Cake.Core", framework);
-            var result = MetadataGenerator.Generate(options);
+            var result = installisenseGenerator.Run(options);
 
             VerifyGeneratorResult(result, VerifyScriptEngineAssemblyContent);
         }
 
-        private void VerifyGeneratorResult(GeneratorResult result, Action<Assembly[], Assembly> assemblyVerifier)
+        private void VerifyGeneratorResult(GeneratorResult result, Action<Assembly, Assembly> assemblyVerifier)
         {
             result.Should().NotBeNull();
-            result.SourceAssemblies.Should().HaveCount(count => count > 0);
-            result.EmitedAssembly.Should().NotBeNull();
+            result.EmitedAssemblies.Count.Should().BeGreaterThan(0);
+            result.SourceAssemblies.Count.Should().BeGreaterThan(0);
+            result.SourceAssemblies.Should().HaveSameCount(result.EmitedAssemblies);
 
-            var referencedAssemblies = result.EmitedAssembly.GetReferencedAssemblies().Select(val => val.FullName);
-            var locations = AppDomain.CurrentDomain.GetAssemblies().Where(val => referencedAssemblies.Contains(val.FullName)).Select(val => val.Location).ToList();
+            for (var i = 0; i < result.SourceAssemblies.Count; i++)
+            {
+                VerifyGeneratorResult(result.SourceAssemblies[i], result.EmitedAssemblies[i], assemblyVerifier);
+            }
+        }
+
+        private static void VerifyGeneratorResult(Assembly sourcAssembly, Assembly emitedAssembly, Action<Assembly, Assembly> assemblyVerifier)
+        {
+            sourcAssembly.Should().NotBeNull();
+            emitedAssembly.Should().NotBeNull();
+
+            var referencedAssemblies = emitedAssembly.GetReferencedAssemblies().Select(val => val.FullName);
+            var locations =
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(val => referencedAssemblies.Contains(val.FullName))
+                    .Select(val => val.Location)
+                    .ToList();
             locations.ForEach(val => File.Copy(val, Path.Combine(Environment.CurrentDirectory, Path.GetFileName(val)), true));
 
-            assemblyVerifier(result.SourceAssemblies, result.EmitedAssembly);
+            assemblyVerifier(sourcAssembly, emitedAssembly);
         }
 
-        private void VerifyAliasAssemblyContent(IEnumerable<Assembly> sourceAssemblies, Assembly emitedAssembly)
+        private void VerifyAliasAssemblyContent(Assembly sourceAssembly, Assembly emitedAssembly)
         {
-            VerifyAssemblyContent(sourceAssemblies, emitedAssembly, GetCakeAliasTypes, GetCakeAliasMethods, SameAliasMethod);
+            VerifyAssemblyContent(sourceAssembly, emitedAssembly, GetCakeAliasTypes, GetCakeAliasMethods, SameAliasMethod);
         }
 
-        private void VerifyScriptEngineAssemblyContent(IEnumerable<Assembly> sourceAssemblies, Assembly emitedAssembly)
+        private void VerifyScriptEngineAssemblyContent(Assembly sourceAssembly, Assembly emitedAssembly)
         {
-            VerifyAssemblyContent(sourceAssemblies, emitedAssembly, GetCakeScriptHostTypes, GetCakeScriptEngineMethods, SameEngineMethod);
+            VerifyAssemblyContent(sourceAssembly, emitedAssembly, GetCakeScriptHostTypes, GetCakeScriptEngineMethods, SameEngineMethod);
         }
 
-        private void VerifyAssemblyContent(IEnumerable<Assembly> sourceAssemblies, Assembly emitedAssembly, Func<Assembly, List<Type>> typeExtractor, Func<Type, List<MethodInfo>> sourceMethodExtract, Func<MethodInfo, MethodInfo, bool> methodMatcher)
+        private void VerifyAssemblyContent(Assembly sourceAssembly, Assembly emitedAssembly, Func<Assembly, List<Type>> typeExtractor, Func<Type, List<MethodInfo>> sourceMethodExtract, Func<MethodInfo, MethodInfo, bool> methodMatcher)
         {
             var wrongGeneratedMethods = new List<MethodInfo>();
             var missingMethods = new List<MethodInfo>();
             var wrongGeneratedProperties = new List<MethodInfo>();
             var missingProperies = new List<MethodInfo>();
 
-            var sourceTypes = sourceAssemblies.SelectMany(typeExtractor).ToList();
+            var sourceTypes = typeExtractor(sourceAssembly).ToList();
             var emitedTypes = emitedAssembly.GetExportedTypes().ToDictionary(key => key.FullName);
 
             emitedTypes.Values.Should().HaveSameCount(sourceTypes);
@@ -98,14 +115,12 @@ namespace Cake.MetadataGenerator.Tests.Integration
             wrongGeneratedProperties.Should().BeEmpty();
         }
 
-        private MetadataGeneratorOptions CreateMetadataGeneratorOptions(string package, string packageTargetFramework, string version = null)
+        private string[] CreateMetadataGeneratorOptions(string package, string targetFramework, string version = null)
         {
-            return new MetadataGeneratorOptions
+            return new[]
             {
-                OutputFolder = Path.Combine(Environment.CurrentDirectory, "Result"),
-                Package = package,
-                PackageVersion = version,
-                PackageFrameworkTargetVersion = packageTargetFramework
+                "--Package", package, "--PackageVersion", version ?? string.Empty, "--TargetFramework", targetFramework,
+                "--OutputFolder", Path.Combine(Environment.CurrentDirectory, "Result")
             };
         }
 
