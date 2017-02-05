@@ -6,9 +6,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public abstract class MetadataRewriterServiceTests<T> : Test<T> where T : class, ISyntaxRewriterService
+    public abstract class SyntaxRewriterServiceTest<T> : Test<T> where T : class, ISyntaxRewriterService
     {
         public static IEnumerable<object[]> TestCases { get; set; }
 

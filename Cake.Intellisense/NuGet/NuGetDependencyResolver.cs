@@ -11,7 +11,7 @@ namespace Cake.MetadataGenerator.NuGet
 
         public NuGetDependencyResolver(INugetPackageRepositoryProvider packageRepositoryProvider)
         {
-            this.packageRepository = packageRepositoryProvider.Get();
+            packageRepository = packageRepositoryProvider.Get();
         }
 
         public List<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName)

@@ -12,9 +12,13 @@ namespace Cake.MetadataGenerator.Documentation
             this.fileSystem = fileSystem;
         }
 
-        public XDocument Read(string id)
+        public XDocument Read(string documentationFile)
         {
-            return fileSystem.DirectoryExists(id) ? XDocument.Parse(id) : XDocument.Parse("<xml> </xml>");
+            var fileContent = fileSystem.FileExists(documentationFile)
+                ? fileSystem.ReadAllText(documentationFile)
+                : "<?xml version=\"1.0\"?>";
+
+            return XDocument.Parse(fileContent);
         }
     }
 }

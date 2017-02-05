@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.ClassRewriters;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public class ClassMetadataRewriterServiceTestData
+    public class ClassSyntaxRewriterServiceTest : SyntaxRewriterServiceTest<ClassSyntaxRewriterService>
     {
-        public static IEnumerable<object[]> TestData
+        static ClassSyntaxRewriterServiceTest()
         {
-            get
+            TestCases = new[]
             {
-                yield return new object[] { RemovesFieldsDeclaration() };
-                yield return new object[] { RemovesPropertyDeclarations() };
-                yield return new object[] { RemovesNonPublicClasses() };
-                yield return new object[] { AppendsMetadataClassSufixToClassName() };
-                yield return new object[] { RemovesAllConstructor() };
-                yield return new object[] { ReplacesClassModifierWithPublicOne() };
-                yield return new object[] { RemovesNonPublicMethods() };
-                yield return new object[] { RemovesBaseList() };
-
-            }
+                new object[] {RemovesFieldsDeclaration()},
+                new object[] {RemovesPropertyDeclarations()},
+                new object[] {RemovesNonPublicClasses()},
+                new object[] {AppendsMetadataClassSufixToClassName()},
+                new object[] {RemovesAllConstructor()},
+                new object[] {ReplacesClassModifierWithPublicOne()},
+                new object[] {RemovesNonPublicMethods()},
+                new object[] {RemovesBaseList()}
+            };
         }
 
         private static ServiceRewriterTestCase RemovesFieldsDeclaration()

@@ -1,21 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public class MethodMetadataRewriterServiceTestData
+    public class MethodSyntaxRewriterServiceTest : SyntaxRewriterServiceTest<MethodSyntaxRewriterService>
     {
-        public static IEnumerable<object[]> TestData
+        static MethodSyntaxRewriterServiceTest()
         {
-            get
+            TestCases = new[]
             {
-                yield return new object[] { RemovesCakeContextParamWhenMethodIsCakeAlias() };
-                yield return new object[] { KeepsParametersIntactsWhenMethodNotDecoratedWithCakeMethodAliasAttribute() };
-                yield return new object[] { KeepsMethodIntactWhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters() };
-                yield return new object[] { ConvertsMethodDecoratedWithCakePropertyAliasAttributeToProperty() };
-                yield return new object[] { AppendMethodBodyWithProperReturnsStatementsWhemMethodReturnsValue() };
-                yield return new object[] { AppendMethodBodyWithOutParametersAssignedWhenMethodHasOutParameters() };
-                yield return new object[] { ConvertsAbstractMethodToPublicStaticMethods() };
-            }
+                new object[] { RemovesCakeContextParamWhenMethodIsCakeAlias() },
+                new object[] { KeepsParametersIntactsWhenMethodNotDecoratedWithCakeMethodAliasAttribute() },
+                new object[] { KeepsMethodIntactWhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters() },
+                new object[] { ConvertsMethodDecoratedWithCakePropertyAliasAttributeToProperty() },
+                new object[] { AppendMethodBodyWithProperReturnsStatementsWhemMethodReturnsValue() },
+                new object[] { AppendMethodBodyWithOutParametersAssignedWhenMethodHasOutParameters() },
+                new object[] { ConvertsAbstractMethodToPublicStaticMethods() },
+            };
         }
 
         private static ServiceRewriterTestCase RemovesCakeContextParamWhenMethodIsCakeAlias()

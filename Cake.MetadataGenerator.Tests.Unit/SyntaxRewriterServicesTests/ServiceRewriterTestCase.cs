@@ -1,12 +1,12 @@
-﻿namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+﻿namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
     public class ServiceRewriterTestCase
     {
         public ServiceRewriterTestCase(string name, string input, string expectedResult)
         {
-            this.Name = name;
-            this.Input = input;
-            this.ExpectedResult = expectedResult;
+            Name = name;
+            Input = input;
+            ExpectedResult = expectedResult;
         }
 
         public string Name { get; set; }

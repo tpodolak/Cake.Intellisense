@@ -25,9 +25,4 @@ namespace Cake.MetadataGenerator.NuGet
                   .ToList();
         }
     }
-
-    public interface IPackageAssemblyResolver
-    {
-        List<Assembly> ResolveAssemblies(IPackage package, FrameworkName targetFramework);
-    }
 }

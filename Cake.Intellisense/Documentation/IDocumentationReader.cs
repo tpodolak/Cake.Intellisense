@@ -4,6 +4,6 @@ namespace Cake.MetadataGenerator.Documentation
 {
     public interface IDocumentationReader
     {
-        XDocument Read(string id);
+        XDocument Read(string documentationFile);
     }
 }

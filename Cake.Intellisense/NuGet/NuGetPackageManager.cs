@@ -18,8 +18,8 @@ namespace Cake.MetadataGenerator.NuGet
             INuGetSettings settings)
         {
             this.settings = settings;
-            this.packageManager = packageManagerProvider.Get();
-            this.packageRepository = packageRepositoryProvider.Get();
+            packageManager = packageManagerProvider.Get();
+            packageRepository = packageRepositoryProvider.Get();
         }
 
         public IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework)
@@ -29,7 +29,7 @@ namespace Cake.MetadataGenerator.NuGet
             if (package == null)
                 return null;
 
-            this.packageManager.InstallPackage(package, false, true);
+            packageManager.InstallPackage(package, false, true);
 
             return package;
         }

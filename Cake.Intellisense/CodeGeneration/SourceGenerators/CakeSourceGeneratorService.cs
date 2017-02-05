@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Cake.MetadataGenerator.CodeGeneration.MetadataGenerators;
+using Cake.MetadataGenerator.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,17 +13,19 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
     public class CakeSourceGeneratorService : ICakeSourceGeneratorService
     {
         private readonly IMetadataGeneratorService metadataGeneratorService;
+        private readonly IMetadataReferenceLoader metadataReferenceLoader;
 
-        public CakeSourceGeneratorService(IMetadataGeneratorService metadataGeneratorService)
+        public CakeSourceGeneratorService(IMetadataGeneratorService metadataGeneratorService, IMetadataReferenceLoader metadataReferenceLoader)
         {
             this.metadataGeneratorService = metadataGeneratorService;
+            this.metadataReferenceLoader = metadataReferenceLoader;
         }
 
         public CompilationUnitSyntax Generate(Assembly assembly)
         {
             var compilation = CSharpCompilation.Create(
                 assemblyName: assembly.GetName().Name,
-                references: new[] { MetadataReference.CreateFromFile(assembly.Location) });
+                references: new[] { metadataReferenceLoader.CreateFromFile(assembly.Location) });
 
 
             var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace).ToList();

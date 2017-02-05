@@ -182,17 +182,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeGenerationTests\AttributeMetadataRewriterServiceTestData.cs" />
-    <Compile Include="CodeGenerationTests\CommentMetadataRewriterServiceTests.cs" />
-    <Compile Include="CodeGenerationTests\AttributeMetadataRewriterServiceTests.cs" />
-    <Compile Include="CodeGenerationTests\ClassMetadataRewriterServiceTestData.cs" />
-    <Compile Include="CodeGenerationTests\ClassMetadataRewriterServiceTests.cs" />
-    <Compile Include="CodeGenerationTests\CommentMetadataRewriterServiceTestData.cs" />
-    <Compile Include="CodeGenerationTests\MetadataRewriterServiceTests.cs" />
-    <Compile Include="CodeGenerationTests\MethodMetadataRewriterServiceTestData.cs" />
-    <Compile Include="CodeGenerationTests\MethodMetadataRewriterServiceTests.cs" />
-    <Compile Include="CodeGenerationTests\ServiceRewriterTestCase.cs" />
-    <Compile Include="CodeGenerationTests\TestData.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\CakeSyntaxRewriterServiceTests.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\CommentSyntaxRewriterServiceTest.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\AttributeSyntaxRewriterServiceTest.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\ClassSyntaxRewriterServiceTest.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\SyntaxRewriterServiceTest.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\MethodSyntaxRewriterServiceTest.cs" />
+    <Compile Include="SyntaxRewriterServicesTests\ServiceRewriterTestCase.cs" />
     <Compile Include="ExtensionPoints\CustomMemberDataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test.cs" />
@@ -211,7 +207,9 @@
       <Name>Cake.MetadataGenerator</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SourceGeneratorTests\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

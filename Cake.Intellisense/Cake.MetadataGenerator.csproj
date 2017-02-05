@@ -145,13 +145,14 @@
     <Compile Include="CodeGeneration\SyntaxRewriterServices\CommentRewriters\CommentSyntaxRewriterService.cs" />
     <Compile Include="CodeGeneration\SyntaxRewriterServices\MethodRewriters\MethodSyntaxRewriterService.cs" />
     <Compile Include="CommandLine\CommandLineInterface.cs" />
-    <Compile Include="CommandLine\Console.cs" />
+    <Compile Include="CommandLine\ConsoleReader.cs" />
     <Compile Include="CommandLine\ICommandLineInterface.cs" />
     <Compile Include="CommandLine\IConsoleReader.cs" />
     <Compile Include="Compilation\Compiler.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\IMetadataGeneratorService.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\RoslynMetadataGeneratorService.cs" />
     <Compile Include="CommandLine\IArgumentParser.cs" />
+    <Compile Include="NuGet\IPackageAssemblyResolver.cs" />
     <Compile Include="NuGet\PackageAssemblyResolver.cs" />
     <Compile Include="NuGet\INuGetDependencyResolver.cs" />
     <Compile Include="NuGet\INugetPackageManagerProvider.cs" />
