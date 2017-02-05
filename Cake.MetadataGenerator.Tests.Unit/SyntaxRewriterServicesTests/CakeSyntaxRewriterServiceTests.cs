@@ -6,18 +6,16 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public sealed class CakeSyntaxRewriterServiceTests
+    public sealed class CakeSyntaxRewriterServiceTests : Test<CakeSyntaxRewriterService>
     {
-        public sealed class RewriteMethod : Test<CakeSyntaxRewriterService>
+        /*
+        [Fact]
+        public void ShouldCallRewritersInProperOrder()
         {
-            [Fact]
-            public void ShouldCallRewritersInProperOrder()
-            {
-                var rewriters = FakeOf<IEnumerable<ISyntaxRewriterService>>();
+            var rewriters = FakeOf<IEnumerable<ISyntaxRewriterService>>();
 
-                Subject.Rewrite(CompilationUnit(), GetType().Assembly);
-
-            }
+            Subject.Rewrite(CompilationUnit(), GetType().Assembly);
         }
+        */
     }
 }

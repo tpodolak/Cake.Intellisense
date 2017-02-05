@@ -16,7 +16,7 @@ namespace Cake.MetadataGenerator.Documentation
         {
             var fileContent = fileSystem.FileExists(documentationFile)
                 ? fileSystem.ReadAllText(documentationFile)
-                : "<?xml version=\"1.0\"?>";
+                : "<?xml version=\"1.0\"?><doc></doc>";
 
             return XDocument.Parse(fileContent);
         }

@@ -182,6 +182,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentationTests\DocumentationReaderTests.cs" />
     <Compile Include="SyntaxRewriterServicesTests\CakeSyntaxRewriterServiceTests.cs" />
     <Compile Include="SyntaxRewriterServicesTests\CommentSyntaxRewriterServiceTest.cs" />
     <Compile Include="SyntaxRewriterServicesTests\AttributeSyntaxRewriterServiceTest.cs" />
