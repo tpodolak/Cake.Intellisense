@@ -1,21 +1,24 @@
-﻿using NSubstituteAutoMocker;
-
-namespace Cake.MetadataGenerator.Tests.Unit
+﻿namespace Cake.MetadataGenerator.Tests.Unit
 {
     public abstract class Test<T> where T : class
     {
-        private readonly NSubstituteAutoMocker<T> autoMocker = new NSubstituteAutoMocker<T>();
+        private readonly AutoSubstitute<T> autoSubstitute = new AutoSubstitute<T>();
 
         protected T Subject { get; }
 
         protected Test()
         {
-            Subject = autoMocker.ClassUnderTest;
+            Subject = autoSubstitute.Subject;
         }
 
-        protected TMock FakeOf<TMock>()
+        protected TDependency FakeOf<TDependency>()
         {
-            return autoMocker.Get<TMock>();
+            return autoSubstitute.Get<TDependency>();
+        }
+
+        protected TDependency Use<TDependency>(TDependency instance = default(TDependency))
+        {
+            return autoSubstitute.Use(instance);
         }
     }
 }

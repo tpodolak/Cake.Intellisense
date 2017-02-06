@@ -11,13 +11,17 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
     {
         private readonly XDocument emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
 
+        public XmlCommentProviderTests()
+        {
+            Use<ISymbol>();
+        }
+
         [Fact]
         public void GetReturnsEmptyStringWhenSectionForGivenCommentIdDoesNotExist()
         {
-            var symbol = Substitute.For<ISymbol>();
-            symbol.GetDocumentationCommentId().Returns(string.Empty);
+            FakeOf<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
 
-            var result = Subject.Get(emptyDocument, symbol);
+            var result = Subject.Get(emptyDocument, FakeOf<ISymbol>());
 
             result.Should().BeEmpty();
         }
