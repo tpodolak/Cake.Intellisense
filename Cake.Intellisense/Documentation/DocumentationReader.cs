@@ -18,7 +18,7 @@ namespace Cake.MetadataGenerator.Documentation
                 ? fileSystem.ReadAllText(documentationFile)
                 : "<?xml version=\"1.0\"?><doc></doc>";
 
-            return XDocument.Parse(fileContent);
+            return XDocument.Parse(fileContent, LoadOptions.None | LoadOptions.SetLineInfo);
         }
     }
 }
