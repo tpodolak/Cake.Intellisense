@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MoreLinq;
 using NSubstitute;
 using NSubstitute.Core;
 
@@ -16,13 +17,10 @@ namespace Cake.MetadataGenerator.Tests.Unit
         public AutoSubstitute()
         {
             var parameters = GetMostComplexConstructor().GetParameters();
-
-            foreach (var parameterInfo in parameters)
-            {
-                container.Add(parameterInfo.ParameterType, CreateInstance(parameterInfo.ParameterType));
-            }
-
-            Subject = (T)Activator.CreateInstance(typeof(T), container.Values.ToArray());
+            // allow to register custom instances via virtual call to CreateInstance
+            var localContainer = parameters.ToDictionary(parameterInfo => parameterInfo.ParameterType, parameterInfo => CreateInstance(parameterInfo.ParameterType));
+            localContainer.ForEach(pair => container.Add(pair.Key, pair.Value));
+            Subject = (T)Activator.CreateInstance(typeof(T), localContainer.Values.ToArray());
         }
 
         public TDependency Get<TDependency>()
@@ -49,6 +47,16 @@ namespace Cake.MetadataGenerator.Tests.Unit
         public TDependency Use<TDependency>(params object[] constructorArgs)
         {
             return (TDependency)Use(typeof(TDependency), constructorArgs);
+        }
+
+        public TDependency Use<TDependency>(TDependency instance)
+        {
+            var dependencyType = typeof(TDependency);
+            if (container.ContainsKey(dependencyType))
+                throw new InvalidOperationException($"Dependency {dependencyType} is already registerd");
+
+            container.Add(dependencyType, instance);
+            return instance;
         }
 
         public virtual object CreateInstance(Type type, params object[] constructorArgs)

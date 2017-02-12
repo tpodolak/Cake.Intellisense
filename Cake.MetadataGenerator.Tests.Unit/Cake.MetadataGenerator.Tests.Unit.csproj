@@ -209,6 +209,7 @@
     <Compile Include="DocumentationTests\XmlCommentProviderTests.cs" />
     <Compile Include="Logging\NLogNugetLoggerAdapterTests.cs" />
     <Compile Include="MetadataGeneratorTests.cs" />
+    <Compile Include="NuGet\NuGetDependencyResolverTests.cs" />
     <Compile Include="NuGet\NugetPackageManagerProviderTests.cs" />
     <Compile Include="NuGet\NuGetPackageManagerTests.cs" />
     <Compile Include="NuGet\NuGetPackageManagerTests.FindPackageMethod.cs">

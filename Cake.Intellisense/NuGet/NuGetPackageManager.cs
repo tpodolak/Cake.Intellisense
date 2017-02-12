@@ -9,18 +9,17 @@ namespace Cake.MetadataGenerator.NuGet
 {
     public class NuGetPackageManager : INuGetPackageManager
     {
-        private readonly Lazy<IPackageManager> packageManager;
-        private readonly Lazy<IPackageRepository> packageRepository;
+        private readonly IPackageManager packageManager;
+        private readonly IPackageRepository packageRepository;
         private readonly INuGetSettings settings;
 
         public NuGetPackageManager(INugetPackageManagerProvider packageManagerProvider,
             INugetPackageRepositoryProvider packageRepositoryProvider,
             INuGetSettings settings)
         {
-            // TODO, fix autosubstitute container to support dynamic initialization
             this.settings = settings;
-            packageManager = new Lazy<IPackageManager>(packageManagerProvider.Get);
-            packageRepository = new Lazy<IPackageRepository>(packageRepositoryProvider.Get);
+            packageManager = packageManagerProvider.Get();
+            packageRepository = packageRepositoryProvider.Get();
         }
 
         public IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework)
@@ -30,7 +29,7 @@ namespace Cake.MetadataGenerator.NuGet
             if (package == null)
                 return null;
 
-            packageManager.Value.InstallPackage(package, false, true);
+            packageManager.InstallPackage(package, false, true);
 
             return package;
         }
@@ -56,14 +55,14 @@ namespace Cake.MetadataGenerator.NuGet
 
         public IPackage FindPackage(string packageId, string version)
         {
-            var packages = packageRepository.Value.FindPackagesById(packageId).ToList();
+            var packages = packageRepository.FindPackagesById(packageId).ToList();
 
             if (string.IsNullOrWhiteSpace(version))
                 return packages.LastOrDefault(package => settings.AllowPreReleaseVersions || package.IsReleaseVersion());
 
             var semanticVersion = new SemanticVersion(new Version(version));
 
-            return packageRepository.Value.FindPackagesById(packageId).SingleOrDefault(package => package.Version == semanticVersion);
+            return packageRepository.FindPackagesById(packageId).SingleOrDefault(package => package.Version == semanticVersion);
         }
     }
 }

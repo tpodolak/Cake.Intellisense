@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Versioning;
 using Cake.MetadataGenerator.NuGet;
 using FluentAssertions;
@@ -13,8 +14,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
         {
             public GetTargetFrameworksMethod()
             {
-                Get<INugetPackageRepositoryProvider>().Get().Returns(Use<IPackageRepository>());
-                Get<INugetPackageManagerProvider>().Get().Returns(Use<IPackageManager>());
                 Use<IPackage>();
             }
 
@@ -29,6 +28,24 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
                 result.Should().NotBeNull();
                 result.Should().HaveCount(1);
                 result.Should().ContainSingle(framework => framework.FullName == ".NETFramework,Version=v4.5");
+            }
+
+            public override object CreateInstance(Type type, params object[] constructorArgs)
+            {
+                if (type == typeof(INugetPackageRepositoryProvider))
+                {
+                    var nugetPackageRepositoryProvider = Substitute.For<INugetPackageRepositoryProvider>();
+                    nugetPackageRepositoryProvider.Get().Returns(Use<IPackageRepository>());
+                    return nugetPackageRepositoryProvider;
+                }
+
+                if (type == typeof(INugetPackageManagerProvider))
+                {
+                    var nugetPackageManagerProvider = Substitute.For<INugetPackageManagerProvider>();
+                    nugetPackageManagerProvider.Get().Returns(Use<IPackageManager>());
+                    return nugetPackageManagerProvider;
+                }
+                return base.CreateInstance(type, constructorArgs);
             }
         }
     }

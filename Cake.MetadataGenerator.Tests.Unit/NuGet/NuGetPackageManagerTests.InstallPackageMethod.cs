@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -15,8 +16,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
         {
             public InstallPackageMethod()
             {
-                Get<INugetPackageRepositoryProvider>().Get().Returns(Use<IPackageRepository>());
-                Get<INugetPackageManagerProvider>().Get().Returns(Use<IPackageManager>());
                 Use<IPackage>();
             }
 
@@ -96,6 +95,24 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
                 result.Should().NotBeNull();
                 result.Version.Should().Be(new SemanticVersion(2, 0, 0, 0));
                 Get<IPackageManager>().Received().InstallPackage(Arg.Any<IPackage>(), Arg.Any<bool>(), Arg.Any<bool>());
+            }
+
+            public override object CreateInstance(Type type, params object[] constructorArgs)
+            {
+                if (type == typeof(INugetPackageRepositoryProvider))
+                {
+                    var nugetPackageRepositoryProvider = Substitute.For<INugetPackageRepositoryProvider>();
+                    nugetPackageRepositoryProvider.Get().Returns(Use<IPackageRepository>());
+                    return nugetPackageRepositoryProvider;
+                }
+
+                if (type == typeof(INugetPackageManagerProvider))
+                {
+                    var nugetPackageManagerProvider = Substitute.For<INugetPackageManagerProvider>();
+                    nugetPackageManagerProvider.Get().Returns(Use<IPackageManager>());
+                    return nugetPackageManagerProvider;
+                }
+                return base.CreateInstance(type, constructorArgs);
             }
         }
     }
