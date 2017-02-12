@@ -19,7 +19,7 @@ namespace Cake.MetadataGenerator.Documentation
             if (symbol.Kind == SymbolKind.Method)
             {
                 var methodSymbol = (IMethodSymbol)symbol;
-                if (methodSymbol.GetAttributes().Any(val => val.AttributeClass.Name.EndsWith(CakeAttributes.CakePropertyAlias) || val.AttributeClass.Name.ToString().EndsWith(CakeAttributes.CakeMethodAlias)))
+                if (methodSymbol.GetAttributes().Any(val => val.AttributeClass.Name.EndsWith(CakeAttributeNames.CakePropertyAlias) || val.AttributeClass.Name.ToString().EndsWith(CakeAttributeNames.CakeMethodAlias)))
                 {
                     var remove = comment.Elements().Where(val => val.Attribute(XName.Get("name"))?.Value == methodSymbol.Parameters.FirstOrDefault()?.Name).ToList();
                     remove.ForEach(val => val.Remove());

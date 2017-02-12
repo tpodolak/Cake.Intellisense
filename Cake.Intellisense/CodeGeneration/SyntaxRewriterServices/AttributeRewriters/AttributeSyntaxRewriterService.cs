@@ -7,10 +7,10 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.Attribute
     {
         private static readonly string[] AttributesToRemove =
         {
-            CakeAttributes.CakeAliasCategory,
-            CakeAttributes.CakeMethodAlias,
-            CakeAttributes.CakeNamespaceImport,
-            CakeAttributes.CakePropertyAlias
+            CakeAttributeNames.CakeAliasCategory,
+            CakeAttributeNames.CakeMethodAlias,
+            CakeAttributeNames.CakeNamespaceImport,
+            CakeAttributeNames.CakePropertyAlias
         };
 
         public int Order { get; } = 3;

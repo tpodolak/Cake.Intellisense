@@ -2,9 +2,11 @@
 
 namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public class MethodSyntaxRewriterServiceTest : SyntaxRewriterServiceTest<MethodSyntaxRewriterService>
+    public partial class MethodSyntaxRewriterServiceTest
     {
-        static MethodSyntaxRewriterServiceTest()
+        public class RewriteMethod: SyntaxRewriterServiceTest<MethodSyntaxRewriterService>
+        {
+            static RewriteMethod()
         {
             TestCases = new[]
             {
@@ -169,5 +171,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 }"
             );
         }
+    }
     }
 }

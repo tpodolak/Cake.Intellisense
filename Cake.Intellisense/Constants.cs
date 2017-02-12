@@ -6,12 +6,17 @@
             CreateNamedTypeDeclarationMethodName = "CreateNamedTypeDeclaration";
     }
 
-    public static class CakeAttributes
+    public static class CakeAttributeNames
     {
         public const string CakeMethodAlias = "CakeMethodAliasAttribute",
             CakeAliasCategory = "CakeAliasCategoryAttribute",
             CakePropertyAlias = "CakePropertyAliasAttribute",
             CakeNamespaceImport = "CakeNamespaceImportAttribute";
+    }
+
+    public static class CakeEngineNames
+    {
+        public const string ScriptHost = "ScriptHost";
     }
 
     public static class MetadataGeneration

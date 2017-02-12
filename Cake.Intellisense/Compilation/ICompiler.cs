@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Cake.MetadataGenerator
+namespace Cake.MetadataGenerator.Compilation
 {
     public interface ICompiler
     {

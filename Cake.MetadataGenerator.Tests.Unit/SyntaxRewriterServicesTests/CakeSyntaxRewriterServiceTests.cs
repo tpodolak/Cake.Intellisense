@@ -13,7 +13,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public sealed class CakeSyntaxRewriterServiceTests
+    public partial class CakeSyntaxRewriterServiceTests
     {
         public class RewriteMethod : Test<CakeSyntaxRewriterService>
         {

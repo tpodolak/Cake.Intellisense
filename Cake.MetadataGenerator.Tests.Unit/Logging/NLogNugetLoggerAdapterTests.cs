@@ -9,7 +9,7 @@ using ILogger = NLog.ILogger;
 
 namespace Cake.MetadataGenerator.Tests.Unit.Logging
 {
-    public class NLogNugetLoggerAdapterTests
+    public partial class NLogNugetLoggerAdapterTests
     {
         public class LogMethod : Test<NLogNugetLoggerAdapter>
         {

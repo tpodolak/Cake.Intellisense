@@ -85,7 +85,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRew
 
         private bool IsProperty(MethodDeclarationSyntax node)
         {
-            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributes.CakePropertyAlias)));
+            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakePropertyAlias)));
         }
 
         private ParameterListSyntax GetParameterList(MethodDeclarationSyntax node)
@@ -93,7 +93,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRew
             var hasCakeMethodAliasAttribute =
                 node.AttributeLists.Any(
                     attrs =>
-                        attrs.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributes.CakeMethodAlias)));
+                        attrs.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakeMethodAlias)));
 
             if (!hasCakeMethodAliasAttribute || !node.ParameterList.Parameters.Any())
                 return node.ParameterList;

@@ -8,10 +8,12 @@ using Xunit;
 
 namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
 {
-    public class XmlCommentProviderTests : Test<XmlCommentProvider>
+    public partial class XmlCommentProviderTests
     {
-        private readonly XDocument emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
-        private readonly XDocument validDocumet = XDocument.Parse(@"<?xml version=""1.0""?>
+        public class GetMethod : Test<XmlCommentProvider>
+        {
+            private readonly XDocument emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
+            private readonly XDocument validDocumet = XDocument.Parse(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
         <name>Cake.Common</name>
@@ -42,30 +44,30 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         </member>
     </members>
 </doc>", LoadOptions.PreserveWhitespace);
-        public XmlCommentProviderTests()
-        {
-            Use<ISymbol>();
-        }
+            public GetMethod()
+            {
+                Use<ISymbol>();
+            }
 
-        [Fact]
-        public void GetReturnsEmptyStringWhenSectionForGivenCommentIdDoesNotExist()
-        {
-            Get<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
+            [Fact]
+            public void ReturnsEmptyStringWhenSectionForGivenCommentIdDoesNotExist()
+            {
+                Get<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
 
-            var result = Subject.Get(emptyDocument, Get<ISymbol>());
+                var result = Subject.Get(emptyDocument, Get<ISymbol>());
 
-            result.Should().BeEmpty();
-        }
+                result.Should().BeEmpty();
+            }
 
-        [Fact]
-        public void GeRetunsValidCSharpCommentBasedOnXmlDocumentation()
-        {
-            Get<ISymbol>().GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
+            [Fact]
+            public void RetunsValidCSharpCommentBasedOnXmlDocumentation()
+            {
+                Get<ISymbol>().GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
 
-            var result = Subject.Get(validDocumet, Get<ISymbol>());
+                var result = Subject.Get(validDocumet, Get<ISymbol>());
 
-            result.Should().NotBeNull();
-            result.Should().Be(@"///             <summary>
+                result.Should().NotBeNull();
+                result.Should().Be(@"///             <summary>
 ///                 Gets an argument and returns the provided
 ///                 <paramref name=""defaultValue"" /> if the argument is missing.
 ///             </summary>
@@ -87,32 +89,32 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
 ///             </code>
 ///             </example>
 ///         ");
-        }
+            }
 
-        [Theory]
-        [InlineData(CakeAttributes.CakePropertyAlias)]
-        [InlineData(CakeAttributes.CakeMethodAlias)]
-        public void GetRetursValidCSharpCommentWitFirstParamRemovedWhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
-        {
-            var attributeData = Use<AttributeData>();
-            var namedTypeSymbol = Use<INamedTypeSymbol>();
-            var parameterSymbol = Use<IParameterSymbol>();
-            var methodSymbol = Use<IMethodSymbol>();
+            [Theory]
+            [InlineData(CakeAttributeNames.CakePropertyAlias)]
+            [InlineData(CakeAttributeNames.CakeMethodAlias)]
+            public void RetursValidCSharpCommentWitFirstParamRemovedWhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
+            {
+                var attributeData = Use<AttributeData>();
+                var namedTypeSymbol = Use<INamedTypeSymbol>();
+                var parameterSymbol = Use<IParameterSymbol>();
+                var methodSymbol = Use<IMethodSymbol>();
 
-            parameterSymbol.Name.Returns("context");
-            namedTypeSymbol.Name.Returns(methodAttribute);
-            attributeData.AttributeClass.Returns(namedTypeSymbol);
-            methodSymbol.Kind.Returns(SymbolKind.Method);
-            methodSymbol.Parameters.Returns(ImmutableArray.Create(parameterSymbol));
+                parameterSymbol.Name.Returns("context");
+                namedTypeSymbol.Name.Returns(methodAttribute);
+                attributeData.AttributeClass.Returns(namedTypeSymbol);
+                methodSymbol.Kind.Returns(SymbolKind.Method);
+                methodSymbol.Parameters.Returns(ImmutableArray.Create(parameterSymbol));
 
-            methodSymbol.GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
-            methodSymbol.Kind.Returns(SymbolKind.Method);
-            methodSymbol.GetAttributes().Returns(ImmutableArray.Create(attributeData));
+                methodSymbol.GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
+                methodSymbol.Kind.Returns(SymbolKind.Method);
+                methodSymbol.GetAttributes().Returns(ImmutableArray.Create(attributeData));
 
-            var result = Subject.Get(validDocumet, Get<IMethodSymbol>());
+                var result = Subject.Get(validDocumet, Get<IMethodSymbol>());
 
-            result.Should().NotBeNull();
-            result.Should().Be(@"///             <summary>
+                result.Should().NotBeNull();
+                result.Should().Be(@"///             <summary>
 ///                 Gets an argument and returns the provided
 ///                 <paramref name=""defaultValue"" /> if the argument is missing.
 ///             </summary>
@@ -134,6 +136,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
 ///             </code>
 ///             </example>
 ///         ");
+            }
         }
     }
 }

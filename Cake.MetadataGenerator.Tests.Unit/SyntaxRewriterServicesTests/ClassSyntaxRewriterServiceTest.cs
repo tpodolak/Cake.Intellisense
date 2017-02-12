@@ -2,12 +2,14 @@
 
 namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public class ClassSyntaxRewriterServiceTest : SyntaxRewriterServiceTest<ClassSyntaxRewriterService>
+    public partial class ClassSyntaxRewriterServiceTest
     {
-        static ClassSyntaxRewriterServiceTest()
+        public class RewriteMethod : SyntaxRewriterServiceTest<ClassSyntaxRewriterService>
         {
-            TestCases = new[]
+            static RewriteMethod()
             {
+                TestCases = new[]
+                {
                 new object[] {RemovesFieldsDeclaration()},
                 new object[] {RemovesPropertyDeclarations()},
                 new object[] {RemovesNonPublicClasses()},
@@ -17,13 +19,13 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
                 new object[] {RemovesNonPublicMethods()},
                 new object[] {RemovesBaseList()}
             };
-        }
+            }
 
-        private static ServiceRewriterTestCase RemovesFieldsDeclaration()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesFieldsDeclaration),
-                @"namespace Cake.Common
+            private static ServiceRewriterTestCase RemovesFieldsDeclaration()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesFieldsDeclaration),
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliases
     {
@@ -37,7 +39,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }",
-                @"namespace Cake.Common
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliasesMetadata
     {
@@ -47,14 +49,14 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesPropertyDeclarations()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesPropertyDeclarations),
-                @"namespace Cake.Common
+            private static ServiceRewriterTestCase RemovesPropertyDeclarations()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesPropertyDeclarations),
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliases
     {
@@ -68,7 +70,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }",
-                @"namespace Cake.Common
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliasesMetadata
     {
@@ -78,14 +80,14 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesNonPublicClasses()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesNonPublicClasses),
-                @"namespace Cake.Common
+            private static ServiceRewriterTestCase RemovesNonPublicClasses()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesNonPublicClasses),
+                    @"namespace Cake.Common
 {
     internal static class InternalArgumentAliases
     {
@@ -95,39 +97,39 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
     {
     }
 }",
-                @"namespace Cake.Common
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliasesMetadata
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase AppendsMetadataClassSufixToClassName()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(AppendsMetadataClassSufixToClassName),
-                @"namespace Cake.Common
+            private static ServiceRewriterTestCase AppendsMetadataClassSufixToClassName()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(AppendsMetadataClassSufixToClassName),
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliases
     {
     }
 }",
-                @"namespace Cake.Common
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliasesMetadata
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesAllConstructor()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesAllConstructor),
-                @"namespace Cake.Core.Scripting
+            private static ServiceRewriterTestCase RemovesAllConstructor()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesAllConstructor),
+                    @"namespace Cake.Core.Scripting
 {
     public class ScriptHost
     {
@@ -140,39 +142,39 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }",
-                @"namespace Cake.Core.Scripting
+                    @"namespace Cake.Core.Scripting
 {
     public class ScriptHostMetadata
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase ReplacesClassModifierWithPublicOne()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(ReplacesClassModifierWithPublicOne),
-                @"namespace Cake.Core.Scripting
+            private static ServiceRewriterTestCase ReplacesClassModifierWithPublicOne()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(ReplacesClassModifierWithPublicOne),
+                    @"namespace Cake.Core.Scripting
 {
     public abstract class ScriptHost
     {
     }
 }",
-                @"namespace Cake.Core.Scripting
+                    @"namespace Cake.Core.Scripting
 {
     public class ScriptHostMetadata
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesNonPublicMethods()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesNonPublicMethods),
-                @"namespace Cake.Common
+            private static ServiceRewriterTestCase RemovesNonPublicMethods()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesNonPublicMethods),
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliases
     {
@@ -189,7 +191,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }",
-                @"namespace Cake.Common
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliasesMetadata
     {
@@ -198,27 +200,28 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         }
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesBaseList()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesBaseList),
-                @"namespace Cake.Common
+            private static ServiceRewriterTestCase RemovesBaseList()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesBaseList),
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliases: System.Object
     {
     }
 }",
-                @"namespace Cake.Common
+                    @"namespace Cake.Common
 {
     public static class ArgumentAliasesMetadata
     {
     }
 }"
-            );
+                );
 
+            }
         }
     }
 }

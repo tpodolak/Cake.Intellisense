@@ -93,7 +93,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
                     sourceType.GetMethods(BindingFlags.Public | BindingFlags.Static)
                         .Where(
                             val =>
-                                val.GetCustomAttributes().Any(x => x.GetType().Name == CakeAttributes.CakePropertyAlias))
+                                val.GetCustomAttributes().Any(x => x.GetType().Name == CakeAttributeNames.CakePropertyAlias))
                         .ToList();
 
                 if (!sourceMethods.Any() && emitedMethods.Any())

@@ -2,12 +2,14 @@
 
 namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 {
-    public class AttributeSyntaxRewriterServiceTest : SyntaxRewriterServiceTest<AttributeSyntaxRewriterService>
+    public partial class AttributeSyntaxRewriterServiceTest
     {
-        static AttributeSyntaxRewriterServiceTest()
+        public class RewriteMethod : SyntaxRewriterServiceTest<AttributeSyntaxRewriterService>
         {
-            TestCases = new[]
+            static RewriteMethod()
             {
+                TestCases = new[]
+                {
                 new object[] {RemovesCakeMethodAliasAttribute()},
                 new object[] {RemovesCakeAliasCategoryAttribute()},
                 new object[] {RemovesCakeNamespaceImportAttribue()},
@@ -17,13 +19,13 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
                 new object[] {KeepsAttributesNotRelatedWithCakeIntact()},
                 new object[] {RemovesParametersFromObosoleteAttribute()}
             };
-        }
+            }
 
-        private static ServiceRewriterTestCase RemovesCakeMethodAliasAttribute()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesCakeMethodAliasAttribute),
-    @"public static class ArgumentAliases
+            private static ServiceRewriterTestCase RemovesCakeMethodAliasAttribute()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesCakeMethodAliasAttribute),
+        @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
@@ -35,7 +37,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
     {
     }
 }",
-    @"public static class ArgumentAliases
+        @"public static class ArgumentAliases
 {
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
@@ -45,14 +47,14 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesCakeAliasCategoryAttribute()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesCakeAliasCategoryAttribute),
-    @"[global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
+            private static ServiceRewriterTestCase RemovesCakeAliasCategoryAttribute()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesCakeAliasCategoryAttribute),
+        @"[global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
 public static class ArgumentAliases
 {
 }
@@ -61,21 +63,21 @@ public static class ArgumentAliases
 public static class EnvironmentAliases
 {
 }",
-    @"public static class ArgumentAliases
+        @"public static class ArgumentAliases
 {
 }
 
 public static class EnvironmentAliases
 {
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesCakeNamespaceImportAttribue()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesCakeNamespaceImportAttribue),
-    @"public static class BuildSystemAliases
+            private static ServiceRewriterTestCase RemovesCakeNamespaceImportAttribue()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesCakeNamespaceImportAttribue),
+        @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakeNamespaceImportAttribute(null), global::Cake.Core.Annotations.CakeNamespaceImportAttribute(null)]
     public static global::Cake.Common.Build.AppVeyor.IAppVeyorProvider AppVeyor(this global::Cake.Core.ICakeContext context)
@@ -87,7 +89,7 @@ public static class EnvironmentAliases
     {
     }
 }",
-    @"public static class BuildSystemAliases
+        @"public static class BuildSystemAliases
 {
     public static global::Cake.Common.Build.AppVeyor.IAppVeyorProvider AppVeyor(this global::Cake.Core.ICakeContext context)
     {
@@ -97,34 +99,34 @@ public static class EnvironmentAliases
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromMethods()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesCakePropertyAttributesFromMethods),
-    @"public static class BuildSystemAliases
+            private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromMethods()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesCakePropertyAttributesFromMethods),
+        @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
 }",
-    @"public static class BuildSystemAliases
+        @"public static class BuildSystemAliases
 {
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromProperties()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesCakePropertyAttributesFromProperties),
-    @"public static class BuildSystemAliases
+            private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromProperties()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesCakePropertyAttributesFromProperties),
+        @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo
@@ -132,21 +134,21 @@ public static class EnvironmentAliases
         get;
     }
 }",
-    @"public static class BuildSystemAliases
+        @"public static class BuildSystemAliases
 {
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo
     {
         get;
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase KeepsCommentTriviaWhenRemovingCakeAttributes()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(KeepsCommentTriviaWhenRemovingCakeAttributes),
-    @"/// <summary>
+            private static ServiceRewriterTestCase KeepsCommentTriviaWhenRemovingCakeAttributes()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(KeepsCommentTriviaWhenRemovingCakeAttributes),
+        @"/// <summary>
 ///  Contains functionality related to build systems.
 /// </summary>
 [global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
@@ -171,7 +173,7 @@ public static class BuildSystemAliases
     {
     }
 }",
-    @"/// <summary>
+        @"/// <summary>
 ///  Contains functionality related to build systems.
 /// </summary>
 public static class BuildSystemAliases
@@ -192,14 +194,14 @@ public static class BuildSystemAliases
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase KeepsAttributesNotRelatedWithCakeIntact()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(KeepsAttributesNotRelatedWithCakeIntact),
-    @"[Obsolete]
+            private static ServiceRewriterTestCase KeepsAttributesNotRelatedWithCakeIntact()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(KeepsAttributesNotRelatedWithCakeIntact),
+        @"[Obsolete]
 public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true),Obsolete]
@@ -207,7 +209,7 @@ public static class BuildSystemAliases
     {
     }
 }",
-    @"[Obsolete]
+        @"[Obsolete]
 public static class BuildSystemAliases
 {
     [Obsolete]
@@ -215,14 +217,14 @@ public static class BuildSystemAliases
     {
     }
 }"
-            );
-        }
+                );
+            }
 
-        private static ServiceRewriterTestCase RemovesParametersFromObosoleteAttribute()
-        {
-            return new ServiceRewriterTestCase(
-                nameof(RemovesParametersFromObosoleteAttribute),
-    @"[Obsolete(""null"",true)]
+            private static ServiceRewriterTestCase RemovesParametersFromObosoleteAttribute()
+            {
+                return new ServiceRewriterTestCase(
+                    nameof(RemovesParametersFromObosoleteAttribute),
+        @"[Obsolete(""null"",true)]
 public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true),Obsolete(""null"",true)]
@@ -230,7 +232,7 @@ public static class BuildSystemAliases
     {
     }
 }",
-    @"[Obsolete]
+        @"[Obsolete]
 public static class BuildSystemAliases
 {
     [Obsolete]
@@ -238,7 +240,8 @@ public static class BuildSystemAliases
     {
     }
 }"
-            );
+                );
+            }
         }
     }
 }

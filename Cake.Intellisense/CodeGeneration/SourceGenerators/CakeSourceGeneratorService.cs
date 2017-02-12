@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Cake.MetadataGenerator.CodeGeneration.MetadataGenerators;
 using Cake.MetadataGenerator.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -48,7 +47,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
         private IEnumerable<ClassDeclarationSyntax> CreateNamedTypeDeclaration(INamespaceOrTypeSymbol namepace)
         {
             return namepace.GetTypeMembers()
-                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == "ScriptHost" || val.GetAttributes().Any(x => x.AttributeClass.Name == "CakeAliasCategoryAttribute")))
+                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == CakeEngineNames.ScriptHost || val.GetAttributes().Any(x => x.AttributeClass.Name == CakeAttributeNames.CakeAliasCategory)))
                 .Select(val => metadataGeneratorService.CreateNamedTypeDeclaration(val));
         }
 
