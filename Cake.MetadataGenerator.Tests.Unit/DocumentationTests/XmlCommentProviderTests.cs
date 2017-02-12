@@ -50,9 +50,9 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         [Fact]
         public void GetReturnsEmptyStringWhenSectionForGivenCommentIdDoesNotExist()
         {
-            FakeOf<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
+            Get<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
 
-            var result = Subject.Get(emptyDocument, FakeOf<ISymbol>());
+            var result = Subject.Get(emptyDocument, Get<ISymbol>());
 
             result.Should().BeEmpty();
         }
@@ -60,9 +60,9 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         [Fact]
         public void GeRetunsValidCSharpCommentBasedOnXmlDocumentation()
         {
-            FakeOf<ISymbol>().GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
+            Get<ISymbol>().GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
 
-            var result = Subject.Get(validDocumet, FakeOf<ISymbol>());
+            var result = Subject.Get(validDocumet, Get<ISymbol>());
 
             result.Should().NotBeNull();
             result.Should().Be(@"///             <summary>
@@ -92,7 +92,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         [Theory]
         [InlineData(CakeAttributes.CakePropertyAlias)]
         [InlineData(CakeAttributes.CakeMethodAlias)]
-        public void GetRetursalidCSharpCommentWitFirstParamRemovedWhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
+        public void GetRetursValidCSharpCommentWitFirstParamRemovedWhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
         {
             var attributeData = Use<AttributeData>();
             var namedTypeSymbol = Use<INamedTypeSymbol>();
@@ -109,7 +109,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
             methodSymbol.Kind.Returns(SymbolKind.Method);
             methodSymbol.GetAttributes().Returns(ImmutableArray.Create(attributeData));
 
-            var result = Subject.Get(validDocumet, FakeOf<IMethodSymbol>());
+            var result = Subject.Get(validDocumet, Get<IMethodSymbol>());
 
             result.Should().NotBeNull();
             result.Should().Be(@"///             <summary>

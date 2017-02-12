@@ -18,7 +18,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSynta
 
         public SyntaxNode Rewrite(CompilationUnitSyntax compilationUnitSyntax, Assembly assembly)
         {
-            var compilation = CSharpCompilation.Create(assemblyName: assembly.GetName().Name);
+            var compilation = CSharpCompilation.Create(assembly.GetName().Name);
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.Create(compilationUnitSyntax));
 

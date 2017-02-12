@@ -25,7 +25,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
 
         public CommentSyntaxRewriterServiceTest()
         {
-            FakeOf<ICommentProvider>().Get(Arg.Any<XDocument>(), Arg.Any<ISymbol>())
+            Get<ICommentProvider>().Get(Arg.Any<XDocument>(), Arg.Any<ISymbol>())
                                       .Returns(_xmlComment);
         }
 

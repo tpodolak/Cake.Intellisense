@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using MoreLinq;
 using NSubstitute;
 using NSubstitute.Core;
 
@@ -36,30 +35,35 @@ namespace Cake.MetadataGenerator.Tests.Unit
             throw new InvalidOperationException($"Unable to resolve dependency {dependencyType}");
         }
 
-        public TDependency Use<TDependency>(TDependency instane = default(TDependency))
+
+        public object Use(Type dependencyType, params object[] constructorArgs)
         {
-            var dependencyType = typeof(TDependency);
             if (container.ContainsKey(dependencyType))
                 throw new InvalidOperationException($"Dependency {dependencyType} is already registerd");
 
-            instane = instane != null ? instane : (TDependency)CreateInstance(dependencyType);
-            container.Add(dependencyType, instane);
-            return instane;
+            var instance = CreateInstance(dependencyType, constructorArgs);
+            container.Add(dependencyType, instance);
+            return instance;
         }
 
-        private object CreateInstance(Type type)
+        public TDependency Use<TDependency>(params object[] constructorArgs)
+        {
+            return (TDependency)Use(typeof(TDependency), constructorArgs);
+        }
+
+        public virtual object CreateInstance(Type type, params object[] constructorArgs)
         {
             if (type.IsPrimitive)
                 return Activator.CreateInstance(type);
             if (type == typeof(string))
                 return null;
 
-            return type.IsInterface ? Substitute.For(new[] { type }, null) : SubstitutionContext.Current.SubstituteFactory.CreatePartial(new[] { type }, null);
+            return type.IsInterface ? Substitute.For(new[] { type }, constructorArgs) : SubstitutionContext.Current.SubstituteFactory.CreatePartial(new[] { type }, constructorArgs);
         }
 
         private ConstructorInfo GetMostComplexConstructor()
         {
-            return typeof(T).GetConstructors().GroupBy(ctor => ctor.GetParameters().Length).MaxBy(group => group.Key).First();
+            return typeof(T).GetConstructors().OrderBy(ctor => ctor.GetParameters().Length).Last();
         }
     }
 }

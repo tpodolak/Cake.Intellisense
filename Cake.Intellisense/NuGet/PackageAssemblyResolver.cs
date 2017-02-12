@@ -18,8 +18,8 @@ namespace Cake.MetadataGenerator.NuGet
 
         public List<Assembly> ResolveAssemblies(IPackage package, FrameworkName targetFramework)
         {
-            return package.GetFiles()
-                  .OfType<PhysicalPackageFile>()
+            // TODO how can we get rid of cast, loading assembly from stream drops the location
+            return package.GetFiles().OfType<PhysicalPackageFile>()
                   .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))
                   .Select(val => assemblyLoader.LoadFrom(val.SourcePath))
                   .ToList();

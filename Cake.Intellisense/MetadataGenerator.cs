@@ -61,54 +61,54 @@ namespace Cake.MetadataGenerator
 
             var packages = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework);
             var assemblies = packageAssemblyResolver.ResolveAssemblies(package, targetFramework);
-            var physicalPackageFiles = GetPhysicalPackages(packages, targetFramework);
+            var physicalPackageFiles = GetPackageFiles(packages, targetFramework);
 
 
             foreach (var assembly in assemblies)
             {
-                var compilationUnit = cakeSourceGenerator.Generate(assemblies.First());
+                var compilationUnit = cakeSourceGenerator.Generate(assembly);
                 var rewritenNode = cakeSyntaxRewriterService.Rewrite(compilationUnit, assembly);
 
+                var emitedAssemblyName = $"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSufix}";
                 var compilation = CSharpCompilation.Create(
-                   assemblyName: assembly.GetName().Name + ".Metadata",
-                   syntaxTrees: new[] { ParseSyntaxTree(rewritenNode.NormalizeWhitespace().ToFullString()) },
-                   references: PrepareMetadataReferences(assemblies, physicalPackageFiles),
-                   options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                   emitedAssemblyName,
+                   new[] { ParseSyntaxTree(rewritenNode.NormalizeWhitespace().ToFullString()) },
+                   PrepareMetadataReferences(assemblies, physicalPackageFiles),
+                   new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-                var result = compiler.Compile(compilation, assemblies.First().GetName().Name + ".Metadata.dll");
+                var result = compiler.Compile(compilation, $"{emitedAssemblyName}.dll");
                 generatorResult.EmitedAssemblies.Add(result);
                 generatorResult.SourceAssemblies.Add(assembly);
-
             }
 
             return generatorResult;
         }
 
-        private static List<PhysicalPackageFile> GetPhysicalPackages(List<IPackage> packages, FrameworkName targetFramework)
+        private List<IPackageFile> GetPackageFiles(List<IPackage> packages, FrameworkName targetFramework)
         {
-            return packages.SelectMany(file => GetPhysicalPackages(file, targetFramework)).ToList();
+            return packages.SelectMany(file => GetPackageFiles(file, targetFramework)).ToList();
         }
 
-        private static IEnumerable<PhysicalPackageFile> GetPhysicalPackages(IPackage file, FrameworkName targetFramework)
+        private IEnumerable<IPackageFile> GetPackageFiles(IPackage file, FrameworkName targetFramework)
         {
-            return file.GetFiles().OfType<PhysicalPackageFile>().Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"));
+            return file.GetFiles().Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"));
         }
 
-        private IEnumerable<PortableExecutableReference> PrepareMetadataReferences(List<Assembly> assemblies, List<PhysicalPackageFile> physicalPackageFiles)
+        private IEnumerable<PortableExecutableReference> PrepareMetadataReferences(List<Assembly> assemblies, List<IPackageFile> physicalPackageFiles)
         {
-            physicalPackageFiles.ForEach(val => assemblyLoader.LoadFrom(val.SourcePath));
+            physicalPackageFiles.ForEach(val => assemblyLoader.LoadFrom(((PhysicalPackageFile)val).SourcePath));
 
             var assemblyReferences = assemblies.Select(val => metadataReferenceLoader.CreateFromFile(val.Location));
 
             var referencedAssemblyReferences =
                 physicalPackageFiles
-                    .SelectMany(ff => assemblyLoader.LoadReferencedAssemblies(ff.SourcePath))
-                    .Select(val => metadataReferenceLoader.CreateFromFile(val.Location))
+                    .SelectMany(packageFile => assemblyLoader.LoadReferencedAssemblies(((PhysicalPackageFile)packageFile).SourcePath))
+                    .Select(assembly => metadataReferenceLoader.CreateFromFile(assembly.Location))
                     .ToList();
 
-            var physicalPackagesReferences = physicalPackageFiles.Select(val => metadataReferenceLoader.CreateFromFile(val.SourcePath));
+            var physicalPackagesReferences = physicalPackageFiles.Select(val => metadataReferenceLoader.CreateFromFile(((PhysicalPackageFile)val).SourcePath));
 
-            return assemblyReferences.Union(referencedAssemblyReferences).Union(physicalPackagesReferences);
+            return assemblyReferences.Concat(referencedAssemblyReferences).Concat(physicalPackagesReferences);
         }
     }
 }

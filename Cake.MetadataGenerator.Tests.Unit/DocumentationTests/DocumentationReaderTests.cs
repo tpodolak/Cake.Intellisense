@@ -1,4 +1,6 @@
-﻿using Cake.MetadataGenerator.Documentation;
+﻿using System.IO;
+using System.Xml.Linq;
+using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.FileSystem;
 using FluentAssertions;
 using NSubstitute;
@@ -11,21 +13,21 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         [Fact]
         public void ReadReturnsEmptyDocumentationWhenFileDoesNotExist()
         {
-            FakeOf<IFileSystem>().FileExists(Arg.Any<string>()).Returns(false);
+            Get<IFileSystem>().FileExists(Arg.Any<string>()).Returns(false);
 
             var result = Subject.Read("path");
 
             result.Should().NotBeNull();
             result.Root.Should().NotBeNull();
             result.Root.DescendantNodes().Should().BeEmpty();
-            FakeOf<IFileSystem>().DidNotReceive().ReadAllText(Arg.Any<string>());
+            Get<IFileSystem>().DidNotReceive().ReadAllText(Arg.Any<string>());
         }
 
         [Fact]
         public void ReadReturnsParsedDocumentationWhenFileExists()
         {
-            FakeOf<IFileSystem>().FileExists(Arg.Any<string>()).Returns(true);
-            FakeOf<IFileSystem>().ReadAllText(Arg.Any<string>()).Returns(@"<?xml version=""1.0""?>
+            Get<IFileSystem>().FileExists(Arg.Any<string>()).Returns(true);
+            Get<IFileSystem>().ReadAllText(Arg.Any<string>()).Returns(@"<?xml version=""1.0""?>
                                                                                 <doc>
                                                                                     <assembly>
                                                                                         <name>Cake.Core.Metadata</name>
@@ -36,7 +38,25 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
 
             result.Should().NotBeNull();
             result.Root.DescendantNodes().Should().NotBeNullOrEmpty();
-            FakeOf<IFileSystem>().Received(1).ReadAllText(Arg.Any<string>());
+            Get<IFileSystem>().Received(1).ReadAllText(Arg.Any<string>());
+        }
+
+        [Fact]
+        public void ReadReturnsParsedDocumentationWithPreservedWhitespaces()
+        {
+            var whiteSpacedDoc = @"<?xml version=""1.0""?>
+                                    <doc>
+                                        <assembly>
+                                                 <name> Cake.Core.Metadata 
+                                        </name>
+                                        </assembly>
+                                    </doc>";
+            Get<IFileSystem>().FileExists(Arg.Any<string>()).Returns(true);
+            Get<IFileSystem>().ReadAllText(Arg.Any<string>()).Returns(whiteSpacedDoc);
+
+            var result = Subject.Read("path");
+
+            result.ToString(SaveOptions.DisableFormatting).Should().Be(XDocument.Parse(whiteSpacedDoc, LoadOptions.PreserveWhitespace).ToString(SaveOptions.DisableFormatting));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
         public CompilationUnitSyntax Generate(Assembly assembly)
         {
             var compilation = CSharpCompilation.Create(
-                assemblyName: assembly.GetName().Name,
+                assembly.GetName().Name,
                 references: new[] { metadataReferenceLoader.CreateFromFile(assembly.Location) });
 
 
