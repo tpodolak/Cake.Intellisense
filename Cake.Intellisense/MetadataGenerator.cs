@@ -61,7 +61,7 @@ namespace Cake.MetadataGenerator
                 return null;
             }
 
-            var packages = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework);
+            var packages = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework).ToList();
             var assemblies = packageAssemblyResolver.ResolveAssemblies(package, targetFramework);
             var physicalPackageFiles = GetPackageFiles(packages, targetFramework);
 

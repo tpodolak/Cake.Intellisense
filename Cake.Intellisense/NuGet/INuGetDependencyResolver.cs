@@ -6,6 +6,6 @@ namespace Cake.MetadataGenerator.NuGet
 {
     public interface INuGetDependencyResolver
     {
-        List<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName);
+        IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName);
     }
 }

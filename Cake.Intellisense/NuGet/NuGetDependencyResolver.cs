@@ -14,23 +14,32 @@ namespace Cake.MetadataGenerator.NuGet
             packageRepository = packageRepositoryProvider.Get();
         }
 
-        public List<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName)
+        public IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName)
         {
             if (package == null)
-                return new List<IPackage>();
+                yield break;
 
-            var packages = new List<IPackage> { package };
+            yield return package;
 
-            var selectMany = package.DependencySets.SelectMany(x => x.Dependencies)
-                .Select(dep => new
+            foreach (var dependency in GetDependentPackages(package, frameworkName))
+            {
+                foreach (var innerPackage in GetDependentPackagesAndSelf(dependency, frameworkName))
                 {
-                    dependency = dep,
-                    dependentPackage = packageRepository.ResolveDependency(dep, false, true)
-                })
-                .Where(val => val.dependentPackage.GetFiles().Any(file => file.Path.EndsWith(".dll") && file.SupportedFrameworks.Contains(frameworkName)))
-                .SelectMany(dep => GetDependentPackagesAndSelf(dep.dependentPackage, frameworkName));
+                    yield return innerPackage;
+                }
+            }
+        }
 
-            return packages.Union(selectMany).ToList();
+        private IEnumerable<IPackage> GetDependentPackages(IPackage package, FrameworkName frameworkName)
+        {
+            return package.DependencySets.SelectMany(x => x.Dependencies)
+                .Select(val => packageRepository.ResolveDependency(val, false, true))
+                .Where(val => IsValidDependency(val, frameworkName));
+        }
+
+        private bool IsValidDependency(IPackage val, FrameworkName frameworkName)
+        {
+            return val.GetFiles().Any(file => file.Path.EndsWith(".dll") && file.SupportedFrameworks.Contains(frameworkName));
         }
     }
 }

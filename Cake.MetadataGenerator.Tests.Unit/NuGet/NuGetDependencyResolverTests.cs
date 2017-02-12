@@ -73,7 +73,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
                     Arg.Any<IPackageConstraintProvider>(), Arg.Any<bool>(), Arg.Any<bool>(),
                     Arg.Any<DependencyVersion>()).Returns(firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage);
 
-                var result = Subject.GetDependentPackagesAndSelf(package, defaultFramework);
+                var result = Subject.GetDependentPackagesAndSelf(package, defaultFramework).ToList();
 
                 result.Should().HaveCount(4);
                 result.ShouldBeEquivalentTo(new[] { package, firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage });
