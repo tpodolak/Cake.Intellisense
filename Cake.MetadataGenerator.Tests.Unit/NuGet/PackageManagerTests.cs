@@ -1,6 +1,6 @@
 ﻿namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 {
-    public partial class NuGetPackageManagerTests
+    public partial class PackageManagerTests
     {
     }
 }

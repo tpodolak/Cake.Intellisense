@@ -7,12 +7,14 @@ using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
+using IPackageManager = NuGet.IPackageManager;
+using PackageManager = Cake.MetadataGenerator.NuGet.PackageManager;
 
 namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 {
-    public partial class NuGetPackageManagerTests
+    public partial class PackageManagerTests
     {
-        public class InstallPackageMethod : Test<NuGetPackageManager>
+        public class InstallPackageMethod : Test<PackageManager>
         {
             public InstallPackageMethod()
             {
@@ -99,16 +101,16 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 
             public override object CreateInstance(Type type, params object[] constructorArgs)
             {
-                if (type == typeof(INugetPackageRepositoryProvider))
+                if (type == typeof(IPackageRepositoryProvider))
                 {
-                    var nugetPackageRepositoryProvider = Substitute.For<INugetPackageRepositoryProvider>();
+                    var nugetPackageRepositoryProvider = Substitute.For<IPackageRepositoryProvider>();
                     nugetPackageRepositoryProvider.Get().Returns(Use<IPackageRepository>());
                     return nugetPackageRepositoryProvider;
                 }
 
-                if (type == typeof(INugetPackageManagerProvider))
+                if (type == typeof(IPackageManagerProvider))
                 {
-                    var nugetPackageManagerProvider = Substitute.For<INugetPackageManagerProvider>();
+                    var nugetPackageManagerProvider = Substitute.For<IPackageManagerProvider>();
                     nugetPackageManagerProvider.Get().Returns(Use<IPackageManager>());
                     return nugetPackageManagerProvider;
                 }

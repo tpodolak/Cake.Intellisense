@@ -2,7 +2,7 @@
 
 namespace Cake.MetadataGenerator.NuGet
 {
-    public interface INugetPackageRepositoryProvider
+    public interface IPackageRepositoryProvider
     {
         IPackageRepository Get();
     }

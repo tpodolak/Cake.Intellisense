@@ -55,7 +55,7 @@ namespace Cake.MetadataGenerator.Reflection
         {
             try
             {
-                var assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(x => x.FullName == assemblyName.FullName);
+                var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName == assemblyName.FullName);
                 return assembly ?? Assembly.ReflectionOnlyLoad(assemblyName.FullName);
             }
             catch (Exception e)

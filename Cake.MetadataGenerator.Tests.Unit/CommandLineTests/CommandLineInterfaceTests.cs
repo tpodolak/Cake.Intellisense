@@ -6,6 +6,7 @@ using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
+using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
 {
@@ -28,7 +29,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
                 var result = Subject.Interact(new string[0]);
 
                 result.Should().BeNull();
-                Get<INuGetPackageManager>().DidNotReceive().FindPackage(Arg.Any<string>(), Arg.Any<string>());
+                Get<IPackageManager>().DidNotReceive().FindPackage(Arg.Any<string>(), Arg.Any<string>());
             }
 
             [Fact]
@@ -40,12 +41,12 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
                         new ParserResult<MetadataGeneratorOptions>(new MetadataGeneratorOptions(),
                             new List<ParserError>()));
 
-                Get<INuGetPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns((IPackage)null);
+                Get<IPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns((IPackage)null);
 
                 var result = Subject.Interact(new string[0]);
 
                 result.Should().BeNull();
-                Get<INuGetPackageManager>().Received(1).FindPackage(Arg.Any<string>(), Arg.Any<string>());
+                Get<IPackageManager>().Received(1).FindPackage(Arg.Any<string>(), Arg.Any<string>());
             }
 
             [Fact]
@@ -94,8 +95,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
                        new ParserResult<MetadataGeneratorOptions>(new MetadataGeneratorOptions { TargetFramework = targetFramework },
                            new List<ParserError>()));
 
-                Get<INuGetPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns(Use<IPackage>());
-                Get<INuGetPackageManager>().GetTargetFrameworks(Arg.Any<IPackage>()).Returns(frameworkNames);
+                Get<IPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns(Use<IPackage>());
+                Get<IPackageManager>().GetTargetFrameworks(Arg.Any<IPackage>()).Returns(frameworkNames);
                 Get<IConsoleReader>().TryRead(out index).Returns(callInfo =>
                 {
                     callInfo[0] = 0;

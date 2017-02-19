@@ -209,20 +209,20 @@
     <Compile Include="DocumentationTests\XmlCommentProviderTests.cs" />
     <Compile Include="Logging\NLogNugetLoggerAdapterTests.cs" />
     <Compile Include="MetadataGeneratorTests.cs" />
-    <Compile Include="NuGet\NuGetDependencyResolverTests.cs" />
-    <Compile Include="NuGet\NugetPackageManagerProviderTests.cs" />
-    <Compile Include="NuGet\NuGetPackageManagerTests.cs" />
-    <Compile Include="NuGet\NuGetPackageManagerTests.FindPackageMethod.cs">
-      <DependentUpon>NuGetPackageManagerTests.cs</DependentUpon>
+    <Compile Include="NuGet\DependencyResolverTests.cs" />
+    <Compile Include="NuGet\PackageManagerProviderTests.cs" />
+    <Compile Include="NuGet\PackageManagerTests.cs" />
+    <Compile Include="NuGet\PackageManagerTests.FindPackageMethod.cs">
+      <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
-    <Compile Include="NuGet\NuGetPackageManagerTests.GetTargetFrameworksMethod.cs">
-      <DependentUpon>NuGetPackageManagerTests.cs</DependentUpon>
+    <Compile Include="NuGet\PackageManagerTests.GetTargetFrameworksMethod.cs">
+      <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
-    <Compile Include="NuGet\NuGetPackageManagerTests.InstallPackageMethod.cs">
-      <DependentUpon>NuGetPackageManagerTests.cs</DependentUpon>
+    <Compile Include="NuGet\PackageManagerTests.InstallPackageMethod.cs">
+      <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
     <Compile Include="NuGet\PackageAssemblyResolverTests.cs" />
-    <Compile Include="NuGet\NugetPackageRepositoryProviderTests.cs" />
+    <Compile Include="NuGet\PackageRepositoryProviderTests.cs" />
     <Compile Include="SyntaxRewriterServicesTests\CakeSyntaxRewriterServiceTests.cs" />
     <Compile Include="SyntaxRewriterServicesTests\CommentSyntaxRewriterServiceTest.cs" />
     <Compile Include="SyntaxRewriterServicesTests\AttributeSyntaxRewriterServiceTest.cs" />

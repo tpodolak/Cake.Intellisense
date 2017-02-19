@@ -4,7 +4,7 @@ using NuGet;
 
 namespace Cake.MetadataGenerator.NuGet
 {
-    public interface INuGetDependencyResolver
+    public interface IDependencyResolver
     {
         IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName);
     }

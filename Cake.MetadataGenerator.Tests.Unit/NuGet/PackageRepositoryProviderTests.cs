@@ -8,9 +8,9 @@ using Xunit;
 
 namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 {
-    public class NugetPackageRepositoryProviderTests
+    public class PackageRepositoryProviderTests
     {
-        public class GetMethod : Test<NugetPackageRepositoryProvider>
+        public class GetMethod : Test<PackageRepositoryProvider>
         {
             [Fact]
             public void InitializesPackageRepositoryWithProperPackageSource()

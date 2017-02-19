@@ -14,6 +14,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
 
         [Theory]
         [InlineData("Cake.Common", DefaultFramework)]
+        [InlineData("Cake.Powershell", DefaultFramework)]
         public void GenerateCanGenerateMetadataForPackageTest(string package, string framework)
         {
             var options = CreateMetadataGeneratorOptions(package, framework);
@@ -81,7 +82,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
             var emitedTypes = emitedAssembly.GetExportedTypes().ToDictionary(key => key.FullName);
 
             emitedTypes.Values.Should().HaveSameCount(sourceTypes);
-            emitedTypes.Values.Should().OnlyContain(type => type.IsPublic);
+            emitedTypes.Values.Where(type => type.IsPublic).Should().HaveSameCount(emitedTypes.Values);
 
             foreach (var sourceType in sourceTypes)
             {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.CodeGeneration;
 using Cake.MetadataGenerator.CodeGeneration.SourceGenerators;
 using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
 using Cake.MetadataGenerator.Compilation;
@@ -10,9 +10,12 @@ using Cake.MetadataGenerator.NuGet;
 using Cake.MetadataGenerator.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using MoreLinq;
 using NLog;
 using NuGet;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using IDependencyResolver = Cake.MetadataGenerator.NuGet.IDependencyResolver;
+using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
 
 namespace Cake.MetadataGenerator
 {
@@ -22,8 +25,8 @@ namespace Cake.MetadataGenerator
 
         private readonly ICakeSourceGeneratorService cakeSourceGenerator;
         private readonly ICakeSyntaxRewriterService cakeSyntaxRewriterService;
-        private readonly INuGetPackageManager nuGetPackageManager;
-        private readonly INuGetDependencyResolver dependencyResolver;
+        private readonly IPackageManager packageManager;
+        private readonly IDependencyResolver dependencyResolver;
         private readonly IPackageAssemblyResolver packageAssemblyResolver;
         private readonly ICompiler compiler;
         private readonly IMetadataReferenceLoader metadataReferenceLoader;
@@ -32,8 +35,8 @@ namespace Cake.MetadataGenerator
         public MetadataGenerator(
             ICakeSourceGeneratorService cakeSourceGenerator,
             ICakeSyntaxRewriterService cakeSyntaxRewriterService,
-            INuGetPackageManager nuGetPackageManager,
-            INuGetDependencyResolver dependencyResolver,
+            IPackageManager packageManager,
+            IDependencyResolver dependencyResolver,
             IPackageAssemblyResolver packageAssemblyResolver,
             ICompiler compiler,
             IMetadataReferenceLoader metadataReferenceLoader,
@@ -41,7 +44,7 @@ namespace Cake.MetadataGenerator
         {
             this.cakeSourceGenerator = cakeSourceGenerator;
             this.cakeSyntaxRewriterService = cakeSyntaxRewriterService;
-            this.nuGetPackageManager = nuGetPackageManager;
+            this.packageManager = packageManager;
             this.dependencyResolver = dependencyResolver;
             this.packageAssemblyResolver = packageAssemblyResolver;
             this.compiler = compiler;
@@ -53,7 +56,7 @@ namespace Cake.MetadataGenerator
         {
             var generatorResult = new GeneratorResult();
             var targetFramework = new FrameworkName(options.TargetFramework);
-            var package = nuGetPackageManager.InstallPackage(options.Package, options.PackageVersion, targetFramework);
+            var package = packageManager.InstallPackage(options.Package, options.PackageVersion, targetFramework);
 
             if (package == null)
             {
@@ -110,7 +113,7 @@ namespace Cake.MetadataGenerator
 
             var physicalPackagesReferences = physicalPackageFiles.Select(val => metadataReferenceLoader.CreateFromFile(((PhysicalPackageFile)val).SourcePath));
 
-            return assemblyReferences.Concat(referencedAssemblyReferences).Concat(physicalPackagesReferences);
+            return assemblyReferences.Union(referencedAssemblyReferences).Union(physicalPackagesReferences).DistinctBy(reference => Path.GetFileName(reference.FilePath));
         }
     }
 }

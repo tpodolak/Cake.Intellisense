@@ -6,12 +6,13 @@ using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
+using IDependencyResolver = NuGet.IDependencyResolver;
 
 namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 {
-    public class NuGetDependencyResolverTests
+    public class DependencyResolverTests
     {
-        public class GetDependentPackagesAndSelfMethod : Test<NuGetDependencyResolver>
+        public class GetDependentPackagesAndSelfMethod : Test<DependencyResolver>
         {
             private readonly FrameworkName defaultFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
@@ -92,9 +93,9 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 
             public override object CreateInstance(Type type, params object[] constructorArgs)
             {
-                if (type == typeof(INugetPackageRepositoryProvider))
+                if (type == typeof(IPackageRepositoryProvider))
                 {
-                    var nugetPackageRepositoryProvider = Substitute.For<INugetPackageRepositoryProvider>();
+                    var nugetPackageRepositoryProvider = Substitute.For<IPackageRepositoryProvider>();
                     nugetPackageRepositoryProvider.Get().Returns(Use(Substitute.For<IPackageRepository, IDependencyResolver>()));
                     return nugetPackageRepositoryProvider;
                 }

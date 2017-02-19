@@ -7,14 +7,14 @@ using NuGet;
 
 namespace Cake.MetadataGenerator.NuGet
 {
-    public class NuGetPackageManager : INuGetPackageManager
+    public class PackageManager : IPackageManager
     {
-        private readonly IPackageManager packageManager;
+        private readonly global::NuGet.IPackageManager packageManager;
         private readonly IPackageRepository packageRepository;
         private readonly INuGetSettings settings;
 
-        public NuGetPackageManager(INugetPackageManagerProvider packageManagerProvider,
-            INugetPackageRepositoryProvider packageRepositoryProvider,
+        public PackageManager(IPackageManagerProvider packageManagerProvider,
+            IPackageRepositoryProvider packageRepositoryProvider,
             INuGetSettings settings)
         {
             this.settings = settings;

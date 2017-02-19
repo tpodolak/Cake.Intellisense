@@ -5,12 +5,12 @@ using NuGet;
 
 namespace Cake.MetadataGenerator.NuGet
 {
-    public class NugetPackageRepositoryProvider : INugetPackageRepositoryProvider
+    public class PackageRepositoryProvider : IPackageRepositoryProvider
     {
         private readonly IPackageRepositoryFactory packageRepositoryFactory;
         private readonly INuGetSettings settings;
 
-        public NugetPackageRepositoryProvider(IPackageRepositoryFactory packageRepositoryFactory, INuGetSettings settings)
+        public PackageRepositoryProvider(IPackageRepositoryFactory packageRepositoryFactory, INuGetSettings settings)
         {
             this.packageRepositoryFactory = packageRepositoryFactory;
             this.settings = settings;

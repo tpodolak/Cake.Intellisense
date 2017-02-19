@@ -4,7 +4,7 @@ using NuGet;
 
 namespace Cake.MetadataGenerator.NuGet
 {
-    public interface INuGetPackageManager
+    public interface IPackageManager
     {
         IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework);
 

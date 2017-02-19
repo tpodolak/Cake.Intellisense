@@ -5,11 +5,11 @@ using NuGet;
 
 namespace Cake.MetadataGenerator.NuGet
 {
-    public class NuGetDependencyResolver : INuGetDependencyResolver
+    public class DependencyResolver : IDependencyResolver
     {
         private readonly IPackageRepository packageRepository;
 
-        public NuGetDependencyResolver(INugetPackageRepositoryProvider packageRepositoryProvider)
+        public DependencyResolver(IPackageRepositoryProvider packageRepositoryProvider)
         {
             packageRepository = packageRepositoryProvider.Get();
         }

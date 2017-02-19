@@ -86,6 +86,10 @@
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.1.0\lib\net35\MoreLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -154,14 +158,15 @@
     <Compile Include="CommandLine\IArgumentParser.cs" />
     <Compile Include="NuGet\IPackageAssemblyResolver.cs" />
     <Compile Include="NuGet\PackageAssemblyResolver.cs" />
-    <Compile Include="NuGet\INuGetDependencyResolver.cs" />
-    <Compile Include="NuGet\INugetPackageManagerProvider.cs" />
-    <Compile Include="NuGet\INugetPackageRepositoryProvider.cs" />
-    <Compile Include="NuGet\INuGetPackageManager.cs" />
-    <Compile Include="NuGet\NuGetDependencyResolver.cs" />
-    <Compile Include="NuGet\NuGetPackageManager.cs" />
-    <Compile Include="NuGet\NugetPackageManagerProvider.cs" />
-    <Compile Include="NuGet\NugetPackageRepositoryProvider.cs" />
+    <Compile Include="NuGet\IDependencyResolver.cs" />
+    <Compile Include="NuGet\IPackageManagerProvider.cs" />
+    <Compile Include="NuGet\IPackageRepositoryProvider.cs" />
+    <Compile Include="NuGet\IPackageManager.cs" />
+    <Compile Include="NuGet\DependencyResolver.cs" />
+    <Compile Include="NuGet\PackageManager.cs" />
+    <Compile Include="NuGet\PackageManagerProvider.cs" />
+    <Compile Include="NuGet\PackageRepositoryProvider.cs" />
+    <Compile Include="Reflection\CakeAssemlbyResolver.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="Reflection\IAssemblyLoader.cs" />
     <Compile Include="Reflection\IMetadataReferenceLoader.cs" />

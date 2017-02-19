@@ -13,6 +13,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSubstitute;
 using NuGet;
 using Xunit;
+using IDependencyResolver = Cake.MetadataGenerator.NuGet.IDependencyResolver;
+using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
 
 namespace Cake.MetadataGenerator.Tests.Unit
 {
@@ -22,9 +24,9 @@ namespace Cake.MetadataGenerator.Tests.Unit
         {
             public GenerateMethod()
             {
-                Get<INuGetPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
+                Get<IPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
                                   .Returns(Use<IPackage>());
-                Get<INuGetDependencyResolver>()
+                Get<IDependencyResolver>()
                     .GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
                     .Returns(new List<IPackage>());
             }
@@ -32,7 +34,7 @@ namespace Cake.MetadataGenerator.Tests.Unit
             [Fact]
             public void ReturnsNullWhenNugetPackageNotFound()
             {
-                Get<INuGetPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
+                Get<IPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
                                               .Returns((IPackage)null);
 
                 var metadataGeneratorOptions = new MetadataGeneratorOptions
@@ -45,7 +47,7 @@ namespace Cake.MetadataGenerator.Tests.Unit
                 var result = Subject.Generate(metadataGeneratorOptions);
 
                 result.Should().BeNull();
-                Get<INuGetPackageManager>()
+                Get<IPackageManager>()
                     .Received(1)
                     .InstallPackage(Arg.Is<string>(val => val == metadataGeneratorOptions.Package),
                         Arg.Is<string>(val => val == metadataGeneratorOptions.PackageVersion),
@@ -104,7 +106,7 @@ namespace Cake.MetadataGenerator.Tests.Unit
                                                   .Returns(assemblies);
                 Get<ICakeSyntaxRewriterService>().Rewrite(Arg.Any<CompilationUnitSyntax>(), Arg.Any<Assembly>())
                                                     .Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot());
-                Get<INuGetDependencyResolver>().GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
+                Get<IDependencyResolver>().GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
                                                   .Returns(new List<IPackage> { Get<IPackage>() });
                 Get<IAssemblyLoader>().LoadReferencedAssemblies(Arg.Any<Stream>()).Returns(assemblies);
 

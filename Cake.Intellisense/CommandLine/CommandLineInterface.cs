@@ -10,11 +10,11 @@ namespace Cake.MetadataGenerator.CommandLine
 
         private readonly IArgumentParser argumentParser;
         private readonly IConsoleReader consoleReader;
-        private readonly INuGetPackageManager packageManager;
+        private readonly IPackageManager packageManager;
 
         public CommandLineInterface(IArgumentParser argumentParser,
             IConsoleReader consoleReader,
-            INuGetPackageManager packageManager)
+            IPackageManager packageManager)
         {
             this.argumentParser = argumentParser;
             this.consoleReader = consoleReader;

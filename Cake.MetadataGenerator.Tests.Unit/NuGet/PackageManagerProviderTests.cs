@@ -7,9 +7,9 @@ using Xunit;
 
 namespace Cake.MetadataGenerator.Tests.Unit.NuGet
 {
-    public partial class NugetPackageManagerProviderTests
+    public partial class PackageManagerProviderTests
     {
-        public class GetMethod : Test<NugetPackageManagerProvider>
+        public class GetMethod : Test<PackageManagerProvider>
         {
             [Fact]
             public void ReturnsPackageManagerWithProperLocalRepositoryPath()
@@ -17,7 +17,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGet
                 var packageRepository = Use<IPackageRepository>();
                 var localRepositoryPath = @"C:\Temp";
                 Get<INuGetSettings>().LocalRepositoryPath.Returns(localRepositoryPath);
-                Get<INugetPackageRepositoryProvider>().Get().Returns(packageRepository);
+                Get<IPackageRepositoryProvider>().Get().Returns(packageRepository);
 
                 var packageManager = Subject.Get();
 
