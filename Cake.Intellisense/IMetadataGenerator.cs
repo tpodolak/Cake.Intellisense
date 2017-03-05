@@ -1,4 +1,4 @@
-namespace Cake.MetadataGenerator
+﻿namespace Cake.MetadataGenerator
 {
     public interface IMetadataGenerator
     {

@@ -12,7 +12,8 @@ namespace Cake.MetadataGenerator.CommandLine
         private readonly IConsoleReader consoleReader;
         private readonly IPackageManager packageManager;
 
-        public CommandLineInterface(IArgumentParser argumentParser,
+        public CommandLineInterface(
+            IArgumentParser argumentParser,
             IConsoleReader consoleReader,
             IPackageManager packageManager)
         {
@@ -62,7 +63,6 @@ namespace Cake.MetadataGenerator.CommandLine
                 Logger.Info("Please select framework");
             }
             while (!consoleReader.TryRead(out dependencyId) && (dependencyId < 0 || dependencyId >= frameworks.Count));
-
 
             var targetFramework = frameworks[dependencyId];
             options.TargetFramework = targetFramework.FullName;

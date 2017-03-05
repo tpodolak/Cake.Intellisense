@@ -1,9 +1,9 @@
 ﻿using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using Autofac;
 using Cake.MetadataGenerator.Settings;
 using Castle.Components.DictionaryAdapter;
-using System.Linq;
 using Module = Autofac.Module;
 
 namespace Cake.MetadataGenerator.Infrastructure

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NLog;
 using NuGet;
 using ILogger = NuGet.ILogger;

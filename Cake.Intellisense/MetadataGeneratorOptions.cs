@@ -9,7 +9,7 @@ namespace Cake.MetadataGenerator
 
         [Option("PackageVersion", Required = false, HelpText = "Package version")]
         public string PackageVersion { get; set; }
-        
+
         [Option("OutputFolder", Required = false, HelpText = "Output folder for generated libraries")]
         public string OutputFolder { get; set; }
 

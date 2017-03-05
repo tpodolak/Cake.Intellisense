@@ -32,6 +32,7 @@ namespace Cake.MetadataGenerator
         private readonly IMetadataReferenceLoader metadataReferenceLoader;
         private readonly IAssemblyLoader assemblyLoader;
         private readonly ICompilationProvider compilationProvider;
+
         public MetadataGenerator(
             ICakeSourceGeneratorService cakeSourceGenerator,
             ICakeSyntaxRewriterService cakeSyntaxRewriterService,
@@ -40,7 +41,7 @@ namespace Cake.MetadataGenerator
             IPackageAssemblyResolver packageAssemblyResolver,
             ICompiler compiler,
             IMetadataReferenceLoader metadataReferenceLoader,
-            IAssemblyLoader assemblyLoader, 
+            IAssemblyLoader assemblyLoader,
             ICompilationProvider compilationProvider)
         {
             this.cakeSourceGenerator = cakeSourceGenerator;
@@ -69,7 +70,6 @@ namespace Cake.MetadataGenerator
             var packages = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework).ToList();
             var assemblies = packageAssemblyResolver.ResolveAssemblies(package, targetFramework);
             var physicalPackageFiles = GetPackageFiles(packages, targetFramework);
-
 
             foreach (var assembly in assemblies)
             {

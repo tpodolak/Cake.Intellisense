@@ -21,8 +21,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             {
                 TestCases = new[]
                 {
-                new object[] {ProperlyAppendsXmlCommentToMethodWithoutAttributes()},
-                new object[] { ProperlyAppendsXmlCommentToMethodWithAttributes()}
+                new object[] { ProperlyAppendsXmlCommentToMethodWithoutAttributes() },
+                new object[] { ProperlyAppendsXmlCommentToMethodWithAttributes() }
             };
             }
 
@@ -48,8 +48,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 public void Task(System.String name)
     {{
     }}
-}}"
-                );
+}}");
             }
 
             private static ServiceRewriterTestCase ProperlyAppendsXmlCommentToMethodWithAttributes()
@@ -70,8 +69,7 @@ public void Task(System.String name)
     public void Task(System.String name)
     {{
     }}
-}}"
-                );
+}}");
             }
         }
     }

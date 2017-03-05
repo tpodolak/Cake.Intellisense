@@ -12,11 +12,11 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             [Fact(Skip = "Unable to write proper unit tests due to PhysicalPackage issue")]
             public void ResolveAssembliesResolvesAssembliesBasedOnPhysicalPackagesSupportingGivenFramework()
             {
-                //            Use<IPackage>().GetFiles().Returns(new List<IPackageFile>
-                //            {
-                //                Use<IPackageFile>().SupportedFrameworks
-                //            })
-                //            Subject.ResolveAssemblies()
+                // Use<IPackage>().GetFiles().Returns(new List<IPackageFile>
+                // {
+                //     Use<IPackageFile>().SupportedFrameworks
+                // })
+                // Subject.ResolveAssemblies()
             }
         }
     }

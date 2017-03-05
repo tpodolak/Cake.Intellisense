@@ -10,7 +10,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.XUnitExtensionPoints
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class CustomMemberDataAttribute : MemberDataAttributeBase
     {
-        public CustomMemberDataAttribute(string memberName, params object[] parameters) : base(memberName, parameters)
+        public CustomMemberDataAttribute(string memberName, params object[] parameters)
+            : base(memberName, parameters)
         {
         }
 

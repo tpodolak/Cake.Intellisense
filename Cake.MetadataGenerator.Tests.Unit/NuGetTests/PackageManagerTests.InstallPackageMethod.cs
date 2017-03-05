@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -115,6 +115,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                     nugetPackageManagerProvider.Get().Returns(Use<IPackageManager>());
                     return nugetPackageManagerProvider;
                 }
+
                 return base.CreateInstance(type, constructorArgs);
             }
         }

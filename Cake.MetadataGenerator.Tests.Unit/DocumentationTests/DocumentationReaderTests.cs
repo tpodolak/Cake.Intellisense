@@ -12,7 +12,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
     {
         public class ReadMethod : Test<DocumentationReader>
         {
-
             [Fact]
             public void ReturnsEmptyDocumentation_WhenFileDoesNotExist()
             {

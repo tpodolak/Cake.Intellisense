@@ -13,7 +13,8 @@ namespace Cake.MetadataGenerator.NuGet
         private readonly IPackageRepository packageRepository;
         private readonly INuGetSettings settings;
 
-        public PackageManager(IPackageManagerProvider packageManagerProvider,
+        public PackageManager(
+            IPackageManagerProvider packageManagerProvider,
             IPackageRepositoryProvider packageRepositoryProvider,
             INuGetSettings settings)
         {

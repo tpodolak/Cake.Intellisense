@@ -12,10 +12,16 @@ namespace Cake.MetadataGenerator.Settings
             return $"{dictionaryAdapter.Meta.Type.Name.Remove(0, 1)}.{key}";
         }
 
-        public object GetPropertyValue(IDictionaryAdapter dictionaryAdapter, string key, object storedValue,
-            PropertyDescriptor property, bool ifExists)
+        public object GetPropertyValue(
+            IDictionaryAdapter dictionaryAdapter,
+            string key,
+            object storedValue,
+            PropertyDescriptor property,
+            bool ifExists)
         {
-            if (storedValue != null) return storedValue;
+            if (storedValue != null)
+                return storedValue;
+
             throw new InvalidOperationException($"Application setting '{key.ToLowerInvariant()}' not found!");
         }
 

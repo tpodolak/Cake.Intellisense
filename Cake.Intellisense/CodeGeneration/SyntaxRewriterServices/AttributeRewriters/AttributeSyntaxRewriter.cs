@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -76,7 +76,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.Attribute
                     .StartsWith(attributeName);
         }
 
-        private static SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
+        private SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
         {
             var identifierNameSyntax = node.Name as IdentifierNameSyntax;
             var qualifiedNameSyntax = node.Name as QualifiedNameSyntax;

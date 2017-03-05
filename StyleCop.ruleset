@@ -6,9 +6,19 @@
     <Rule Id="SA1412" Action="Error" />
     <Rule Id="SA1609" Action="Error" />
     <Rule Id="SA1639" Action="Error" />
-    <Rule Id="SX1101" Action="Error" />
-    <Rule Id="SX1309" Action="Error" />
-    <Rule Id="SX1309S" Action="Error" />
+    <Rule Id="SX1309S" Action="None" />
+    <Rule Id="SX1309X" Action="None" />
     <Rule Id="SA1101" Action="None" />
+    <Rule Id="SX1101" Action="None" />        
+    <Rule Id="SA1118" Action="None" />
+    <Rule Id="SA1503" Action="None" />
+    <Rule Id="SA1402" Action="None" />
+    <Rule Id="SA1127" Action="None" />
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SA1652" Action="None" />
+    <Rule Id="SX1309" Action="None" />    
+    <Rule Id="RS1014" Action="None" />    
+    <Rule Id="SA1201" Action="None" />    
+    <Rule Id="SA1129" Action="None" />    
   </Rules>
 </RuleSet>

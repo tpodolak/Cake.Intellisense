@@ -193,7 +193,7 @@
       <Link>App.config</Link>
     </None>
     <None Include="packages.config" />
-	<AdditionalFiles Include="..\StyleCop.json" />
+    <AdditionalFiles Include="..\StyleCop.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cake.Intellisense\Cake.MetadataGenerator.csproj">

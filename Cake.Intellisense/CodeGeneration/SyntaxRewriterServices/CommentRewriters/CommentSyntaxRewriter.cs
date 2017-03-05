@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
 namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters
 {
     internal class CommentSyntaxRewriter
@@ -41,7 +42,9 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRe
                     currentNode = node.WithAttributeLists(attributeList);
                 }
                 else
+                {
                     currentNode = node.WithLeadingTrivia(commentTrivia);
+                }
 
                 nodesDict.Add(node, currentNode);
             }

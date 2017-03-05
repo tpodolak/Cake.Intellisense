@@ -14,7 +14,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         public class GetMethod : Test<XmlCommentProvider>
         {
             private readonly XDocument emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
-            private readonly XDocument validDocument = XDocument.Parse(@"<?xml version=""1.0""?>
+            private readonly XDocument validDocument = XDocument.Parse(
+@"<?xml version=""1.0""?>
 <doc>
     <assembly>
         <name>Cake.Common</name>
@@ -45,6 +46,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         </member>
     </members>
 </doc>", LoadOptions.PreserveWhitespace);
+
             public GetMethod()
             {
                 Use<ISymbol>();

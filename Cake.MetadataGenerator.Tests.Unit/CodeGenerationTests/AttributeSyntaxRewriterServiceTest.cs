@@ -11,15 +11,15 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             {
                 TestCases = new[]
                 {
-                new object[] {RemovesCakeMethodAliasAttribute()},
-                new object[] {RemovesCakeAliasCategoryAttribute()},
-                new object[] {RemovesCakeNamespaceImportAttribute()},
-                new object[] {RemovesCakePropertyAttributesFromMethods()},
-                new object[] {RemovesCakePropertyAttributesFromProperties()},
-                new object[] {KeepsCommentTriviaWhenRemovingCakeAttributes()},
-                new object[] {KeepsAttributesNotRelatedWithCakeIntact()},
-                new object[] {RemovesParametersFromObosoleteAttribute()}
-            };
+                    new object[] { RemovesCakeMethodAliasAttribute() },
+                    new object[] { RemovesCakeAliasCategoryAttribute() },
+                    new object[] { RemovesCakeNamespaceImportAttribute() },
+                    new object[] { RemovesCakePropertyAttributesFromMethods() },
+                    new object[] { RemovesCakePropertyAttributesFromProperties() },
+                    new object[] { KeepsCommentTriviaWhenRemovingCakeAttributes() },
+                    new object[] { KeepsAttributesNotRelatedWithCakeIntact() },
+                    new object[] { RemovesParametersFromObosoleteAttribute() }
+                };
             }
 
             private static ServiceRewriterTestCase RemovesCakeMethodAliasAttribute()
@@ -47,8 +47,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name, T defaultValue)
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesCakeAliasCategoryAttribute()
@@ -70,8 +69,7 @@ public static class EnvironmentAliases
 
 public static class EnvironmentAliases
 {
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesCakeNamespaceImportAttribute()
@@ -99,8 +97,7 @@ public static class EnvironmentAliases
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromMethods()
@@ -119,8 +116,7 @@ public static class EnvironmentAliases
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesCakePropertyAttributesFromProperties()
@@ -141,8 +137,7 @@ public static class EnvironmentAliases
     {
         get;
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase KeepsCommentTriviaWhenRemovingCakeAttributes()
@@ -194,8 +189,7 @@ public static class BuildSystemAliases
     public static global::Cake.Common.Build.TravisCI.ITravisCIProvider TravisCI(this global::Cake.Core.ICakeContext context)
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase KeepsAttributesNotRelatedWithCakeIntact()
@@ -217,8 +211,7 @@ public static class BuildSystemAliases
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesParametersFromObosoleteAttribute()
@@ -240,8 +233,7 @@ public static class BuildSystemAliases
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
-}"
-                );
+}");
             }
         }
     }

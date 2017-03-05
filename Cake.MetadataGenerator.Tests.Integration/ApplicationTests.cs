@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Xunit;
+
 namespace Cake.MetadataGenerator.Tests.Integration
 {
     public class ApplicationTests
@@ -47,7 +48,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
                 }
             }
 
-            private static void VerifyGeneratorResult(Assembly sourcAssembly, Assembly emitedAssembly, Action<Assembly, Assembly> assemblyVerifier)
+            private void VerifyGeneratorResult(Assembly sourcAssembly, Assembly emitedAssembly, Action<Assembly, Assembly> assemblyVerifier)
             {
                 sourcAssembly.Should().NotBeNull();
                 emitedAssembly.Should().NotBeNull();
@@ -146,25 +147,25 @@ namespace Cake.MetadataGenerator.Tests.Integration
                 return sourceMethod.ToString() == emitedMethod.ToString();
             }
 
-            private static List<Type> GetCakeAliasTypes(Assembly assembly)
+            private List<Type> GetCakeAliasTypes(Assembly assembly)
             {
                 return assembly.GetExportedTypes()
                     .Where(val => val.GetCustomAttributes().Any(attr => attr.GetType().FullName == "Cake.Core.Annotations.CakeAliasCategoryAttribute"))
                     .ToList();
             }
 
-            private static List<Type> GetCakeScriptHostTypes(Assembly assembly)
+            private List<Type> GetCakeScriptHostTypes(Assembly assembly)
             {
                 return assembly.GetExportedTypes().Where(val => val.FullName == "Cake.Core.Scripting.ScriptHost").ToList();
             }
 
-            private static List<MethodInfo> GetCakeAliasMethods(Type sourceType)
+            private List<MethodInfo> GetCakeAliasMethods(Type sourceType)
             {
                 return sourceType.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(method => method.GetCustomAttributes().Any(attr => attr.GetType().FullName == "Cake.Core.Annotations.CakeMethodAliasAttribute"))
                     .ToList();
             }
 
-            private static List<MethodInfo> GetCakeScriptEngineMethods(Type type)
+            private List<MethodInfo> GetCakeScriptEngineMethods(Type type)
             {
                 return type.FullName == "Cake.Core.Scripting.ScriptHost"
                     ? type.GetMethods().Where(val => !val.IsSpecialName && val.DeclaringType != typeof(object)).ToList()

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -76,8 +76,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                 var secondPackageFile = Substitute.For<IPackageFile>();
                 secondPackageFile.TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.6"));
                 firstPackageFile.TargetFramework.Returns(targetFramework);
-
-
                 firstPackage.Version.Returns(new SemanticVersion(2, 0, 0, 0));
                 firstPackage.Id.Returns("Cake.Common");
                 firstPackage.GetFiles().Returns(new[] { firstPackageFile });
@@ -108,6 +106,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                     nugetPackageManagerProvider.Get().Returns(Use<IPackageManager>());
                     return nugetPackageManagerProvider;
                 }
+
                 return base.CreateInstance(type, constructorArgs);
             }
         }

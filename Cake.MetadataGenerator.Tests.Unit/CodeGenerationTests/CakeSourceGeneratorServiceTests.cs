@@ -89,7 +89,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
                     .ContainSingle(
                         memberSyntax =>
                             memberSyntax.Kind() == SyntaxKind.ClassDeclaration &&
-                            ((ClassDeclarationSyntax) memberSyntax).Identifier.ToString() == "MyClass");
+                            ((ClassDeclarationSyntax)memberSyntax).Identifier.ToString() == "MyClass");
 
                 Get<IMetadataGeneratorService>().Received(1).CreateNamedTypeDeclaration(Arg.Is<INamedTypeSymbol>(symbol => symbol == namedTypeSymbol));
             }

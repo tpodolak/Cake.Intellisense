@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,14 +8,14 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.ClassRewr
 {
     internal class ClassSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly string classSuffix;
-
         private static readonly List<SyntaxKind> TabuModifiers = new List<SyntaxKind>
         {
             SyntaxKind.ProtectedKeyword,
             SyntaxKind.PrivateKeyword,
             SyntaxKind.InternalKeyword
         };
+
+        private readonly string classSuffix;
 
         public ClassSyntaxRewriter(string classSuffix)
         {

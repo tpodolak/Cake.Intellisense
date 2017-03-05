@@ -220,16 +220,10 @@
     <Compile Include="NuGetTests\DependencyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageManagerProviderTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.cs" />
-    <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs">
-      <DependentUpon>PackageManagerTests.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs">
-      <DependentUpon>PackageManagerTests.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs">
-      <DependentUpon>PackageManagerTests.cs</DependentUpon>
-    </Compile>
+    <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs" />
+    <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs" />
     <Compile Include="NuGetTests\PackageAssemblyResolverTests.cs" />
+    <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs" />
     <Compile Include="NuGetTests\PackageRepositoryProviderTests.cs" />
     <Compile Include="CodeGenerationTests\CakeSyntaxRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\CommentSyntaxRewriterServiceTest.cs" />
@@ -244,7 +238,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-	<AdditionalFiles Include="..\StyleCop.json" />
+    <AdditionalFiles Include="..\StyleCop.json" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />

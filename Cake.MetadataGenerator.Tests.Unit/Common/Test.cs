@@ -17,6 +17,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.Common
         public Test()
         {
             var parameters = GetMostComplexConstructor().GetParameters();
+
             // allow to register custom instances via virtual call to CreateInstance
             var localContainer = parameters.ToDictionary(parameterInfo => parameterInfo.ParameterType, parameterInfo => CreateInstance(parameterInfo.ParameterType));
             localContainer.ForEach(pair => container.Add(pair.Key, pair.Value));
@@ -32,7 +33,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.Common
 
             throw new InvalidOperationException($"Unable to resolve dependency {dependencyType}");
         }
-
 
         public object Use(Type dependencyType, params object[] constructorArgs)
         {

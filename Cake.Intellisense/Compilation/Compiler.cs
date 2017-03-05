@@ -9,8 +9,9 @@ namespace Cake.MetadataGenerator.Compilation
 {
     public class Compiler : ICompiler
     {
-        private readonly IAssemblyLoader assemblyLoader;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private readonly IAssemblyLoader assemblyLoader;
 
         public Compiler(IAssemblyLoader assemblyLoader)
         {

@@ -50,7 +50,8 @@ namespace Cake.MetadataGenerator.Tests.Unit
                 result.Should().BeNull();
                 Get<IPackageManager>()
                     .Received(1)
-                    .InstallPackage(Arg.Is<string>(val => val == metadataGeneratorOptions.Package),
+                    .InstallPackage(
+                        Arg.Is<string>(val => val == metadataGeneratorOptions.Package),
                         Arg.Is<string>(val => val == metadataGeneratorOptions.PackageVersion),
                         Arg.Is<FrameworkName>(val => val.FullName == metadataGeneratorOptions.TargetFramework));
             }

@@ -22,10 +22,10 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
 
                 var parserResult = Subject.Parse<MetadataGeneratorOptions>(new[]
                 {
-                "--Package","Cake.Common",
+                "--Package", "Cake.Common",
                 "--PackageVersion", "0.17.0",
                 "--OutputFolder", @"C:\Temp",
-                "--TargetFramework",".NETFramework,Version=v4.5"
+                "--TargetFramework", ".NETFramework,Version=v4.5"
             });
 
                 parserResult.Should().NotBeNull();

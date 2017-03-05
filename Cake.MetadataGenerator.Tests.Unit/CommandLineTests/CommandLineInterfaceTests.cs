@@ -39,8 +39,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
                 Get<IArgumentParser>()
                     .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
                     .Returns(
-                        new ParserResult<MetadataGeneratorOptions>(new MetadataGeneratorOptions(),
-                            new List<ParserError>()));
+                        new ParserResult<MetadataGeneratorOptions>(new MetadataGeneratorOptions(), new List<ParserError>()));
 
                 Get<IPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns((IPackage)null);
 
@@ -60,15 +59,14 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
 
                 Get<IArgumentParser>()
                     .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
-                    .Returns(
-                        new ParserResult<MetadataGeneratorOptions>(new MetadataGeneratorOptions
+                    .Returns(new ParserResult<MetadataGeneratorOptions>(
+                        new MetadataGeneratorOptions
                         {
                             OutputFolder = outputFolder,
                             PackageVersion = packageVersion,
                             Package = package,
                             TargetFramework = frameworkVersion
-                        },
-                            new List<ParserError>()));
+                        }, new List<ParserError>()));
 
                 var result = Subject.Interact(new string[0]);
 
@@ -91,10 +89,11 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
                 var frameworkNames = new List<FrameworkName> { frameworkName };
 
                 Get<IArgumentParser>()
-                   .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
-                   .Returns(
-                       new ParserResult<MetadataGeneratorOptions>(new MetadataGeneratorOptions { TargetFramework = targetFramework },
-                           new List<ParserError>()));
+                    .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
+                    .Returns(
+                        new ParserResult<MetadataGeneratorOptions>(
+                            new MetadataGeneratorOptions { TargetFramework = targetFramework },
+                            new List<ParserError>()));
 
                 Get<IPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns(Use<IPackage>());
                 Get<IPackageManager>().GetTargetFrameworks(Arg.Any<IPackage>()).Returns(frameworkNames);

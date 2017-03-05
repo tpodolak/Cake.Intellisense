@@ -11,14 +11,14 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             {
                 TestCases = new[]
                 {
-                new object[] {RemovesFieldsDeclaration()},
-                new object[] {RemovesPropertyDeclarations()},
-                new object[] {RemovesNonPublicClasses()},
-                new object[] {AppendsMetadataClassSuffixToClassName()},
-                new object[] {RemovesAllConstructor()},
-                new object[] {ReplacesClassModifierWithPublicOne()},
-                new object[] {RemovesNonPublicMethods()},
-                new object[] {RemovesBaseList()}
+                new object[] { RemovesFieldsDeclaration() },
+                new object[] { RemovesPropertyDeclarations() },
+                new object[] { RemovesNonPublicClasses() },
+                new object[] { AppendsMetadataClassSuffixToClassName() },
+                new object[] { RemovesAllConstructor() },
+                new object[] { ReplacesClassModifierWithPublicOne() },
+                new object[] { RemovesNonPublicMethods() },
+                new object[] { RemovesBaseList() }
             };
             }
 
@@ -49,8 +49,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
         {
         }
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesPropertyDeclarations()
@@ -80,8 +79,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
         {
         }
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesNonPublicClasses()
@@ -103,8 +101,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
     public static class ArgumentAliasesMetadata
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase AppendsMetadataClassSuffixToClassName()
@@ -122,8 +119,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
     public static class ArgumentAliasesMetadata
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesAllConstructor()
@@ -148,8 +144,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
     public class ScriptHostMetadata
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase ReplacesClassModifierWithPublicOne()
@@ -167,8 +162,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
     public class ScriptHostMetadata
     {
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesNonPublicMethods()
@@ -200,8 +194,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
         {
         }
     }
-}"
-                );
+}");
             }
 
             private static ServiceRewriterTestCase RemovesBaseList()
@@ -219,9 +212,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
     public static class ArgumentAliasesMetadata
     {
     }
-}"
-                );
-
+}");
             }
         }
     }

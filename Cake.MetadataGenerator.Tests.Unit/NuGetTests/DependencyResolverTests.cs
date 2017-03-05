@@ -50,8 +50,11 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                 var packageDependencySets = new[] { CreateDependencySet(dependentPackage) };
                 package.DependencySets.Returns(packageDependencySets);
 
-                ((IDependencyResolver)Get<IPackageRepository>()).ResolveDependency(Arg.Any<PackageDependency>(),
-                    Arg.Any<IPackageConstraintProvider>(), Arg.Any<bool>(), Arg.Any<bool>(),
+                ((IDependencyResolver)Get<IPackageRepository>()).ResolveDependency(
+                    Arg.Any<PackageDependency>(),
+                    Arg.Any<IPackageConstraintProvider>(),
+                    Arg.Any<bool>(),
+                    Arg.Any<bool>(),
                     Arg.Any<DependencyVersion>()).Returns(dependentPackage);
 
                 var result = Subject.GetDependentPackagesAndSelf(package, new FrameworkName(".NETFramework,Version=v4.6"));
@@ -71,8 +74,11 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                 package.DependencySets.Returns(packageDependencySets);
                 var dependencySets = new[] { CreateDependencySet(secondLevelDependencyPackage) };
                 firstDependentPackage.DependencySets.Returns(dependencySets);
-                ((IDependencyResolver)Get<IPackageRepository>()).ResolveDependency(Arg.Any<PackageDependency>(),
-                    Arg.Any<IPackageConstraintProvider>(), Arg.Any<bool>(), Arg.Any<bool>(),
+                ((IDependencyResolver)Get<IPackageRepository>()).ResolveDependency(
+                    Arg.Any<PackageDependency>(),
+                    Arg.Any<IPackageConstraintProvider>(),
+                    Arg.Any<bool>(),
+                    Arg.Any<bool>(),
                     Arg.Any<DependencyVersion>()).Returns(firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage);
 
                 var result = Subject.GetDependentPackagesAndSelf(package, defaultFramework).ToList();

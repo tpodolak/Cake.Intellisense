@@ -15,7 +15,8 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
         private readonly IMetadataReferenceLoader metadataReferenceLoader;
         private readonly ICompilationProvider compilationProvider;
 
-        public CakeSourceGeneratorService(IMetadataGeneratorService metadataGeneratorService,
+        public CakeSourceGeneratorService(
+            IMetadataGeneratorService metadataGeneratorService,
             IMetadataReferenceLoader metadataReferenceLoader,
             ICompilationProvider compilationProvider)
         {
@@ -54,7 +55,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
                 .Select(val => metadataGeneratorService.CreateNamedTypeDeclaration(val));
         }
 
-        private static IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
+        private IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
         {
             yield return symbol;
 
