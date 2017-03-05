@@ -14,7 +14,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         {
 
             [Fact]
-            public void ReturnsEmptyDocumentationWhenFileDoesNotExist()
+            public void ReturnsEmptyDocumentation_WhenFileDoesNotExist()
             {
                 Get<IFileSystem>().FileExists(Arg.Any<string>()).Returns(false);
 
@@ -27,7 +27,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
             }
 
             [Fact]
-            public void ReturnsParsedDocumentationWhenFileExists()
+            public void ReturnsParsedDocumentation_WhenFileExists()
             {
                 Get<IFileSystem>().FileExists(Arg.Any<string>()).Returns(true);
                 Get<IFileSystem>().ReadAllText(Arg.Any<string>()).Returns(@"<?xml version=""1.0""?>

@@ -23,7 +23,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void RetursEmptyListWhenPackageNull()
+            public void RetursEmptyList_WhenPackageNull()
             {
                 var result = Subject.GetDependentPackagesAndSelf(null, defaultFramework);
 
@@ -31,7 +31,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsOriginalPackageWhenPackageHasNoDependencies()
+            public void ReturnsOriginalPackage_WhenPackageHasNoDependencies()
             {
                 var package = Get<IPackage>();
                 package.DependencySets.Returns(Enumerable.Empty<PackageDependencySet>());
@@ -43,7 +43,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsOriginalPackageWhenPackageHasNoDependenciesSuppotingGivenFramework()
+            public void ReturnsOriginalPackage_WhenPackageHasNoDependenciesSuppotingGivenFramework()
             {
                 var package = Get<IPackage>();
                 var dependentPackage = Substitute.For<IPackage>();
@@ -81,17 +81,6 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                 result.ShouldBeEquivalentTo(new[] { package, firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage });
             }
 
-            private PackageDependencySet CreateDependencySet(IPackage package)
-            {
-                var packageFile = Substitute.For<IPackageFile>();
-                packageFile.Path.Returns("lib.dll");
-
-                packageFile.SupportedFrameworks.Returns(new[] { defaultFramework });
-
-                package.GetFiles().Returns(new[] { packageFile });
-                return new PackageDependencySet(defaultFramework, new[] { new PackageDependency("id") });
-            }
-
             public override object CreateInstance(Type type, params object[] constructorArgs)
             {
                 if (type == typeof(IPackageRepositoryProvider))
@@ -102,6 +91,17 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
                 }
 
                 return base.CreateInstance(type, constructorArgs);
+            }
+
+            private PackageDependencySet CreateDependencySet(IPackage package)
+            {
+                var packageFile = Substitute.For<IPackageFile>();
+                packageFile.Path.Returns("lib.dll");
+
+                packageFile.SupportedFrameworks.Returns(new[] { defaultFramework });
+
+                package.GetFiles().Returns(new[] { packageFile });
+                return new PackageDependencySet(defaultFramework, new[] { new PackageDependency("id") });
             }
         }
     }

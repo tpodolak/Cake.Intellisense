@@ -23,7 +23,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsNullWhenPackageNotFound()
+            public void ReturnsNull_WhenPackageNotFound()
             {
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
@@ -36,7 +36,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsAndInstallPackageWhenPackageFoundAndTargetsGivenTargetFramework()
+            public void ReturnsAndInstallPackage_WhenPackageFoundAndTargetsGivenTargetFramework()
             {
                 var packageFile = Use<IPackageFile>();
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
@@ -54,7 +54,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsNullWhenPackageFoundAndDoesNotTargetsGivenTargetFramework()
+            public void ReturnsNull_WhenPackageFoundAndDoesNotTargetsGivenTargetFramework()
             {
                 var packageFile = Use<IPackageFile>();
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
@@ -72,7 +72,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsPackageForSpecificVersionWhenVersionSpecified()
+            public void ReturnsPackageForSpecificVersion_WhenVersionSpecified()
             {
                 var firstPackage = Substitute.For<IPackage>();
                 var secondPackage = Substitute.For<IPackage>();

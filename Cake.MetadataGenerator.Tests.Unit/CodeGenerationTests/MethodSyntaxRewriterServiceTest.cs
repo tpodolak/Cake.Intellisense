@@ -1,4 +1,5 @@
 ﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
@@ -10,20 +11,20 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
         {
             TestCases = new[]
             {
-                new object[] { RemovesCakeContextParamWhenMethodIsCakeAlias() },
-                new object[] { KeepsParametersIntactsWhenMethodNotDecoratedWithCakeMethodAliasAttribute() },
-                new object[] { KeepsMethodIntactWhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters() },
+                new object[] { RemovesCakeContextParam_WhenMethodIsCakeAlias() },
+                new object[] { KeepsParametersIntacts_WhenMethodNotDecoratedWithCakeMethodAliasAttribute() },
+                new object[] { KeepsMethodIntact_WhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters() },
                 new object[] { ConvertsMethodDecoratedWithCakePropertyAliasAttributeToProperty() },
-                new object[] { AppendMethodBodyWithProperReturnsStatementsWhemMethodReturnsValue() },
-                new object[] { AppendMethodBodyWithOutParametersAssignedWhenMethodHasOutParameters() },
+                new object[] { AppendMethodBodyWithProperReturnsStatements_WhenMethodReturnsValue() },
+                new object[] { AppendMethodBodyWithOutParametersAssigned_WhenMethodHasOutParameters() },
                 new object[] { ConvertsAbstractMethodToPublicStaticMethods() },
             };
         }
 
-        private static ServiceRewriterTestCase RemovesCakeContextParamWhenMethodIsCakeAlias()
+        private static ServiceRewriterTestCase RemovesCakeContextParam_WhenMethodIsCakeAlias()
         {
             return new ServiceRewriterTestCase(
-                nameof(RemovesCakeContextParamWhenMethodIsCakeAlias),
+                nameof(RemovesCakeContextParam_WhenMethodIsCakeAlias),
 @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
@@ -41,10 +42,10 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             );
         }
 
-        private static ServiceRewriterTestCase KeepsParametersIntactsWhenMethodNotDecoratedWithCakeMethodAliasAttribute()
+        private static ServiceRewriterTestCase KeepsParametersIntacts_WhenMethodNotDecoratedWithCakeMethodAliasAttribute()
         {
             return new ServiceRewriterTestCase(
-                nameof(KeepsParametersIntactsWhenMethodNotDecoratedWithCakeMethodAliasAttribute),
+                nameof(KeepsParametersIntacts_WhenMethodNotDecoratedWithCakeMethodAliasAttribute),
 @"public static class ArgumentAliases
 {
     public static void Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
@@ -60,10 +61,10 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             );
         }
 
-        private static ServiceRewriterTestCase KeepsMethodIntactWhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters()
+        private static ServiceRewriterTestCase KeepsMethodIntact_WhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters()
         {
             return new ServiceRewriterTestCase(
-                nameof(KeepsMethodIntactWhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters),
+                nameof(KeepsMethodIntact_WhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters),
 @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
@@ -103,10 +104,10 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             );
         }
 
-        private static ServiceRewriterTestCase AppendMethodBodyWithProperReturnsStatementsWhemMethodReturnsValue()
+        private static ServiceRewriterTestCase AppendMethodBodyWithProperReturnsStatements_WhenMethodReturnsValue()
         {
             return new ServiceRewriterTestCase(
-                nameof(AppendMethodBodyWithProperReturnsStatementsWhemMethodReturnsValue),
+                nameof(AppendMethodBodyWithProperReturnsStatements_WhenMethodReturnsValue),
 @"public static class ArgumentAliases
 {
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
@@ -132,10 +133,10 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             );
         }
 
-        private static ServiceRewriterTestCase AppendMethodBodyWithOutParametersAssignedWhenMethodHasOutParameters()
+        private static ServiceRewriterTestCase AppendMethodBodyWithOutParametersAssigned_WhenMethodHasOutParameters()
         {
             return new ServiceRewriterTestCase(
-                nameof(AppendMethodBodyWithOutParametersAssignedWhenMethodHasOutParameters),
+                nameof(AppendMethodBodyWithOutParametersAssigned_WhenMethodHasOutParameters),
 @"public static class ProcessAliases
 {
     public static void StartProcess(this global::Cake.Core.ICakeContext context, ref global::Cake.Core.IO.FilePath fileName, out global::Cake.Core.IO.ProcessSettings settings, out global::System.Collections.Generic.IEnumerable<System.String> redirectedOutput)

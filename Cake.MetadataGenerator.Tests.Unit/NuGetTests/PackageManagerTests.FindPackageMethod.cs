@@ -24,7 +24,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsNullWhenPackageNotFound()
+            public void ReturnsNull_WhenPackageNotFound()
             {
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
@@ -39,7 +39,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             [Theory]
             [InlineData(false, "1.0.0.0")]
             [InlineData(true, "2.0.0-special")]
-            public void ReturnsLastVersionWhenVersionNotSpecifiedAndPrereleasePackagesBlocked(bool allowPreRelease, string expectedVersion)
+            public void ReturnsLastVersion_WhenVersionNotSpecifiedAndPrereleasePackagesBlocked(bool allowPreRelease, string expectedVersion)
             {
                 var firstPackage = Substitute.For<IPackage>();
                 var secondPackage = Substitute.For<IPackage>();

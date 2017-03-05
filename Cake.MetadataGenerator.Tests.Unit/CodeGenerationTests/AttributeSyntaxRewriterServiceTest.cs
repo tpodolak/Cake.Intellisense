@@ -1,4 +1,5 @@
 ﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.AttributeRewriters;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 
 namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {

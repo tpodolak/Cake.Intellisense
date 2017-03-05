@@ -51,7 +51,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
             }
 
             [Fact]
-            public void ReturnsEmptyStringWhenSectionForGivenCommentIdDoesNotExist()
+            public void ReturnsEmptyString_WhenSectionForGivenCommentIdDoesNotExist()
             {
                 Get<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
 
@@ -95,7 +95,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
             [Theory]
             [InlineData(CakeAttributeNames.CakePropertyAlias)]
             [InlineData(CakeAttributeNames.CakeMethodAlias)]
-            public void RetursValidCSharpCommentWitFirstParamRemovedWhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
+            public void RetursValidCSharpCommentWitFirstParamRemoved_WhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
             {
                 var attributeData = Use<AttributeData>();
                 var namedTypeSymbol = Use<INamedTypeSymbol>();

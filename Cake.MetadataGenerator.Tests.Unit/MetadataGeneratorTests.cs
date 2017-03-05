@@ -33,7 +33,7 @@ namespace Cake.MetadataGenerator.Tests.Unit
             }
 
             [Fact]
-            public void ReturnsNullWhenNugetPackageNotFound()
+            public void ReturnsNull_WhenNugetPackageNotFound()
             {
                 Get<IPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
                                               .Returns((IPackage)null);
@@ -61,10 +61,10 @@ namespace Cake.MetadataGenerator.Tests.Unit
                 var firstAssembly = typeof(object).Assembly;
                 var secondAssembly = typeof(Stack<>).Assembly;
                 var assemblies = new List<Assembly>
-            {
-                firstAssembly,
-                secondAssembly
-            };
+                {
+                    firstAssembly,
+                    secondAssembly
+                };
 
                 Get<IMetadataReferenceLoader>().CreateFromFile(Arg.Any<string>()).Returns(MetadataReference.CreateFromStream(new MemoryStream()));
                 Get<IPackageAssemblyResolver>().ResolveAssemblies(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
@@ -92,9 +92,9 @@ namespace Cake.MetadataGenerator.Tests.Unit
                 var packageFile = Use<IPackageFile>();
                 var firstAssembly = typeof(object).Assembly;
                 var assemblies = new List<Assembly>
-            {
-                firstAssembly,
-            };
+                {
+                    firstAssembly,
+                };
 
                 packageFile.SupportedFrameworks.Returns(new List<FrameworkName> { new FrameworkName(frameworkVersion) });
                 packageFile.Path.Returns("path.dll");

@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters;
 using Cake.MetadataGenerator.Documentation;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 

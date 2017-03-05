@@ -65,7 +65,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             }
 
             [Fact]
-            public void AddsClassDeclarationSyntaxWhenTypeDecoratedWithCakeAliasCategoryAttribute()
+            public void AddsClassDeclarationSyntax_WhenTypeDecoratedWithCakeAliasCategoryAttribute()
             {
                 var cakeSymbl = Substitute.For<INamedTypeSymbol>();
                 cakeSymbl.Name.Returns(CakeAttributeNames.CakeAliasCategory);
@@ -95,7 +95,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             }
 
             [Fact]
-            public void AddsClassDeclarationSyntaxWhenTypeIsCakeEngine()
+            public void AddsClassDeclarationSyntax_WhenTypeIsCakeEngine()
             {
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();

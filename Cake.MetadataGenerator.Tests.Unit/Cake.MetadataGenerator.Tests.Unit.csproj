@@ -231,7 +231,7 @@
     <Compile Include="CodeGenerationTests\ClassSyntaxRewriterServiceTest.cs" />
     <Compile Include="CodeGenerationTests\SyntaxRewriterServiceTest.cs" />
     <Compile Include="CodeGenerationTests\MethodSyntaxRewriterServiceTest.cs" />
-    <Compile Include="CodeGenerationTests\ServiceRewriterTestCase.cs" />
+    <Compile Include="Common\ServiceRewriterTestCase.cs" />
     <Compile Include="XUnitExtensionPoints\CustomMemberDataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
