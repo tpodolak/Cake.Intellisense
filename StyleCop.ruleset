@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for Cake.MetadataGenerator" Description="Code analysis rules for Cake.MetadataGenerator.csproj." ToolsVersion="14.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA0000" Action="Error" />
+    <Rule Id="SA1305" Action="Error" />
+    <Rule Id="SA1412" Action="Error" />
+    <Rule Id="SA1609" Action="Error" />
+    <Rule Id="SA1639" Action="Error" />
+    <Rule Id="SX1101" Action="Error" />
+    <Rule Id="SX1309" Action="Error" />
+    <Rule Id="SX1309S" Action="Error" />
+    <Rule Id="SA1101" Action="None" />
+  </Rules>
+</RuleSet>
