@@ -201,38 +201,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoSubstitute.cs" />
+    <Compile Include="Common\Test.cs" />
+    <Compile Include="CodeGenerationTests\CakeSourceGeneratorServiceTests.cs" />
     <Compile Include="CommandLineTests\ArgumentParserTests.cs" />
     <Compile Include="CommandLineTests\CommandLineInterfaceTests.cs" />
     <Compile Include="ConventionTests\SyntaxRewriterServiceConventionTests.cs" />
     <Compile Include="DocumentationTests\DocumentationReaderTests.cs" />
     <Compile Include="DocumentationTests\XmlCommentProviderTests.cs" />
-    <Compile Include="Logging\NLogNugetLoggerAdapterTests.cs" />
+    <Compile Include="Extensions\NSubstituteExtensions.cs" />
+    <Compile Include="LoggingTests\NLogNugetLoggerAdapterTests.cs" />
     <Compile Include="MetadataGeneratorTests.cs" />
-    <Compile Include="NuGet\DependencyResolverTests.cs" />
-    <Compile Include="NuGet\PackageManagerProviderTests.cs" />
-    <Compile Include="NuGet\PackageManagerTests.cs" />
-    <Compile Include="NuGet\PackageManagerTests.FindPackageMethod.cs">
+    <Compile Include="NuGetTests\DependencyResolverTests.cs" />
+    <Compile Include="NuGetTests\PackageManagerProviderTests.cs" />
+    <Compile Include="NuGetTests\PackageManagerTests.cs" />
+    <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs">
       <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
-    <Compile Include="NuGet\PackageManagerTests.GetTargetFrameworksMethod.cs">
+    <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs">
       <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
-    <Compile Include="NuGet\PackageManagerTests.InstallPackageMethod.cs">
+    <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs">
       <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
-    <Compile Include="NuGet\PackageAssemblyResolverTests.cs" />
-    <Compile Include="NuGet\PackageRepositoryProviderTests.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\CakeSyntaxRewriterServiceTests.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\CommentSyntaxRewriterServiceTest.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\AttributeSyntaxRewriterServiceTest.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\ClassSyntaxRewriterServiceTest.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\SyntaxRewriterServiceTest.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\MethodSyntaxRewriterServiceTest.cs" />
-    <Compile Include="SyntaxRewriterServicesTests\ServiceRewriterTestCase.cs" />
-    <Compile Include="ExtensionPoints\CustomMemberDataAttribute.cs" />
+    <Compile Include="NuGetTests\PackageAssemblyResolverTests.cs" />
+    <Compile Include="NuGetTests\PackageRepositoryProviderTests.cs" />
+    <Compile Include="CodeGenerationTests\CakeSyntaxRewriterServiceTests.cs" />
+    <Compile Include="CodeGenerationTests\CommentSyntaxRewriterServiceTest.cs" />
+    <Compile Include="CodeGenerationTests\AttributeSyntaxRewriterServiceTest.cs" />
+    <Compile Include="CodeGenerationTests\ClassSyntaxRewriterServiceTest.cs" />
+    <Compile Include="CodeGenerationTests\SyntaxRewriterServiceTest.cs" />
+    <Compile Include="CodeGenerationTests\MethodSyntaxRewriterServiceTest.cs" />
+    <Compile Include="CodeGenerationTests\ServiceRewriterTestCase.cs" />
+    <Compile Include="XUnitExtensionPoints\CustomMemberDataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

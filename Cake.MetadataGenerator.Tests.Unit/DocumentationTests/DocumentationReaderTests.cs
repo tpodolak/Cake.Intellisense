@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 using Cake.MetadataGenerator.Documentation;
 using Cake.MetadataGenerator.FileSystem;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;

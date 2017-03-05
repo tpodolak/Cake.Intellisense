@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cake.MetadataGenerator.Compilation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,16 +10,18 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSynta
 {
     public class CakeSyntaxRewriterService : ICakeSyntaxRewriterService
     {
+        private readonly ICompilationProvider compilationProvider;
         private readonly IEnumerable<ISyntaxRewriterService> metadataRewriterServices;
 
-        public CakeSyntaxRewriterService(IEnumerable<ISyntaxRewriterService> metadataRewriterServices)
+        public CakeSyntaxRewriterService(ICompilationProvider compilationProvider, IEnumerable<ISyntaxRewriterService> metadataRewriterServices)
         {
-            this.metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order).ToList();
+            this.compilationProvider = compilationProvider;
+            this.metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order);
         }
 
         public SyntaxNode Rewrite(CompilationUnitSyntax compilationUnitSyntax, Assembly assembly)
         {
-            var compilation = CSharpCompilation.Create(assembly.GetName().Name);
+            var compilation = compilationProvider.Get(assembly.GetName().Name);
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.Create(compilationUnitSyntax));
 

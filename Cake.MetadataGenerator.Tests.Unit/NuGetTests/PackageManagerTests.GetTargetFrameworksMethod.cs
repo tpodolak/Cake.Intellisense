@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Versioning;
 using Cake.MetadataGenerator.NuGet;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;
@@ -8,7 +9,7 @@ using Xunit;
 using IPackageManager = NuGet.IPackageManager;
 using PackageManager = Cake.MetadataGenerator.NuGet.PackageManager;
 
-namespace Cake.MetadataGenerator.Tests.Unit.NuGet
+namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
 {
     public partial class PackageManagerTests
     {

@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.MetadataGenerator.NuGet;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
 using IDependencyResolver = NuGet.IDependencyResolver;
 
-namespace Cake.MetadataGenerator.Tests.Unit.NuGet
+namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
 {
     public class DependencyResolverTests
     {

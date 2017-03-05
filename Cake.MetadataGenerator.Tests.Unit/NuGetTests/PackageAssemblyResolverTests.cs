@@ -1,7 +1,8 @@
 ﻿using Cake.MetadataGenerator.NuGet;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.NuGet
+namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
 {
     // TODO Fix PhysicalPackage issue to write tests
     public partial class PackageAssemblyResolverTests : Test<PackageAssemblyResolver>

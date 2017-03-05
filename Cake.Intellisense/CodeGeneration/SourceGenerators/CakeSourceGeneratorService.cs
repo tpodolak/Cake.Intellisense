@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cake.MetadataGenerator.Compilation;
 using Cake.MetadataGenerator.Reflection;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -13,21 +13,24 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
     {
         private readonly IMetadataGeneratorService metadataGeneratorService;
         private readonly IMetadataReferenceLoader metadataReferenceLoader;
+        private readonly ICompilationProvider compilationProvider;
 
-        public CakeSourceGeneratorService(IMetadataGeneratorService metadataGeneratorService, IMetadataReferenceLoader metadataReferenceLoader)
+        public CakeSourceGeneratorService(IMetadataGeneratorService metadataGeneratorService,
+            IMetadataReferenceLoader metadataReferenceLoader,
+            ICompilationProvider compilationProvider)
         {
             this.metadataGeneratorService = metadataGeneratorService;
             this.metadataReferenceLoader = metadataReferenceLoader;
+            this.compilationProvider = compilationProvider;
         }
 
         public CompilationUnitSyntax Generate(Assembly assembly)
         {
-            var compilation = CSharpCompilation.Create(
+            var compilation = compilationProvider.Get(
                 assembly.GetName().Name,
                 references: new[] { metadataReferenceLoader.CreateFromFile(assembly.Location) });
 
-
-            var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace).ToList();
+            var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace);
 
             var compilationSyntax = CompilationUnit();
 
@@ -54,14 +57,12 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
         private static IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)
         {
             yield return symbol;
-            if (symbol.GetNamespaceMembers().Any())
+
+            foreach (var innerSymbol in symbol.GetNamespaceMembers())
             {
-                foreach (var innerSymbol in symbol.GetNamespaceMembers())
+                foreach (var reccured in GetNamespaceMembers(innerSymbol))
                 {
-                    foreach (var reccured in GetNamespaceMembers(innerSymbol))
-                    {
-                        yield return reccured;
-                    }
+                    yield return reccured;
                 }
             }
         }

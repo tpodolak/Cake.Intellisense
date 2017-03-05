@@ -1,4 +1,5 @@
 ﻿using Cake.MetadataGenerator.CommandLine;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using Xunit;
 

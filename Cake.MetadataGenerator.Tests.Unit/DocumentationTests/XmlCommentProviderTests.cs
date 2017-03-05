@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Xml.Linq;
 using Cake.MetadataGenerator.Documentation;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using NSubstitute;

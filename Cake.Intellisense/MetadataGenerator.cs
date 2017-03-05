@@ -31,7 +31,7 @@ namespace Cake.MetadataGenerator
         private readonly ICompiler compiler;
         private readonly IMetadataReferenceLoader metadataReferenceLoader;
         private readonly IAssemblyLoader assemblyLoader;
-
+        private readonly ICompilationProvider compilationProvider;
         public MetadataGenerator(
             ICakeSourceGeneratorService cakeSourceGenerator,
             ICakeSyntaxRewriterService cakeSyntaxRewriterService,
@@ -40,7 +40,8 @@ namespace Cake.MetadataGenerator
             IPackageAssemblyResolver packageAssemblyResolver,
             ICompiler compiler,
             IMetadataReferenceLoader metadataReferenceLoader,
-            IAssemblyLoader assemblyLoader)
+            IAssemblyLoader assemblyLoader, 
+            ICompilationProvider compilationProvider)
         {
             this.cakeSourceGenerator = cakeSourceGenerator;
             this.cakeSyntaxRewriterService = cakeSyntaxRewriterService;
@@ -50,6 +51,7 @@ namespace Cake.MetadataGenerator
             this.compiler = compiler;
             this.metadataReferenceLoader = metadataReferenceLoader;
             this.assemblyLoader = assemblyLoader;
+            this.compilationProvider = compilationProvider;
         }
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
@@ -75,7 +77,7 @@ namespace Cake.MetadataGenerator
                 var rewritenNode = cakeSyntaxRewriterService.Rewrite(compilationUnit, assembly);
 
                 var emitedAssemblyName = $"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSufix}";
-                var compilation = CSharpCompilation.Create(
+                var compilation = compilationProvider.Get(
                    emitedAssemblyName,
                    new[] { ParseSyntaxTree(rewritenNode.NormalizeWhitespace().ToFullString()) },
                    PrepareMetadataReferences(assemblies, physicalPackageFiles),

@@ -2,6 +2,7 @@
 using System.Runtime.Versioning;
 using Cake.MetadataGenerator.CommandLine;
 using Cake.MetadataGenerator.NuGet;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;

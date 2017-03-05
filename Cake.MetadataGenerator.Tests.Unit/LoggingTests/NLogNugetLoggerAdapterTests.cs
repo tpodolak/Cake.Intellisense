@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cake.MetadataGenerator.Logging;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using NLog;
 using NSubstitute;
@@ -7,7 +8,7 @@ using NuGet;
 using Xunit;
 using ILogger = NLog.ILogger;
 
-namespace Cake.MetadataGenerator.Tests.Unit.Logging
+namespace Cake.MetadataGenerator.Tests.Unit.LoggingTests
 {
     public partial class NLogNugetLoggerAdapterTests
     {

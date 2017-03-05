@@ -1,6 +1,6 @@
 ﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
 
-namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
+namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
     public partial class MethodSyntaxRewriterServiceTest
     {

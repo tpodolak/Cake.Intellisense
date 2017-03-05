@@ -6,6 +6,7 @@ using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRew
 using Cake.MetadataGenerator.Compilation;
 using Cake.MetadataGenerator.NuGet;
 using Cake.MetadataGenerator.Reflection;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

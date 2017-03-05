@@ -4,7 +4,7 @@ using Cake.MetadataGenerator.Documentation;
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 
-namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
+namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
     public partial class CommentSyntaxRewriterServiceTest
     {

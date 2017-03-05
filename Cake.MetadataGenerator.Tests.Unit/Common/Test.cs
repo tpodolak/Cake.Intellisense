@@ -6,15 +6,15 @@ using MoreLinq;
 using NSubstitute;
 using NSubstitute.Core;
 
-namespace Cake.MetadataGenerator.Tests.Unit
+namespace Cake.MetadataGenerator.Tests.Unit.Common
 {
-    public class AutoSubstitute<T> where T : class
+    public class Test<T> where T : class
     {
         private readonly Dictionary<Type, object> container = new Dictionary<Type, object>();
 
         public T Subject { get; }
 
-        public AutoSubstitute()
+        public Test()
         {
             var parameters = GetMostComplexConstructor().GetParameters();
             // allow to register custom instances via virtual call to CreateInstance

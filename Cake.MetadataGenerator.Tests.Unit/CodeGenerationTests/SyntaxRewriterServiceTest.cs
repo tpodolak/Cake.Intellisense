@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices;
-using Cake.MetadataGenerator.Tests.Unit.ExtensionPoints;
+using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.MetadataGenerator.Tests.Unit.XUnitExtensionPoints;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
+namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
 {
     public abstract class SyntaxRewriterServiceTest<T> : Test<T> where T : class, ISyntaxRewriterService
     {
@@ -16,8 +16,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.SyntaxRewriterServicesTests
         [CustomMemberData(nameof(TestCases))]
         public void Verify(ServiceRewriterTestCase testCase)
         {
-            var inputTree = ParseSyntaxTree(testCase.Input);
-            var expectedResultTree = ParseSyntaxTree(testCase.ExpectedResult);
+            var inputTree = SyntaxFactory.ParseSyntaxTree(testCase.Input);
+            var expectedResultTree = SyntaxFactory.ParseSyntaxTree(testCase.ExpectedResult);
 
             var compilation = CSharpCompilation.Create("name", new[] { inputTree });
 

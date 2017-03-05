@@ -1,17 +1,23 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using Cake.MetadataGenerator.Reflection;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using NLog;
 
 namespace Cake.MetadataGenerator.Compilation
 {
     public class Compiler : ICompiler
     {
+        private readonly IAssemblyLoader assemblyLoader;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public Assembly Compile(CSharpCompilation compilation, string outputPath)
+        public Compiler(IAssemblyLoader assemblyLoader)
+        {
+            this.assemblyLoader = assemblyLoader;
+        }
+
+        public Assembly Compile(Microsoft.CodeAnalysis.Compilation compilation, string outputPath)
         {
             var result = compilation.Emit(outputPath, Path.ChangeExtension(outputPath, "pdb"), Path.ChangeExtension(outputPath, "xml"));
 
@@ -29,7 +35,7 @@ namespace Cake.MetadataGenerator.Compilation
                 return null;
             }
 
-            return Assembly.LoadFrom(outputPath);
+            return assemblyLoader.LoadFrom(outputPath);
         }
     }
 }

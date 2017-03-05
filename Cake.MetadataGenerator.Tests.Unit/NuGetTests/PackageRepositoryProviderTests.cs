@@ -1,12 +1,13 @@
 ﻿using Cake.MetadataGenerator.Logging;
 using Cake.MetadataGenerator.NuGet;
 using Cake.MetadataGenerator.Settings;
+using Cake.MetadataGenerator.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.NuGet
+namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
 {
     public class PackageRepositoryProviderTests
     {

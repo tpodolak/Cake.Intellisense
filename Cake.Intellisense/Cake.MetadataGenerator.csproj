@@ -152,10 +152,12 @@
     <Compile Include="CommandLine\ConsoleReader.cs" />
     <Compile Include="CommandLine\ICommandLineInterface.cs" />
     <Compile Include="CommandLine\IConsoleReader.cs" />
+    <Compile Include="Compilation\CSharpompilationProvider.cs" />
     <Compile Include="Compilation\Compiler.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\IMetadataGeneratorService.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\RoslynMetadataGeneratorService.cs" />
     <Compile Include="CommandLine\IArgumentParser.cs" />
+    <Compile Include="Compilation\ICompilationProvider.cs" />
     <Compile Include="NuGet\IPackageAssemblyResolver.cs" />
     <Compile Include="NuGet\PackageAssemblyResolver.cs" />
     <Compile Include="NuGet\IDependencyResolver.cs" />
@@ -166,7 +168,6 @@
     <Compile Include="NuGet\PackageManager.cs" />
     <Compile Include="NuGet\PackageManagerProvider.cs" />
     <Compile Include="NuGet\PackageRepositoryProvider.cs" />
-    <Compile Include="Reflection\CakeAssemlbyResolver.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="Reflection\IAssemblyLoader.cs" />
     <Compile Include="Reflection\IMetadataReferenceLoader.cs" />
