@@ -35,7 +35,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
             }
 
             [Fact]
-            public void DoesNotReturnErrorsWhenOptionalArgumentsMissing()
+            public void DoesNotReturnErrors_WhenOptionalArgumentsMissing()
             {
                 var expectedResult = new MetadataGeneratorOptions
                 {
@@ -44,8 +44,8 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
 
                 var parserResult = Subject.Parse<MetadataGeneratorOptions>(new[]
                 {
-                "--Package","Cake.Common"
-            });
+                    "--Package", "Cake.Common"
+                });
 
                 parserResult.Should().NotBeNull();
                 parserResult.Errors.Should().BeEmpty();
@@ -54,14 +54,14 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
             }
 
             [Fact]
-            public void ReturnsErrorsWhenRequiredArgumentsMissing()
+            public void ReturnsErrors_WhenRequiredArgumentsMissing()
             {
                 var parserResult = Subject.Parse<MetadataGeneratorOptions>(new[]
                 {
-                 "--PackageVersion", "0.17.0",
-                "--OutputFolder", @"C:\Temp",
-                "--TargetFramework",".NETFramework,Version=v4.5"
-            });
+                    "--PackageVersion", "0.17.0",
+                    "--OutputFolder", @"C:\Temp",
+                    "--TargetFramework", ".NETFramework,Version=v4.5"
+                });
 
                 parserResult.Should().NotBeNull();
                 parserResult.Errors.Should().NotBeEmpty();

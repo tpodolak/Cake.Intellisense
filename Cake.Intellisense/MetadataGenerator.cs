@@ -74,12 +74,12 @@ namespace Cake.MetadataGenerator
             foreach (var assembly in assemblies)
             {
                 var compilationUnit = cakeSourceGenerator.Generate(assembly);
-                var rewritenNode = cakeSyntaxRewriterService.Rewrite(compilationUnit, assembly);
+                var rewrittenNode = cakeSyntaxRewriterService.Rewrite(compilationUnit, assembly);
 
-                var emitedAssemblyName = $"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSufix}";
+                var emitedAssemblyName = $"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSuffix}";
                 var compilation = compilationProvider.Get(
                    emitedAssemblyName,
-                   new[] { ParseSyntaxTree(rewritenNode.NormalizeWhitespace().ToFullString()) },
+                   new[] { ParseSyntaxTree(rewrittenNode.NormalizeWhitespace().ToFullString()) },
                    PrepareMetadataReferences(assemblies, physicalPackageFiles),
                    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 

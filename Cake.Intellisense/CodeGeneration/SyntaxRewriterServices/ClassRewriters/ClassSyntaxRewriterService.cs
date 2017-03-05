@@ -7,9 +7,9 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.ClassRewr
     {
         public int Order { get; } = 1;
 
-        public SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
+        public SyntaxNode Rewrite(Assembly assembly, SemanticModel semanticModel, SyntaxNode node)
         {
-            var classRewriter = new ClassSyntaxRewriter(MetadataGeneration.MetadataClassSufix);
+            var classRewriter = new ClassSyntaxRewriter(MetadataGeneration.MetadataClassSuffix);
             return classRewriter.Visit(node).NormalizeWhitespace();
         }
     }

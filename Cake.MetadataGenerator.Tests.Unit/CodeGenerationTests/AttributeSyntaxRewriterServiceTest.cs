@@ -13,7 +13,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
                 {
                 new object[] {RemovesCakeMethodAliasAttribute()},
                 new object[] {RemovesCakeAliasCategoryAttribute()},
-                new object[] {RemovesCakeNamespaceImportAttribue()},
+                new object[] {RemovesCakeNamespaceImportAttribute()},
                 new object[] {RemovesCakePropertyAttributesFromMethods()},
                 new object[] {RemovesCakePropertyAttributesFromProperties()},
                 new object[] {KeepsCommentTriviaWhenRemovingCakeAttributes()},
@@ -74,10 +74,10 @@ public static class EnvironmentAliases
                 );
             }
 
-            private static ServiceRewriterTestCase RemovesCakeNamespaceImportAttribue()
+            private static ServiceRewriterTestCase RemovesCakeNamespaceImportAttribute()
             {
                 return new ServiceRewriterTestCase(
-                    nameof(RemovesCakeNamespaceImportAttribue),
+                    nameof(RemovesCakeNamespaceImportAttribute),
         @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakeNamespaceImportAttribute(null), global::Cake.Core.Annotations.CakeNamespaceImportAttribute(null)]

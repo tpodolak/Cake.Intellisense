@@ -152,7 +152,7 @@
     <Compile Include="CommandLine\ConsoleReader.cs" />
     <Compile Include="CommandLine\ICommandLineInterface.cs" />
     <Compile Include="CommandLine\IConsoleReader.cs" />
-    <Compile Include="Compilation\CSharpompilationProvider.cs" />
+    <Compile Include="Compilation\CSharpCompilationProvider.cs" />
     <Compile Include="Compilation\Compiler.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\IMetadataGeneratorService.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\RoslynMetadataGeneratorService.cs" />

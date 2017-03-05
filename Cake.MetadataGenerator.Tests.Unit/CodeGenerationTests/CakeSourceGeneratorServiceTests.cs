@@ -67,12 +67,12 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
             [Fact]
             public void AddsClassDeclarationSyntax_WhenTypeDecoratedWithCakeAliasCategoryAttribute()
             {
-                var cakeSymbl = Substitute.For<INamedTypeSymbol>();
-                cakeSymbl.Name.Returns(CakeAttributeNames.CakeAliasCategory);
+                var cakeSymbol = Substitute.For<INamedTypeSymbol>();
+                cakeSymbol.Name.Returns(CakeAttributeNames.CakeAliasCategory);
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 var attributeData = Use<AttributeData>();
-                attributeData.ProtectedProperty("CommonAttributeClass").Returns(cakeSymbl);
+                attributeData.ProtectedProperty("CommonAttributeClass").Returns(cakeSymbol);
                 namedTypeSymbol.Kind.Returns(SymbolKind.NamedType);
                 namedTypeSymbol.GetAttributes().Returns(ImmutableArray.Create(attributeData));
                 rootNamespaceSymbol.GetTypeMembers().Returns(ImmutableArray.Create(namedTypeSymbol));

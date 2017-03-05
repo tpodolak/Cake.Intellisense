@@ -23,7 +23,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void RetursEmptyList_WhenPackageNull()
+            public void ReturnsEmptyList_WhenPackageNull()
             {
                 var result = Subject.GetDependentPackagesAndSelf(null, defaultFramework);
 
@@ -43,7 +43,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void ReturnsOriginalPackage_WhenPackageHasNoDependenciesSuppotingGivenFramework()
+            public void ReturnsOriginalPackage_WhenPackageHasNoDependenciesSupportingGivenFramework()
             {
                 var package = Get<IPackage>();
                 var dependentPackage = Substitute.For<IPackage>();

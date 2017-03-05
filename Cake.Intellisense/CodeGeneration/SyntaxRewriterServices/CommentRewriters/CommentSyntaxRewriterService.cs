@@ -17,10 +17,10 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRe
 
         public int Order { get; } = 0;
 
-        public SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
+        public SyntaxNode Rewrite(Assembly assembly, SemanticModel semanticModel, SyntaxNode node)
         {
             var rewriter = new CommentSyntaxRewriter(documentationReader, commentProvider, semanticModel);
-            return rewriter.Visit(assemlby, node);
+            return rewriter.Visit(assembly, node);
         }
     }
 }

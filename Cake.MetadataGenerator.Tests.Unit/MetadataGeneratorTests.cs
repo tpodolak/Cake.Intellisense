@@ -60,6 +60,8 @@ namespace Cake.MetadataGenerator.Tests.Unit
             {
                 var firstAssembly = typeof(object).Assembly;
                 var secondAssembly = typeof(Stack<>).Assembly;
+                var firstCompilation = Substitute.For<Microsoft.CodeAnalysis.Compilation>("mscorlib.Metadata", null, null, false, null);
+                var secondCompilation = Substitute.For<Microsoft.CodeAnalysis.Compilation>("System.Metadata", null, null, false, null);
                 var assemblies = new List<Assembly>
                 {
                     firstAssembly,
@@ -71,9 +73,12 @@ namespace Cake.MetadataGenerator.Tests.Unit
                                                   .Returns(assemblies);
                 Get<ICakeSyntaxRewriterService>().Rewrite(Arg.Any<CompilationUnitSyntax>(), Arg.Any<Assembly>())
                                                     .Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot());
-
-                Get<ICompiler>().Compile(Arg.Is<CSharpCompilation>(val => val.AssemblyName == "mscorlib.Metadata"), Arg.Any<string>()).Returns(secondAssembly);
-                Get<ICompiler>().Compile(Arg.Is<CSharpCompilation>(val => val.AssemblyName == "System.Metadata"), Arg.Any<string>()).Returns(firstAssembly);
+                Get<ICompilationProvider>().Get(Arg.Is<string>(assemblyName => assemblyName == "mscorlib.Metadata"), Arg.Any<IEnumerable<SyntaxTree>>(), Arg.Any<IEnumerable<MetadataReference>>(), Arg.Any<CSharpCompilationOptions>())
+                                           .Returns(firstCompilation);
+                Get<ICompilationProvider>().Get(Arg.Is<string>(assemblyName => assemblyName == "System.Metadata"), Arg.Any<IEnumerable<SyntaxTree>>(), Arg.Any<IEnumerable<MetadataReference>>(), Arg.Any<CSharpCompilationOptions>())
+                                           .Returns(secondCompilation);
+                Get<ICompiler>().Compile(Arg.Is<Microsoft.CodeAnalysis.Compilation>(val => val.AssemblyName == "mscorlib.Metadata"), Arg.Any<string>()).Returns(secondAssembly);
+                Get<ICompiler>().Compile(Arg.Is<Microsoft.CodeAnalysis.Compilation>(val => val.AssemblyName == "System.Metadata"), Arg.Any<string>()).Returns(firstAssembly);
 
                 var result = Subject.Generate(new MetadataGeneratorOptions { TargetFramework = ".NETFramework,Version=v4.5" });
 
@@ -81,8 +86,8 @@ namespace Cake.MetadataGenerator.Tests.Unit
                 result.SourceAssemblies[1].Should().BeSameAs(secondAssembly);
                 result.EmitedAssemblies[0].Should().BeSameAs(secondAssembly);
                 result.EmitedAssemblies[1].Should().BeSameAs(firstAssembly);
-                Get<ICompiler>().Received(1).Compile(Arg.Is<CSharpCompilation>(val => val.AssemblyName == "mscorlib.Metadata"), Arg.Is<string>(val => val == "mscorlib.Metadata.dll"));
-                Get<ICompiler>().Received(1).Compile(Arg.Is<CSharpCompilation>(val => val.AssemblyName == "System.Metadata"), Arg.Is<string>(val => val == "System.Metadata.dll"));
+                Get<ICompiler>().Received(1).Compile(Arg.Is<Microsoft.CodeAnalysis.Compilation>(val => val.AssemblyName == "mscorlib.Metadata"), Arg.Is<string>(val => val == "mscorlib.Metadata.dll"));
+                Get<ICompiler>().Received(1).Compile(Arg.Is<Microsoft.CodeAnalysis.Compilation>(val => val.AssemblyName == "System.Metadata"), Arg.Is<string>(val => val == "System.Metadata.dll"));
             }
 
             [Fact(Skip = "Looks like reading assembly from stream remove info about location")]

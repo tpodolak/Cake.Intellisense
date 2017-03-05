@@ -44,8 +44,8 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.Attribute
 
         public override SyntaxNode VisitAttribute(AttributeSyntax node)
         {
-            var obosoleteAttributeName = typeof(ObsoleteAttribute).Name;
-            if (AttributeNameMatches(node, obosoleteAttributeName) || AttributeNameMatches(node, obosoleteAttributeName.Substring(0, obosoleteAttributeName.IndexOf("Attribute"))))
+            var obsoleteAttributeName = typeof(ObsoleteAttribute).Name;
+            if (AttributeNameMatches(node, obsoleteAttributeName) || AttributeNameMatches(node, obsoleteAttributeName.Substring(0, obsoleteAttributeName.IndexOf("Attribute"))))
                 node = node.WithArgumentList(null);
 
             return base.VisitAttribute(node);

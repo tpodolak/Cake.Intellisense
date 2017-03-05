@@ -21,6 +21,6 @@
 
     public static class MetadataGeneration
     {
-        public const string MetadataClassSufix = "Metadata";
+        public const string MetadataClassSuffix = "Metadata";
     }
 }

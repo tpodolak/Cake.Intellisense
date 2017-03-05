@@ -6,6 +6,6 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSynta
 {
     public interface ICakeSyntaxRewriterService
     {
-        SyntaxNode Rewrite(CompilationUnitSyntax compilationUnitSyntax,Assembly assembly);
+        SyntaxNode Rewrite(CompilationUnitSyntax compilationUnitSyntax, Assembly assembly);
     }
 }

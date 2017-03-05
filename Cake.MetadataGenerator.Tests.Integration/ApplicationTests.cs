@@ -7,12 +7,12 @@ using FluentAssertions;
 using Xunit;
 namespace Cake.MetadataGenerator.Tests.Integration
 {
-    public class MetadataGeneratorTests
+    public class ApplicationTests
     {
         public class RunMethod
         {
             private const string DefaultFramework = ".NETFramework,Version=v4.5";
-            private readonly Application installisenseGenerator = new Application();
+            private readonly Application application = new Application();
 
             [Theory]
             [InlineData("Cake.Common", DefaultFramework, "0.17.0")]
@@ -20,7 +20,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
             public void CanGenerateMetadataForPackageTest(string package, string framework, string version)
             {
                 var options = CreateMetadataGeneratorOptions(package, framework, version);
-                var result = installisenseGenerator.Run(options);
+                var result = application.Run(options);
                 VerifyGeneratorResult(result, VerifyAliasAssemblyContent);
             }
 
@@ -29,7 +29,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
             public void CanGenerateMetadataForCakeCoreLibTest(string framework, string version)
             {
                 var options = CreateMetadataGeneratorOptions("Cake.Core", framework, version);
-                var result = installisenseGenerator.Run(options);
+                var result = application.Run(options);
 
                 VerifyGeneratorResult(result, VerifyScriptEngineAssemblyContent);
             }
@@ -78,7 +78,7 @@ namespace Cake.MetadataGenerator.Tests.Integration
                 var wrongGeneratedMethods = new List<MethodInfo>();
                 var missingMethods = new List<MethodInfo>();
                 var wrongGeneratedProperties = new List<MethodInfo>();
-                var missingProperies = new List<MethodInfo>();
+                var missingProperties = new List<MethodInfo>();
 
                 var sourceTypes = typeExtractor(sourceAssembly).ToList();
                 var emitedTypes = emitedAssembly.GetExportedTypes().ToDictionary(key => key.FullName);
@@ -108,13 +108,13 @@ namespace Cake.MetadataGenerator.Tests.Integration
                     if (!sourceProperties.Any() && emitedProperties.Any())
                         wrongGeneratedProperties.AddRange(emitedMethods);
 
-                    missingProperies.AddRange(sourceProperties.Where(sourceMethod => emitedProperties.All(val => $"get_{sourceMethod.Name}" != val.Name)));
+                    missingProperties.AddRange(sourceProperties.Where(sourceMethod => emitedProperties.All(val => $"get_{sourceMethod.Name}" != val.Name)));
                     wrongGeneratedProperties.AddRange(emitedProperties.Where(emitedMethod => sourceProperties.All(val => emitedMethod.Name != $"get_{val.Name}")));
                 }
 
                 wrongGeneratedMethods.Should().BeEmpty();
                 missingMethods.Should().BeEmpty();
-                missingProperies.Should().BeEmpty();
+                missingProperties.Should().BeEmpty();
                 wrongGeneratedProperties.Should().BeEmpty();
             }
 

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using NLog;
-using NuGet;
 using ILogger = NLog.ILogger;
 
 namespace Cake.MetadataGenerator.Reflection

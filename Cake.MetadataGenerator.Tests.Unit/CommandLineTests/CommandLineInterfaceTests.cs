@@ -19,9 +19,9 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
             public void ReturnsNullWhenParserErrorsOccured()
             {
                 var errorList = new List<ParserError>
-            {
-                new ParserError()
-            };
+                {
+                    new ParserError()
+                };
 
                 Get<IArgumentParser>()
                     .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
@@ -83,7 +83,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
             [InlineData("")]
             [InlineData(" ")]
             [InlineData(null)]
-            public void ListsAllAvilableFrameworksWhenTargetFrameworkNotSpecified(string targetFramework)
+            public void ListsAllAvailableFrameworksWhenTargetFrameworkNotSpecified(string targetFramework)
             {
                 int index = -1;
                 int resultIndex = 0;

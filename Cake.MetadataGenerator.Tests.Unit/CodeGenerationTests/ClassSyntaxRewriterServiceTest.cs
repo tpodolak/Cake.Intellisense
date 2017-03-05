@@ -14,7 +14,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
                 new object[] {RemovesFieldsDeclaration()},
                 new object[] {RemovesPropertyDeclarations()},
                 new object[] {RemovesNonPublicClasses()},
-                new object[] {AppendsMetadataClassSufixToClassName()},
+                new object[] {AppendsMetadataClassSuffixToClassName()},
                 new object[] {RemovesAllConstructor()},
                 new object[] {ReplacesClassModifierWithPublicOne()},
                 new object[] {RemovesNonPublicMethods()},
@@ -107,10 +107,10 @@ namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
                 );
             }
 
-            private static ServiceRewriterTestCase AppendsMetadataClassSufixToClassName()
+            private static ServiceRewriterTestCase AppendsMetadataClassSuffixToClassName()
             {
                 return new ServiceRewriterTestCase(
-                    nameof(AppendsMetadataClassSufixToClassName),
+                    nameof(AppendsMetadataClassSuffixToClassName),
                     @"namespace Cake.Common
 {
     public static class ArgumentAliases

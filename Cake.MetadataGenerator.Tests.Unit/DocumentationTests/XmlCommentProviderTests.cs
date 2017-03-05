@@ -14,7 +14,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
         public class GetMethod : Test<XmlCommentProvider>
         {
             private readonly XDocument emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
-            private readonly XDocument validDocumet = XDocument.Parse(@"<?xml version=""1.0""?>
+            private readonly XDocument validDocument = XDocument.Parse(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
         <name>Cake.Common</name>
@@ -65,7 +65,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
             {
                 Get<ISymbol>().GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
 
-                var result = Subject.Get(validDocumet, Get<ISymbol>());
+                var result = Subject.Get(validDocument, Get<ISymbol>());
 
                 result.Should().NotBeNull();
                 result.Should().Be(@"///             <summary>
@@ -95,7 +95,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
             [Theory]
             [InlineData(CakeAttributeNames.CakePropertyAlias)]
             [InlineData(CakeAttributeNames.CakeMethodAlias)]
-            public void RetursValidCSharpCommentWitFirstParamRemoved_WhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
+            public void ReturnsValidCSharpCommentWitFirstParamRemoved_WhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
             {
                 var attributeData = Use<AttributeData>();
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
@@ -112,7 +112,7 @@ namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
                 methodSymbol.Kind.Returns(SymbolKind.Method);
                 methodSymbol.GetAttributes().Returns(ImmutableArray.Create(attributeData));
 
-                var result = Subject.Get(validDocumet, Get<IMethodSymbol>());
+                var result = Subject.Get(validDocument, Get<IMethodSymbol>());
 
                 result.Should().NotBeNull();
                 result.Should().Be(@"///             <summary>

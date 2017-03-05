@@ -7,7 +7,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRew
     {
         public int Order { get; } = 2;
 
-        public SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node)
+        public SyntaxNode Rewrite(Assembly assembly, SemanticModel semanticModel, SyntaxNode node)
         {
             var rewriter = new MethodSyntaxRewriter(semanticModel);
             return rewriter.Visit(node).NormalizeWhitespace();

@@ -7,6 +7,6 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices
     {
         int Order { get; }
 
-        SyntaxNode Rewrite(Assembly assemlby, SemanticModel semanticModel, SyntaxNode node);
+        SyntaxNode Rewrite(Assembly assembly, SemanticModel semanticModel, SyntaxNode node);
     }
 }

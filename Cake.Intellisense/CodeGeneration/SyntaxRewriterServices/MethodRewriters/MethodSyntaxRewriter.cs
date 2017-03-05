@@ -92,8 +92,8 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRew
         {
             var hasCakeMethodAliasAttribute =
                 node.AttributeLists.Any(
-                    attrs =>
-                        attrs.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakeMethodAlias)));
+                    attributeLists =>
+                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakeMethodAlias)));
 
             if (!hasCakeMethodAliasAttribute || !node.ParameterList.Parameters.Any())
                 return node.ParameterList;
