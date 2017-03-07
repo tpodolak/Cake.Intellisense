@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
-using Cake.MetadataGenerator.Reflection;
+using Cake.Intellisense.Reflection;
 using Microsoft.CodeAnalysis;
 using NLog;
 
-namespace Cake.MetadataGenerator.Compilation
+namespace Cake.Intellisense.Compilation
 {
     public class Compiler : ICompiler
     {

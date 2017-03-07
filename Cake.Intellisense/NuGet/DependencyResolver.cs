@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using NuGet;
 
-namespace Cake.MetadataGenerator.NuGet
+namespace Cake.Intellisense.NuGet
 {
     public class DependencyResolver : IDependencyResolver
     {

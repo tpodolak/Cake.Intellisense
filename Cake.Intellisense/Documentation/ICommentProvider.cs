@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Cake.MetadataGenerator.Documentation
+namespace Cake.Intellisense.Documentation
 {
     public interface ICommentProvider
     {

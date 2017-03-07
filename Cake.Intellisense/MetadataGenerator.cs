@@ -3,22 +3,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.CodeGeneration.SourceGenerators;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
-using Cake.MetadataGenerator.Compilation;
-using Cake.MetadataGenerator.NuGet;
-using Cake.MetadataGenerator.Reflection;
+using Cake.Intellisense.CodeGeneration.SourceGenerators;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
+using Cake.Intellisense.Compilation;
+using Cake.Intellisense.NuGet;
+using Cake.Intellisense.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using MoreLinq;
 using NLog;
 using NuGet;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using IDependencyResolver = Cake.MetadataGenerator.NuGet.IDependencyResolver;
-using IFileSystem = Cake.MetadataGenerator.FileSystem.IFileSystem;
-using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
+using IDependencyResolver = Cake.Intellisense.NuGet.IDependencyResolver;
+using IFileSystem = Cake.Intellisense.FileSystem.IFileSystem;
+using IPackageManager = Cake.Intellisense.NuGet.IPackageManager;
 
-namespace Cake.MetadataGenerator
+namespace Cake.Intellisense
 {
     public class MetadataGenerator : IMetadataGenerator
     {
@@ -86,7 +85,7 @@ namespace Cake.MetadataGenerator
                 var emitedAssemblyName = $"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSuffix}";
                 var compilation = compilationProvider.Get(
                    emitedAssemblyName,
-                   new[] { ParseSyntaxTree(rewrittenNode.NormalizeWhitespace().ToFullString()) },
+                   new[] { SyntaxFactory.ParseSyntaxTree(rewrittenNode.NormalizeWhitespace().ToFullString()) },
                    PrepareMetadataReferences(assemblies, physicalPackageFiles),
                    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 

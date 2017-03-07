@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Cake.MetadataGenerator.NuGet;
+using Cake.Intellisense.NuGet;
 using NLog;
 
-namespace Cake.MetadataGenerator.CommandLine
+namespace Cake.Intellisense.CommandLine
 {
     public class CommandLineInterface : ICommandLineInterface
     {

@@ -1,7 +1,7 @@
-﻿using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+﻿using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
+using Cake.Intellisense.Tests.Unit.Common;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
     public partial class MethodSyntaxRewriterServiceTest
     {

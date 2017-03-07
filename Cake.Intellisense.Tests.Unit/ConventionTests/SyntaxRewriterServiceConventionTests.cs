@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.ConventionTests
+namespace Cake.Intellisense.Tests.Unit.ConventionTests
 {
     public class SyntaxRewriterServiceConventionTests
     {

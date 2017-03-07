@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Cake.MetadataGenerator.FileSystem
+namespace Cake.Intellisense.FileSystem
 {
     public interface IFileSystem
     {

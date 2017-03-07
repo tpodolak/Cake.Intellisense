@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Cake.MetadataGenerator.Compilation;
-using Cake.MetadataGenerator.Reflection;
+using Cake.Intellisense.Compilation;
+using Cake.Intellisense.Reflection;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
+namespace Cake.Intellisense.CodeGeneration.SourceGenerators
 {
     public class CakeSourceGeneratorService : ICakeSourceGeneratorService
     {
@@ -33,14 +33,14 @@ namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
 
             var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace);
 
-            var compilationSyntax = CompilationUnit();
+            var compilationSyntax = SyntaxFactory.CompilationUnit();
 
             foreach (var namespaceSymbol in namespaceSymbols)
             {
                 var classSymbols = CreateNamedTypeDeclaration(namespaceSymbol).ToArray();
                 if (classSymbols.Any())
                 {
-                    var namespaceSyntax = NamespaceDeclaration(IdentifierName(namespaceSymbol.ToString())).AddMembers(classSymbols);
+                    var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(namespaceSymbol.ToString())).AddMembers(classSymbols);
                     compilationSyntax = compilationSyntax.AddMembers(namespaceSyntax);
                 }
             }

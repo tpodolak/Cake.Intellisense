@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Cake.MetadataGenerator.Compilation
+namespace Cake.Intellisense.Compilation
 {
     public interface ICompiler
     {

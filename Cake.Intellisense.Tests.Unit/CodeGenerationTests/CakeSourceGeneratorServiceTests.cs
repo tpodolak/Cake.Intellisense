@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Cake.MetadataGenerator.CodeGeneration.SourceGenerators;
-using Cake.MetadataGenerator.Compilation;
-using Cake.MetadataGenerator.Tests.Unit.Common;
-using Cake.MetadataGenerator.Tests.Unit.Extensions;
+using Cake.Intellisense.CodeGeneration.SourceGenerators;
+using Cake.Intellisense.Compilation;
+using Cake.Intellisense.Tests.Unit.Common;
+using Cake.Intellisense.Tests.Unit.Extensions;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSubstitute;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
     public class CakeSourceGeneratorServiceTests
     {

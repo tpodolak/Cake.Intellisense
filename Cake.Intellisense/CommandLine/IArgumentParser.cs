@@ -1,4 +1,4 @@
-﻿namespace Cake.MetadataGenerator.CommandLine
+﻿namespace Cake.Intellisense.CommandLine
 {
     public interface IArgumentParser
     {

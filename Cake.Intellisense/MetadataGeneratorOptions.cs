@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace Cake.MetadataGenerator
+namespace Cake.Intellisense
 {
     public class MetadataGeneratorOptions
     {

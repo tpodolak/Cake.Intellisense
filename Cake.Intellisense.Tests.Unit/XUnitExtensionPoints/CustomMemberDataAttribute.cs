@@ -4,7 +4,7 @@ using System.Reflection;
 using Xunit;
 using Xunit.Sdk;
 
-namespace Cake.MetadataGenerator.Tests.Unit.XUnitExtensionPoints
+namespace Cake.Intellisense.Tests.Unit.XUnitExtensionPoints
 {
     [DataDiscoverer("Xunit.Sdk.MemberDataDiscoverer", "xunit.core")]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

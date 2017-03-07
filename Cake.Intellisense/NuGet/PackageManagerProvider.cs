@@ -1,7 +1,6 @@
-﻿using Cake.MetadataGenerator.Settings;
-using NuGet;
+﻿using Cake.Intellisense.Settings;
 
-namespace Cake.MetadataGenerator.NuGet
+namespace Cake.Intellisense.NuGet
 {
     public class PackageManagerProvider : IPackageManagerProvider
     {

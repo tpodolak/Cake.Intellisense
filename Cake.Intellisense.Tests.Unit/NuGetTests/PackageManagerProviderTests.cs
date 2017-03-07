@@ -1,12 +1,12 @@
-﻿using Cake.MetadataGenerator.NuGet;
-using Cake.MetadataGenerator.Settings;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+﻿using Cake.Intellisense.NuGet;
+using Cake.Intellisense.Settings;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
+namespace Cake.Intellisense.Tests.Unit.NuGetTests
 {
     public partial class PackageManagerProviderTests
     {

@@ -2,11 +2,11 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
-using Cake.MetadataGenerator.Compilation;
-using Cake.MetadataGenerator.NuGet;
-using Cake.MetadataGenerator.Reflection;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
+using Cake.Intellisense.Compilation;
+using Cake.Intellisense.NuGet;
+using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,10 +14,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSubstitute;
 using NuGet;
 using Xunit;
-using IDependencyResolver = Cake.MetadataGenerator.NuGet.IDependencyResolver;
-using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
+using IDependencyResolver = Cake.Intellisense.NuGet.IDependencyResolver;
+using IPackageManager = Cake.Intellisense.NuGet.IPackageManager;
 
-namespace Cake.MetadataGenerator.Tests.Unit
+namespace Cake.Intellisense.Tests.Unit
 {
     public class MetadataGeneratorTests
     {

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace Cake.MetadataGenerator.Documentation
+namespace Cake.Intellisense.Documentation
 {
     public interface IDocumentationReader
     {

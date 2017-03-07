@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SourceGenerators
+namespace Cake.Intellisense.CodeGeneration.SourceGenerators
 {
     public interface ICakeSourceGeneratorService
     {

@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.NuGet;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.Intellisense.NuGet;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
 using IPackageManager = NuGet.IPackageManager;
-using PackageManager = Cake.MetadataGenerator.NuGet.PackageManager;
 
-namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
+namespace Cake.Intellisense.Tests.Unit.NuGetTests
 {
     public partial class PackageManagerTests
     {
-        public class InstallPackageMethod : Test<PackageManager>
+        public class InstallPackageMethod : Test<NuGet.PackageManager>
         {
             public InstallPackageMethod()
             {

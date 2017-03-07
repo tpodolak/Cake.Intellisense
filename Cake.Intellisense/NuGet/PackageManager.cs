@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.Settings;
+using Cake.Intellisense.Settings;
 using NuGet;
 
-namespace Cake.MetadataGenerator.NuGet
+namespace Cake.Intellisense.NuGet
 {
     public class PackageManager : IPackageManager
     {

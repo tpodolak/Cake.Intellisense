@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Cake.MetadataGenerator.Settings;
+using Cake.Intellisense.Settings;
 using Castle.Components.DictionaryAdapter;
 using Module = Autofac.Module;
 
-namespace Cake.MetadataGenerator.Infrastructure
+namespace Cake.Intellisense.Infrastructure
 {
     public class MetadataGeneratorModule : Module
     {

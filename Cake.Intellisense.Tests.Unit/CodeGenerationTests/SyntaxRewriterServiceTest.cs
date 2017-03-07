@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices;
-using Cake.MetadataGenerator.Tests.Unit.Common;
-using Cake.MetadataGenerator.Tests.Unit.XUnitExtensionPoints;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices;
+using Cake.Intellisense.Tests.Unit.Common;
+using Cake.Intellisense.Tests.Unit.XUnitExtensionPoints;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
     public abstract class SyntaxRewriterServiceTest<T> : Test<T> where T : class, ISyntaxRewriterService
     {

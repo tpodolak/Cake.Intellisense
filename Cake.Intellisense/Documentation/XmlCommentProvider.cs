@@ -5,7 +5,7 @@ using System.Xml.XPath;
 using Microsoft.CodeAnalysis;
 using MoreLinq;
 
-namespace Cake.MetadataGenerator.Documentation
+namespace Cake.Intellisense.Documentation
 {
     public class XmlCommentProvider : ICommentProvider
     {

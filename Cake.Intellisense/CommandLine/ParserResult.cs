@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Cake.MetadataGenerator.CommandLine
+namespace Cake.Intellisense.CommandLine
 {
     public class ParserResult<T> where T : class
     {

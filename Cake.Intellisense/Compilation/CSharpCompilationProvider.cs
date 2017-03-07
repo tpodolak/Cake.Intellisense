@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Cake.MetadataGenerator.Compilation
+namespace Cake.Intellisense.Compilation
 {
     public class CSharpCompilationProvider : ICompilationProvider
     {

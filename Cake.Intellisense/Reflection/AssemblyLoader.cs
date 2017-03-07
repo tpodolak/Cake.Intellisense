@@ -6,7 +6,7 @@ using System.Reflection;
 using NLog;
 using ILogger = NLog.ILogger;
 
-namespace Cake.MetadataGenerator.Reflection
+namespace Cake.Intellisense.Reflection
 {
     public class AssemblyLoader : IAssemblyLoader
     {

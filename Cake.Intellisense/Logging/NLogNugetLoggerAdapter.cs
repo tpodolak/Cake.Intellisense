@@ -3,7 +3,7 @@ using NLog;
 using NuGet;
 using ILogger = NuGet.ILogger;
 
-namespace Cake.MetadataGenerator.Logging
+namespace Cake.Intellisense.Logging
 {
     public class NLogNugetLoggerAdapter : ILogger
     {

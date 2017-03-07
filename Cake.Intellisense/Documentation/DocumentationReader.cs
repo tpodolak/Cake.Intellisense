@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
-using Cake.MetadataGenerator.FileSystem;
+using Cake.Intellisense.FileSystem;
 
-namespace Cake.MetadataGenerator.Documentation
+namespace Cake.Intellisense.Documentation
 {
     public class DocumentationReader : IDocumentationReader
     {

@@ -6,7 +6,7 @@ using MoreLinq;
 using NSubstitute;
 using NSubstitute.Core;
 
-namespace Cake.MetadataGenerator.Tests.Unit.Common
+namespace Cake.Intellisense.Tests.Unit.Common
 {
     public class Test<T> where T : class
     {

@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.ClassRewriters
+namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters
 {
     internal class ClassSyntaxRewriter : CSharpSyntaxRewriter
     {

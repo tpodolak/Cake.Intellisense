@@ -1,11 +1,11 @@
 ﻿using System.Xml.Linq;
-using Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters;
-using Cake.MetadataGenerator.Documentation;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters;
+using Cake.Intellisense.Documentation;
+using Cake.Intellisense.Tests.Unit.Common;
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CodeGenerationTests
+namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
     public partial class CommentSyntaxRewriterServiceTest
     {

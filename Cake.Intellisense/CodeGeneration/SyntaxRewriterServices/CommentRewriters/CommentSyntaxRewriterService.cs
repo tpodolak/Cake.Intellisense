@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using Cake.MetadataGenerator.Documentation;
+using Cake.Intellisense.Documentation;
 using Microsoft.CodeAnalysis;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters
+namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters
 {
     public class CommentSyntaxRewriterService : ISyntaxRewriterService
     {

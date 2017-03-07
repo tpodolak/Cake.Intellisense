@@ -1,9 +1,9 @@
-﻿using Cake.MetadataGenerator.CommandLine;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+﻿using Cake.Intellisense.CommandLine;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
+namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 {
     public partial class ArgumentParserTests
     {

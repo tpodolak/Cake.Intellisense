@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.CommandLine;
-using Cake.MetadataGenerator.NuGet;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.Intellisense.CommandLine;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using NuGet;
 using Xunit;
-using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
+using IPackageManager = Cake.Intellisense.NuGet.IPackageManager;
 
-namespace Cake.MetadataGenerator.Tests.Unit.CommandLineTests
+namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 {
     public partial class CommandLineInterfaceTests
     {

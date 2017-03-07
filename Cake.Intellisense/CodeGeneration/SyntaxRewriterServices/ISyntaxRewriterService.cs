@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.CodeAnalysis;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices
+namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices
 {
     public interface ISyntaxRewriterService
     {

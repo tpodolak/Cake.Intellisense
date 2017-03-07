@@ -1,4 +1,4 @@
-﻿namespace Cake.MetadataGenerator.Settings
+﻿namespace Cake.Intellisense.Settings
 {
     public interface ISettings
     {

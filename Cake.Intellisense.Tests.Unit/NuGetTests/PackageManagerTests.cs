@@ -1,4 +1,4 @@
-﻿namespace Cake.MetadataGenerator.Tests.Unit.NuGetTests
+﻿namespace Cake.Intellisense.Tests.Unit.NuGetTests
 {
     public partial class PackageManagerTests
     {

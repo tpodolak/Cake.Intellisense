@@ -1,7 +1,7 @@
 ﻿using System;
 using Castle.Components.DictionaryAdapter;
 
-namespace Cake.MetadataGenerator.Settings
+namespace Cake.Intellisense.Settings
 {
     public class SettingsBehavior : IDictionaryKeyBuilder,
         IDictionaryPropertyGetter,

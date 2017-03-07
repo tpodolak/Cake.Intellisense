@@ -6,7 +6,7 @@ using System.Reflection;
 using FluentAssertions;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Integration
+namespace Cake.Intellisense.Tests.Integration
 {
     public class ApplicationTests
     {

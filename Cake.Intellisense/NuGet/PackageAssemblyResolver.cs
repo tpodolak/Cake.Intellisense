@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.MetadataGenerator.Reflection;
+using Cake.Intellisense.Reflection;
 using NuGet;
 
-namespace Cake.MetadataGenerator.NuGet
+namespace Cake.Intellisense.NuGet
 {
     public class PackageAssemblyResolver : IPackageAssemblyResolver
     {

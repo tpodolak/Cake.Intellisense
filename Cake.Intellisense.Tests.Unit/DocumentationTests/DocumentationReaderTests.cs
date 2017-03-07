@@ -1,12 +1,12 @@
 ﻿using System.Xml.Linq;
-using Cake.MetadataGenerator.Documentation;
-using Cake.MetadataGenerator.FileSystem;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.Intellisense.Documentation;
+using Cake.Intellisense.FileSystem;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
+namespace Cake.Intellisense.Tests.Unit.DocumentationTests
 {
     public partial class DocumentationReaderTests
     {

@@ -1,4 +1,4 @@
-﻿namespace Cake.MetadataGenerator.Tests.Unit.Common
+﻿namespace Cake.Intellisense.Tests.Unit.Common
 {
     public class ServiceRewriterTestCase
     {

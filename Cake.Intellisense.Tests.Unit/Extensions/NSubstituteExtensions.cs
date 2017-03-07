@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-namespace Cake.MetadataGenerator.Tests.Unit.Extensions
+namespace Cake.Intellisense.Tests.Unit.Extensions
 {
     public static class NSubstituteExtensions
     {

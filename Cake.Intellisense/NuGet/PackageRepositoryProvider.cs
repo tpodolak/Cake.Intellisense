@@ -1,9 +1,9 @@
-﻿using Cake.MetadataGenerator.Logging;
-using Cake.MetadataGenerator.Settings;
+﻿using Cake.Intellisense.Logging;
+using Cake.Intellisense.Settings;
 using NLog;
 using NuGet;
 
-namespace Cake.MetadataGenerator.NuGet
+namespace Cake.Intellisense.NuGet
 {
     public class PackageRepositoryProvider : IPackageRepositoryProvider
     {

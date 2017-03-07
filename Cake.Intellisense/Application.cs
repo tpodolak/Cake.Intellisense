@@ -2,11 +2,11 @@
 using System.Configuration;
 using System.Reflection;
 using Autofac;
-using Cake.MetadataGenerator.CommandLine;
-using Cake.MetadataGenerator.Infrastructure;
+using Cake.Intellisense.CommandLine;
+using Cake.Intellisense.Infrastructure;
 using NLog;
 
-namespace Cake.MetadataGenerator
+namespace Cake.Intellisense
 {
     public class Application
     {

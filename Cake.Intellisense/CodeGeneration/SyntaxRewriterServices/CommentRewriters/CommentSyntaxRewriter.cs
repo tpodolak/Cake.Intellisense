@@ -2,13 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Cake.MetadataGenerator.Documentation;
+using Cake.Intellisense.Documentation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRewriters
+namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters
 {
     internal class CommentSyntaxRewriter
     {
@@ -33,7 +32,7 @@ namespace Cake.MetadataGenerator.CodeGeneration.SyntaxRewriterServices.CommentRe
                 var currentNode = node;
                 var declaredSymbol = semanticModel.GetDeclaredSymbol(node);
                 var attributeList = node.AttributeLists;
-                var commentTrivia = TriviaList(Comment(provider.Get(xml, declaredSymbol)), CarriageReturn, LineFeed);
+                var commentTrivia = SyntaxFactory.TriviaList(SyntaxFactory.Comment(provider.Get(xml, declaredSymbol)), SyntaxFactory.CarriageReturn, SyntaxFactory.LineFeed);
 
                 if (node.AttributeLists.Any())
                 {

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Cake.MetadataGenerator.Reflection
+namespace Cake.Intellisense.Reflection
 {
     public interface IAssemblyLoader
     {

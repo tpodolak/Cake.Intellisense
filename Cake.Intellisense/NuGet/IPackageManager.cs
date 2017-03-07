@@ -2,7 +2,7 @@
 using System.Runtime.Versioning;
 using NuGet;
 
-namespace Cake.MetadataGenerator.NuGet
+namespace Cake.Intellisense.NuGet
 {
     public interface IPackageManager
     {

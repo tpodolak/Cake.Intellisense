@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Cake.MetadataGenerator.CommandLine
+namespace Cake.Intellisense.CommandLine
 {
     public class ConsoleReader : IConsoleReader
     {

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Immutable;
 using System.Xml.Linq;
-using Cake.MetadataGenerator.Documentation;
-using Cake.MetadataGenerator.Tests.Unit.Common;
+using Cake.Intellisense.Documentation;
+using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 using Xunit;
 
-namespace Cake.MetadataGenerator.Tests.Unit.DocumentationTests
+namespace Cake.Intellisense.Tests.Unit.DocumentationTests
 {
     public partial class XmlCommentProviderTests
     {

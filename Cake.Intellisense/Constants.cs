@@ -1,4 +1,4 @@
-﻿namespace Cake.MetadataGenerator
+﻿namespace Cake.Intellisense
 {
     public static class RoslynCodeGeneration
     {
