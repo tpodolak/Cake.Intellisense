@@ -15,6 +15,7 @@ using NLog;
 using NuGet;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using IDependencyResolver = Cake.MetadataGenerator.NuGet.IDependencyResolver;
+using IFileSystem = Cake.MetadataGenerator.FileSystem.IFileSystem;
 using IPackageManager = Cake.MetadataGenerator.NuGet.IPackageManager;
 
 namespace Cake.MetadataGenerator
@@ -32,6 +33,7 @@ namespace Cake.MetadataGenerator
         private readonly IMetadataReferenceLoader metadataReferenceLoader;
         private readonly IAssemblyLoader assemblyLoader;
         private readonly ICompilationProvider compilationProvider;
+        private readonly IFileSystem fileSystem;
 
         public MetadataGenerator(
             ICakeSourceGeneratorService cakeSourceGenerator,
@@ -42,7 +44,8 @@ namespace Cake.MetadataGenerator
             ICompiler compiler,
             IMetadataReferenceLoader metadataReferenceLoader,
             IAssemblyLoader assemblyLoader,
-            ICompilationProvider compilationProvider)
+            ICompilationProvider compilationProvider,
+            IFileSystem fileSystem)
         {
             this.cakeSourceGenerator = cakeSourceGenerator;
             this.cakeSyntaxRewriterService = cakeSyntaxRewriterService;
@@ -53,6 +56,7 @@ namespace Cake.MetadataGenerator
             this.metadataReferenceLoader = metadataReferenceLoader;
             this.assemblyLoader = assemblyLoader;
             this.compilationProvider = compilationProvider;
+            this.fileSystem = fileSystem;
         }
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
@@ -66,6 +70,9 @@ namespace Cake.MetadataGenerator
                 Logger.Error("Unable to find package {0} {1}", options.Package, options.PackageVersion ?? string.Empty);
                 return null;
             }
+
+            if (!string.IsNullOrWhiteSpace(options.OutputFolder) && !fileSystem.DirectoryExists(options.OutputFolder))
+                fileSystem.CreateDirectory(options.OutputFolder);
 
             var packages = dependencyResolver.GetDependentPackagesAndSelf(package, targetFramework).ToList();
             var assemblies = packageAssemblyResolver.ResolveAssemblies(package, targetFramework);
@@ -83,7 +90,7 @@ namespace Cake.MetadataGenerator
                    PrepareMetadataReferences(assemblies, physicalPackageFiles),
                    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-                var result = compiler.Compile(compilation, $"{emitedAssemblyName}.dll");
+                var result = compiler.Compile(compilation, Path.Combine(options.OutputFolder ?? string.Empty, $"{emitedAssemblyName}.dll"));
                 generatorResult.EmitedAssemblies.Add(result);
                 generatorResult.SourceAssemblies.Add(assembly);
             }
