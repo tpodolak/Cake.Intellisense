@@ -189,9 +189,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Cake.Intellisense\App.config">
-      <Link>App.config</Link>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <AdditionalFiles Include="..\StyleCop.json" />
   </ItemGroup>
