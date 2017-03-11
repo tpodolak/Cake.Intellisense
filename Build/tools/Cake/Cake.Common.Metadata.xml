@@ -351,7 +351,7 @@
                         </summary>
                         <example>
                         <code>
-                        var isBambooBuild = Bamboo.IsRunningBamboo;
+                        var isBambooBuild = Bamboo.IsRunningOnBamboo;
                         </code>
                         </example>
                         
@@ -512,6 +512,32 @@
                         <returns>A <see cref="N:Cake.Common.Build.TravisCI" /> instance.</returns>
                     
         </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Debug(System.Object)">
+                        <summary>
+                        Writes a debug message to the log using the specified value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Debug(new {FirstName = "John", LastName="Doe"});
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Debug(System.String)">
+                        <summary>
+                        Writes a debug message to the log using the specified string value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Debug("{string}");
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Debug(Cake.Core.Diagnostics.LogAction)">
                         <summary>
                         Writes a debug message to the log using the specified log message action.
@@ -536,6 +562,32 @@
                         <example>
                         <code>
                         Debug("Hello {0}! Today is an {1:dddd}", "World", DateTime.Now);
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Error(System.Object)">
+                        <summary>
+                        Writes an error message to the log using the specified value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Error(new {FirstName = "John", LastName="Doe"});
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Error(System.String)">
+                        <summary>
+                        Writes an error message to the log using the specified string value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Error("{string}");
                         </code>
                         </example>
                     
@@ -568,6 +620,32 @@
                         </example>
                     
         </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Information(System.Object)">
+                        <summary>
+                        Writes an informational message to the log using the specified value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Information(new {FirstName = "John", LastName="Doe"});
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Information(System.String)">
+                        <summary>
+                        Writes an informational message to the log using the specified string value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Information("{string}");
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Information(Cake.Core.Diagnostics.LogAction)">
                         <summary>
                         Writes an informational message to the log using the specified log message action.
@@ -596,6 +674,32 @@
                         </example>
                     
         </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Verbose(System.Object)">
+                        <summary>
+                        Writes a verbose message to the log using the specified value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Verbose(new {FirstName = "John", LastName="Doe"});
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Verbose(System.String)">
+                        <summary>
+                        Writes a verbose message to the log using the specified string value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Verbose("{string}");
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Verbose(Cake.Core.Diagnostics.LogAction)">
                         <summary>
                         Writes a verbose message to the log using the specified log message action.
@@ -620,6 +724,32 @@
                         <example>
                         <code>
                         Verbose("Hello {0}! Today is an {1:dddd}", "World", DateTime.Now);
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Warning(System.Object)">
+                        <summary>
+                        Writes an warning message to the log using the specified value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Warning(new {FirstName = "John", LastName="Doe"});
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Diagnostics.LoggingAliasesMetadata.Warning(System.String)">
+                        <summary>
+                        Writes an warning message to the log using the specified string value.
+                        </summary>
+                        
+                        <param name="value">The value.</param>
+                        <example>
+                        <code>
+                        Warning("{string}");
                         </code>
                         </example>
                     
@@ -1389,7 +1519,8 @@
                         </summary>
                         <example>
                         <code>
-                        DownloadFile("http://www.example.org/index.html", "./outputdir");
+                        var outputPath = File("./index.html");
+                        DownloadFile("http://www.example.org/index.html", outputPath);
                         </code>
                         </example>
                         
@@ -1443,7 +1574,8 @@
                         <example>
                         <code>
                         var address = new Uri("http://www.example.org/index.html");
-                        DownloadFile(address, "./outputdir", new DownloadFileSettings()
+                        var outputPath = File("./index.html");
+                        DownloadFile(address, outputPath, new DownloadFileSettings()
                         {
                             Username = "bob",
                             Password = "builder"
@@ -1462,7 +1594,8 @@
                         </summary>
                         <example>
                         <code>
-                        DownloadFile("http://www.example.org/index.html", "./outputdir", new DownloadFileSettings()
+                        var outputPath = File("./index.html");
+                        DownloadFile("http://www.example.org/index.html", outputPath, new DownloadFileSettings()
                         {
                             Username = "bob",
                             Password = "builder"
@@ -2230,6 +2363,46 @@
                         </example>
                     
         </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyNew(System.String)">
+                        <summary>
+                        Generate package specification files for a new package using the default settings.
+                        </summary>
+                        
+                        <param name="packageId">The id of the package to create.</param>
+                        <example>
+                        <code>
+                        ChocolateyNew("MyChocolateyPackage");
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyNew(System.String,Cake.Common.Tools.Chocolatey.New.ChocolateyNewSettings)">
+                        <summary>
+                        Generate package specification files for a new package using the specified settings.
+                        </summary>
+                        
+                        <param name="packageId">The id of the package to create.</param>
+                        <param name="settings">The settings.</param>
+                        <example>
+                        <code>
+                        ChocolateyNew("MyChocolateyPackage", new ChocolateyNewSettings {
+                            PackageVersion = "1.2.3",
+                            MaintainerName = "John Doe",
+                            MaintainerRepo = "johndoe"
+                        });
+                        </code>
+                        </example>
+                        <example>
+                        <code>
+                        var settings = new ChocolateyNewSettings {
+                            MaintainerName = "John Doe"
+                        }
+                        settings.AdditionalPropertyValues("Tags", "CustomPackage");
+                        ChocolateyNew("MyChocolateyPackage", settings);
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyPack(Cake.Common.Tools.Chocolatey.Pack.ChocolateyPackSettings)">
                          <summary>
                          Creates a Chocolatey package using the specified settings.
@@ -2272,6 +2445,54 @@
                                                          };
                         
                              ChocolateyPack(chocolateyPackSettings);
+                         </code>
+                         </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyPack(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Common.Tools.Chocolatey.Pack.ChocolateyPackSettings)">
+                         <summary>
+                         Creates Chocolatey packages using the specified Nuspec files.
+                         </summary>
+                         
+                         <param name="filePaths">The nuspec file paths.</param>
+                         <param name="settings">The settings.</param>
+                         <example>
+                         <code>
+                             var chocolateyPackSettings   = new ChocolateyPackSettings {
+                                                             Id                      = "TestChocolatey",
+                                                             Title                   = "The tile of the package",
+                                                             Version                 = "0.0.0.1",
+                                                             Authors                 = new[] {"John Doe"},
+                                                             Owners                  = new[] {"Contoso"},
+                                                             Summary                 = "Excellent summary of what the package does",
+                                                             Description             = "The description of the package",
+                                                             ProjectUrl              = new Uri("https://github.com/SomeUser/TestChocolatey/"),
+                                                             PackageSourceUrl        = new Uri("https://github.com/SomeUser/TestChocolatey/"),
+                                                             ProjectSourceUrl        = new Uri("https://github.com/SomeUser/TestChocolatey/"),
+                                                             DocsUrl                 = new Uri("https://github.com/SomeUser/TestChocolatey/"),
+                                                             MailingListUrl          = new Uri("https://github.com/SomeUser/TestChocolatey/"),
+                                                             BugTrackerUrl           = new Uri("https://github.com/SomeUser/TestChocolatey/"),
+                                                             Tags                    = new [] {"Cake", "Script", "Build"},
+                                                             Copyright               = "Some company 2015",
+                                                             LicenseUrl              = new Uri("https://github.com/SomeUser/TestChocolatey/blob/master/LICENSE.md"),
+                                                             RequireLicenseAcceptance= false,
+                                                             IconUrl                 = new Uri("http://cdn.rawgit.com/SomeUser/TestChocolatey/master/icons/testchocolatey.png"),
+                                                             ReleaseNotes            = new [] {"Bug fixes", "Issue fixes", "Typos"},
+                                                             Files                   = new [] {
+                                                                                                  new ChocolateyNuSpecContent {Source = "bin/TestChocolatey.dll", Target = "bin"},
+                                                                                               },
+                                                             Debug                   = false,
+                                                             Verbose                 = false,
+                                                             Force                   = false,
+                                                             Noop                    = false,
+                                                             LimitOutput             = false,
+                                                             ExecutionTimeout        = 13,
+                                                             CacheLocation           = @"C:\temp",
+                                                             AllowUnofficial          = false
+                                                         };
+                        
+                             var nuspecFiles = GetFiles("./**/*.nuspec");
+                             ChocolateyPack(nuspecFiles, chocolateyPackSettings);
                          </code>
                          </example>
                     
@@ -2347,6 +2568,36 @@
                         </example>
                     
         </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyPush(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Common.Tools.Chocolatey.Push.ChocolateyPushSettings)">
+                         <summary>
+                         Pushes Chocolatey packages to a Chocolatey server and publishes them.
+                         </summary>
+                         
+                         <param name="packageFilePaths">The <c>.nupkg</c> file paths.</param>
+                         <param name="settings">The settings.</param>
+                         <example>
+                         <code>
+                         // Get the paths to the packages.
+                         var packages = GetFiles("./**/*.nupkg");
+                        
+                         // Push the package.
+                         ChocolateyPush(packages, new ChocolateyPushSettings {
+                             Source                = "http://example.com/chocolateyfeed",
+                             ApiKey                = "4003d786-cc37-4004-bfdf-c4f3e8ef9b3a"
+                             Timeout               = 300
+                             Debug                 = false,
+                             Verbose               = false,
+                             Force                 = false,
+                             Noop                  = false,
+                             LimitOutput           = false,
+                             ExecutionTimeout      = 13,
+                             CacheLocation         = @"C:\temp",
+                             AllowUnofficial        = false
+                         });
+                         </code>
+                         </example>
+                    
+        </member>
         <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyPush(Cake.Core.IO.FilePath,Cake.Common.Tools.Chocolatey.Push.ChocolateyPushSettings)">
                          <summary>
                          Pushes a Chocolatey package to a Chocolatey server and publishes it.
@@ -2413,6 +2664,120 @@
                         </example>
                     
         </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyUninstall(System.Collections.Generic.IEnumerable{System.String})">
+                        <summary>
+                        Uninstalls a Chocolatey package.
+                        </summary>
+                        
+                        <param name="packageIds">The ids of the packages to uninstall.</param>
+                        <example>
+                        <code>
+                        ChocolateyUninstall("MyChocolateyPackage");
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyUninstall(System.String)">
+                        <summary>
+                        Uninstalls a Chocolatey package.
+                        </summary>
+                        
+                        <param name="packageId">The id of the package to uninstall.</param>
+                        <example>
+                        <code>
+                        ChocolateyUninstall("MyChocolateyPackage");
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyUninstall(System.Collections.Generic.IEnumerable{System.String},Cake.Common.Tools.Chocolatey.Uninstall.ChocolateyUninstallSettings)">
+                        <summary>
+                        Uninstalls Chocolatey packages using the specified settings.
+                        </summary>
+                        
+                        <param name="packageIds">The ids of the packages to uninstall.</param>
+                        <param name="settings">The settings.</param>
+                        <example>
+                        <code>
+                        ChocolateyUninstall("MyChocolateyPackage", new ChocolateyUninstallSettings {
+                            Source                  = true,
+                            Version                 = "1.2.3",
+                            UninstallArguments      = "arg1",
+                            OverrideArguments       = false,
+                            NotSilent               = false,
+                            PackageParameters       = "param1",
+                            SideBySide              = false,
+                            IgnoreDependencies      = false,
+                            ForceDependencies       = false,
+                            SkipPowerShell          = false,
+                            Debug                   = false,
+                            Verbose                 = false,
+                            FailOnStandardError     = false,
+                            UseSystemPowershell     = false,
+                            AllVersions             = false,
+                            Force                   = false,
+                            Noop                    = false,
+                            LimitOutput             = false,
+                            ExecutionTimeout        = 13,
+                            CacheLocation           = @"C:\temp",
+                            AllowUnofficial         = false,
+                            GlobalArguments         = false,
+                            GlobalPackageParameters = false,
+                            IgnorePackageExitCodes  = false,
+                            UsePackageExitCodes     = false,
+                            UseAutoUninstaller      = false,
+                            SkipAutoUninstaller     = false,
+                            FailOnAutoUninstaller   = false,
+                            IgnoreAutoUninstaller   = false
+                            });
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyUninstall(System.String,Cake.Common.Tools.Chocolatey.Uninstall.ChocolateyUninstallSettings)">
+                        <summary>
+                        Uninstalls a Chocolatey package using the specified settings.
+                        </summary>
+                        
+                        <param name="packageId">The id of the package to uninstall.</param>
+                        <param name="settings">The settings.</param>
+                        <example>
+                        <code>
+                        ChocolateyUninstall("MyChocolateyPackage", new ChocolateyUninstallSettings {
+                            Source                  = true,
+                            Version                 = "1.2.3",
+                            UninstallArguments      = "arg1",
+                            OverrideArguments       = false,
+                            NotSilent               = false,
+                            PackageParameters       = "param1",
+                            SideBySide              = false,
+                            IgnoreDependencies      = false,
+                            ForceDependencies       = false,
+                            SkipPowerShell          = false,
+                            Debug                   = false,
+                            Verbose                 = false,
+                            FailOnStandardError     = false,
+                            UseSystemPowershell     = false,
+                            AllVersions             = false,
+                            Force                   = false,
+                            Noop                    = false,
+                            LimitOutput             = false,
+                            ExecutionTimeout        = 13,
+                            CacheLocation           = @"C:\temp",
+                            AllowUnofficial         = false,
+                            GlobalArguments         = false,
+                            GlobalPackageParameters = false,
+                            IgnorePackageExitCodes  = false,
+                            UsePackageExitCodes     = false,
+                            UseAutoUninstaller      = false,
+                            SkipAutoUninstaller     = false,
+                            FailOnAutoUninstaller   = false,
+                            IgnoreAutoUninstaller   = false
+                            });
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata.ChocolateyUpgrade(System.String)">
                         <summary>
                         Upgrades Chocolatey package.
@@ -2466,164 +2831,6 @@
                         </example>
                     
         </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNUBuild(System.String)">
-                        <summary>
-                        Build all projects.
-                        </summary>
-                        
-                        <param name="path">The projects path.</param>
-                        <example>
-                        <code>
-                            DNUBuild("./src/*");
-                        </code>
-                        </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNUBuild(System.String,Cake.Common.Tools.DNU.Build.DNUBuildSettings)">
-                         <summary>
-                         Build all projects.
-                         </summary>
-                         
-                         <param name="path">The projects path.</param>
-                         <param name="settings">The settings.</param>
-                         <example>
-                         <code>
-                             var settings = new DNUBuildSettings
-                             {
-                                 Frameworks = new[] { "dnx451", "dnxcore50" },
-                                 Configurations = new[] { "Debug", "Release" },
-                                 OutputDirectory = "./artifacts/",
-                                 Quiet = true
-                             };
-                        
-                             DNUBuild("./src/*", settings);
-                         </code>
-                         </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNUPack(System.String)">
-                        <summary>
-                        Pack all projects.
-                        </summary>
-                        
-                        <param name="path">The projects path.</param>
-                        <example>
-                        <code>
-                            DNUPack("./src/*");
-                        </code>
-                        </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNUPack(System.String,Cake.Common.Tools.DNU.Pack.DNUPackSettings)">
-                         <summary>
-                         Pack all projects.
-                         </summary>
-                         
-                         <param name="path">The projects path.</param>
-                         <param name="settings">The settings.</param>
-                         <example>
-                         <code>
-                             var settings = new DNUPackSettings
-                             {
-                                 Frameworks = new[] { "dnx451", "dnxcore50" },
-                                 Configurations = new[] { "Debug", "Release" },
-                                 OutputDirectory = "./artifacts/",
-                                 Quiet = true
-                             };
-                        
-                             DNUPack("./src/*", settings);
-                         </code>
-                         </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNURestore">
-                        <summary>
-                        Restore all NuGet Packages.
-                        </summary>
-                        
-                        <example>
-                        <code>
-                            DNURestore();
-                        </code>
-                        </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNURestore(Cake.Common.Tools.DNU.Restore.DNURestoreSettings)">
-                         <summary>
-                         Restore all NuGet Packages with the settings.
-                         </summary>
-                         
-                         <param name="settings">The settings.</param>
-                         <example>
-                         <code>
-                             var settings = new DNURestoreSettings
-                             {
-                                 Sources = new[] {"https://www.example.com/nugetfeed", "https://www.example.com/nugetfeed2"},
-                                 FallbackSources = new[] {"https://www.example.com/fallbacknugetfeed"},
-                                 Proxy = "exampleproxy",
-                                 NoCache = true,
-                                 Packages = "./packages",
-                                 IgnoreFailedSources = true,
-                                 Quiet = true,
-                                 Parallel = true,
-                                 Locked = DNULocked.Lock,
-                                 Runtimes = new[] {"runtime1", "runtime2"}
-                             };
-                        
-                             DNURestore(settings);
-                         </code>
-                         </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNURestore(Cake.Core.IO.FilePath)">
-                        <summary>
-                        Restore all NuGet Packages in the specified path.
-                        </summary>
-                        
-                        <param name="filePath">The file to restore.</param>
-                        <example>
-                        <code>
-                            var projects = GetFiles("./src/**/project.json");
-                            foreach(var project in projects)
-                            {
-                                DNURestore(project);
-                            }
-                        </code>
-                        </example>
-                    
-        </member>
-        <member name="M:Cake.Common.Tools.DNU.DNUAliasesMetadata.DNURestore(Cake.Core.IO.FilePath,Cake.Common.Tools.DNU.Restore.DNURestoreSettings)">
-                         <summary>
-                         Restore all NuGet Packages in the specified path with settings.
-                         </summary>
-                         
-                         <param name="filePath">The file to restore.</param>
-                         <param name="settings">The settings.</param>
-                         <example>
-                         <code>
-                             var settings = new DNURestoreSettings
-                             {
-                                 Sources = new[] {"https://www.example.com/nugetfeed", "https://www.example.com/nugetfeed2"},
-                                 FallbackSources = new[] {"https://www.example.com/fallbacknugetfeed"},
-                                 Proxy = "exampleproxy",
-                                 NoCache = true,
-                                 Packages = "./packages",
-                                 IgnoreFailedSources = true,
-                                 Quiet = true,
-                                 Parallel = true,
-                                 Locked = DNULocked.Lock,
-                                 Runtimes = new[] {"runtime1", "runtime2"}
-                             };
-                        
-                             var projects = GetFiles("./src/**/project.json");
-                             foreach(var project in projects)
-                             {
-                                 DNURestore(project, settings);
-                             }
-                         </code>
-                         </example>
-                    
-        </member>
         <member name="M:Cake.Common.Tools.DotCover.DotCoverAliasesMetadata.DotCoverAnalyse(System.Action{Cake.Core.ICakeContext},Cake.Core.IO.FilePath,Cake.Common.Tools.DotCover.Analyse.DotCoverAnalyseSettings)">
                         <summary>
                         Runs <see href="https://www.jetbrains.com/dotcover/help/dotCover__Console_Runner_Commands.html#analyse">DotCover Analyse</see>
@@ -2670,6 +2877,48 @@
                           new DotCoverCoverSettings()
                             .WithFilter("+:App")
                             .WithFilter("-:App.Tests"));
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.DotCover.DotCoverAliasesMetadata.DotCoverMerge(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Core.IO.FilePath)">
+                        <summary>
+                        Runs <see href="https://www.jetbrains.com/dotcover/help/dotCover__Console_Runner_Commands.html#merge">DotCover Merge</see>
+                        for the specified action and settings.
+                        </summary>
+                        
+                        <param name="sourceFiles">The list of DotCover coverage snapshot files.</param>
+                        <param name="outputFile">The merged output file.</param>
+                        <example>
+                        <code>
+                        DotCoverMerge(new[] {
+                            new FilePath("./result1.dcvr"),
+                            new FilePath("./result2.dcvr")
+                          },
+                          new FilePath("./merged.dcvr"));
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.DotCover.DotCoverAliasesMetadata.DotCoverMerge(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Core.IO.FilePath,Cake.Common.Tools.DotCover.Merge.DotCoverMergeSettings)">
+                        <summary>
+                        Runs <see href="https://www.jetbrains.com/dotcover/help/dotCover__Console_Runner_Commands.html#merge">DotCover Merge</see>
+                        for the specified action and settings.
+                        </summary>
+                        
+                        <param name="sourceFiles">The list of DotCover coverage snapshot files.</param>
+                        <param name="outputFile">The merged output file.</param>
+                        <param name="settings">The settings</param>
+                        <example>
+                        <code>
+                        DotCoverMerge(new[] {
+                            new FilePath("./result1.dcvr"),
+                            new FilePath("./result2.dcvr")
+                          },
+                          new FilePath("./merged.dcvr"),
+                          new DotCoverMergeSettings {
+                            LogFile = new FilePath("./log.txt")
+                          });
                         </code>
                         </example>
                     
@@ -3008,12 +3257,12 @@
                          <param name="settings">The settings.</param>
                          <example>
                          <code>
-                             var settings = new DotNetCoreRunSettings
+                             var settings = new DotNetCoreTestSettings
                              {
                                  Configuration = "Release"
                              };
                         
-                             DotNetCoreRun("./test/Project.Tests", settings);
+                             DotNetCoreTest("./test/Project.Tests", settings);
                          </code>
                          </example>
                     
@@ -3529,7 +3778,7 @@
         </member>
         <member name="M:Cake.Common.Tools.GitVersion.GitVersionAliasesMetadata.GitVersion">
                         <summary>
-                        Retrives the GitVersion output.
+                        Retrieves the GitVersion output.
                         </summary>
                         
                         <returns>The git version info.</returns>
@@ -3570,7 +3819,7 @@
         </member>
         <member name="M:Cake.Common.Tools.GitVersion.GitVersionAliasesMetadata.GitVersion(Cake.Common.Tools.GitVersion.GitVersionSettings)">
                         <summary>
-                        Retrives the GitVersion output.
+                        Retrieves the GitVersion output.
                         </summary>
                         
                         <param name="settings">The GitVersion settings.</param>
@@ -3689,7 +3938,7 @@
                         Compiles the given Inno Setup script using the default settings.
                         </summary>
                         
-                        <param name="scriptFile">The path to the <c>.nsi</c> script file to compile.</param>
+                        <param name="scriptFile">The path to the <c>.iss</c> script file to compile.</param>
                         <example>
                         <code>
                         InnoSetup("./src/Cake.iss");
@@ -3702,7 +3951,7 @@
                         Compiles the given Inno Setup script using the given <paramref name="settings" />.
                         </summary>
                         
-                        <param name="scriptFile">The path to the <c>.nsi</c> script file to compile.</param>
+                        <param name="scriptFile">The path to the <c>.iss</c> script file to compile.</param>
                         <param name="settings">The <see cref="T:Cake.Common.Tools.InnoSetup.InnoSetupSettings" /> to use.</param>
                         <example>
                         <code>
@@ -4098,6 +4347,36 @@
                         <param name="settings">The settings.</param>
                     
         </member>
+        <member name="M:Cake.Common.Tools.NuGet.NuGetAliasesMetadata.NuGetAdd(System.String,Cake.Common.Tools.NuGet.Add.NuGetAddSettings)">
+                        <summary>
+                        Adds a NuGet package using package id and source.
+                        </summary>
+                        
+                        <param name="packageId">The id of the package to add.</param>
+                        <param name="settings">The settings.</param>
+                        <example>
+                        <code>
+                        NuGetAdd("MyNugetPackage", new NuGetAddSettings({
+                            Source = "//bar/packages/"
+                            });
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.NuGet.NuGetAliasesMetadata.NuGetAdd(System.String,System.String)">
+                        <summary>
+                        Adds a NuGet package using package id and source.
+                        </summary>
+                        
+                        <param name="packageId">The id of the package to add.</param>
+                        <param name="source">Path to the local feed source.</param>
+                        <example>
+                        <code>
+                        NuGetAdd("MyNugetPackage", "//bar/packages/");
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Tools.NuGet.NuGetAliasesMetadata.NuGetAddSource(System.String,System.String)">
                          <summary>
                          Adds NuGet package source using the specified name &amp;source to global user config
@@ -4212,6 +4491,37 @@
                         {
                             Information("Source already exists");
                         }
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.NuGet.NuGetAliasesMetadata.NuGetInit(System.String,System.String)">
+                        <summary>
+                        Adds all packages from source to destination.
+                        </summary>
+                        
+                        <param name="source">The local feed package source.</param>
+                        <param name="destination">The local feed destination source.</param>
+                        <example>
+                        <code>
+                        NuGetInit("//foo/packages", "//bar/packages/");
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.NuGet.NuGetAliasesMetadata.NuGetInit(System.String,System.String,Cake.Common.Tools.NuGet.Init.NuGetInitSettings)">
+                        <summary>
+                        Adds all packages from source to destination using specified settings.
+                        </summary>
+                        
+                        <param name="source">The local feed package source.</param>
+                        <param name="destination">The local feed destination source.</param>
+                        <param name="settings">The settings.</param>
+                        <example>
+                        <code>
+                        NuGetInit("//foo/packages", "//bar/packages/", new NuGetInitSettings {
+                            Expand = true
+                            });
                         </code>
                         </example>
                     
@@ -5184,7 +5494,7 @@
                             .Does(() =&gt;
                         {
                             var file = new FilePath("Core.dll");
-                            Sign(files, new SignToolSignSettings {
+                            Sign(file, new SignToolSignSettings {
                                     TimeStampUri = new Uri("http://timestamp.digicert.com"),
                                     CertPath = "digitalcertificate.pfx",
                                     Password = "TopSecret"
@@ -5388,7 +5698,7 @@
                         <param name="settings">The settings.</param>
                     
         </member>
-        <member name="M:Cake.Common.Tools.WiX.WiXAliasesMetadata.WiXHeat(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Core.IO.FilePath,Cake.Common.Tools.WiX.Heat.WiXHarvestType)">
+        <member name="M:Cake.Common.Tools.WiX.WiXAliasesMetadata.WiXHeat(Cake.Core.IO.FilePath,Cake.Core.IO.FilePath,Cake.Common.Tools.WiX.Heat.WiXHarvestType)">
                         <summary>
                         Harvests from the desired files.
                         </summary>
@@ -5400,7 +5710,7 @@
                         </code>
                         </example>
                         
-                        <param name="objectFiles">The object files.</param>
+                        <param name="objectFile">The object file.</param>
                         <param name="outputFile">The output file.</param>
                         <param name="harvestType">The WiX harvest type.</param>
                     
@@ -5438,7 +5748,7 @@
                         <param name="harvestType">The WiX harvest type.</param>
                     
         </member>
-        <member name="M:Cake.Common.Tools.WiX.WiXAliasesMetadata.WiXHeat(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Core.IO.FilePath,Cake.Common.Tools.WiX.Heat.WiXHarvestType,Cake.Common.Tools.WiX.Heat.HeatSettings)">
+        <member name="M:Cake.Common.Tools.WiX.WiXAliasesMetadata.WiXHeat(Cake.Core.IO.FilePath,Cake.Core.IO.FilePath,Cake.Common.Tools.WiX.Heat.WiXHarvestType,Cake.Common.Tools.WiX.Heat.HeatSettings)">
                         <summary>
                         Harvests from the desired files.
                         </summary>
@@ -5450,7 +5760,7 @@
                         </code>
                         </example>
                         
-                        <param name="objectFiles">The object files.</param>
+                        <param name="objectFile">The object file.</param>
                         <param name="outputFile">The output file.</param>
                         <param name="harvestType">The WiX harvest type.</param>
                         <param name="settings">The settings.</param>
@@ -5830,6 +6140,11 @@
                         string version = XmlPeek("./pastery.xml", "/pastery:pastery/pastery:cake/@price",
                             new XmlPeekSettings {
                                 Namespaces = new Dictionary&lt;string, string&gt; {{ "pastery", "http://cakebuild.net/pastery" }}
+                            });
+                        string unknown = XmlPeek("./pastery.xml", "/pastery:pastery/pastery:cake/@recipe",
+                            new XmlPeekSettings {
+                                Namespaces = new Dictionary&lt;string, string&gt; {{ "pastery", "http://cakebuild.net/pastery" }},
+                                SuppressWarnings = true
                             });
                         </code>
                         </example>

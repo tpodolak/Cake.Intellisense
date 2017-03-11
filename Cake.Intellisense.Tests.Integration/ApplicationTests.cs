@@ -16,7 +16,7 @@ namespace Cake.Intellisense.Tests.Integration
             private readonly Application application = new Application();
 
             [Theory]
-            [InlineData("Cake.Common", DefaultFramework, "0.17.0")]
+            [InlineData("Cake.Common", DefaultFramework, "0.18.0")]
 
             // TODO Run tests in separate asemblies [InlineData("Cake.Powershell", DefaultFramework, "0.3.0")]
             public void CanGenerateMetadataForPackageTest(string package, string framework, string version)
@@ -27,7 +27,7 @@ namespace Cake.Intellisense.Tests.Integration
             }
 
             [Theory]
-            [InlineData(DefaultFramework, "0.17.0")]
+            [InlineData(DefaultFramework, "0.18.0")]
             public void CanGenerateMetadataForCakeCoreLibTest(string framework, string version)
             {
                 var options = CreateMetadataGeneratorOptions("Cake.Core", framework, version);
