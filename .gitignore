@@ -28,6 +28,7 @@ Build/*
 !Build/tools/
 Build/tools/*
 !Build/tools/Cake/
+!Build/tools/packages.config
 Build/tools/Cake/*
 !Build/tools/Cake/Cake.Common.Metadata.dll
 !Build/tools/Cake/Cake.Common.Metadata.xml

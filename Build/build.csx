@@ -11,6 +11,7 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.console&version=2.1.0"
 
 using Cake.Common.Tools.NuGet.Pack;
+using Cake.Core.Diagnostics;
 
 var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
@@ -68,6 +69,17 @@ Task("Pack")
     {
         Version = buildVersion.SemVersion,
         OutputDirectory = paths.Directories.Artifacts
+    });
+});
+
+Task("Patch-AssemblyInfo")
+.Does(() => 
+{
+    GitVersion(new GitVersionSettings
+    {
+        UpdateAssemblyInfo = true,
+        OutputType = GitVersionOutput.BuildServer,
+        WorkingDirectory = paths.Directories.RootDir,
     });
 });
 
