@@ -24,6 +24,11 @@ Setup(context =>
     {
         CreateDirectory(paths.Directories.Artifacts);
     }
+
+    if (!DirectoryExists(paths.Directories.TestResults))
+    {
+        CreateDirectory(paths.Directories.TestResults);
+    }
 });
 
 Task("Clean")
@@ -43,10 +48,34 @@ Task("Run-Tests")
     .IsDependentOn("Build")
     .Does(()=>
 {
-    XUnit2(paths.Files.TestAssemblies, new XUnit2Settings 
-    { 
-        Parallelism = ParallelismOption.All
-    });
+    Action<ICakeContext> testAction = context => 
+    {
+        context.XUnit2(paths.Files.TestAssemblies, new XUnit2Settings 
+        { 
+            Parallelism = ParallelismOption.All,
+            ShadowCopy = false,
+        });
+    };
+
+    if(parameters.SkipOpenCover)
+    {
+        testAction(Context);
+    }
+    else
+    {
+        OpenCover(testAction,
+                        paths.Files.TestCoverageOutputFilePath,
+                        new OpenCoverSettings {
+                            ReturnTargetCodeOffset = 0,
+                            ArgumentCustomization = args => args.Append("-mergeoutput")
+                        }
+                        .WithFilter("+[Cake.Intellisense*]* -[Cake.Intellisense.Tests*]*")
+                        .ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
+                        .ExcludeByFile("*/*Designer.cs;*/*.g.cs;*/*.g.i.cs"));
+
+        ReportGenerator(paths.Files.TestCoverageOutputFilePath, paths.Directories.TestResults);
+    }
+
 });
 
 Task("Build")
