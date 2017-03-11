@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CommandLine;
 
@@ -9,9 +10,9 @@ namespace Cake.Intellisense.CommandLine
     {
         private readonly Parser parser;
 
-        public ArgumentParser()
+        public ArgumentParser(TextWriter textWriter)
         {
-            parser = new Parser(settings => settings.HelpWriter = Console.Out);
+            parser = new Parser(settings => settings.HelpWriter = textWriter);
         }
 
         public ParserResult<T> Parse<T>(string[] arguments) where T : class, new()

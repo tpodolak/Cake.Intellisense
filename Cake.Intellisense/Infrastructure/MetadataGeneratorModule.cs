@@ -1,4 +1,6 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -26,7 +28,7 @@ namespace Cake.Intellisense.Infrastructure
             builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { assembly }).ToArray())
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
-
+            builder.RegisterInstance(Console.Out).As<TextWriter>();
             RegisterSettings(builder);
         }
 
