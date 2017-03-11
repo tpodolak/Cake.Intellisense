@@ -1,10 +1,7 @@
 #r "./tools/Cake/Cake.Core.dll"
 #r "./tools/Cake/Cake.Common.dll"
-#r "./tools/Cake/Cake.Powershell.dll"
 #r "./tools/Cake/Cake.Core.Metadata.dll"
 #r "./tools/Cake/Cake.Common.Metadata.dll"
-#r "./tools/Cake/Cake.PowerShell.AliasesMetadata.dll"
-#r "./tools/Cake/System.Management.Automation.dll"
 
 using static Cake.Common.ArgumentAliases;
 using static Cake.Common.ArgumentAliasesMetadata;
@@ -34,7 +31,6 @@ using static Cake.Common.Tools.Fixie.FixieAliasesMetadata;
 using static Cake.Common.Tools.DupFinder.DupFinderAliasesMetadata;
 using static Cake.Common.Tools.DotNetCore.DotNetCoreAliasesMetadata;
 using static Cake.Common.Tools.DotCover.DotCoverAliasesMetadata;
-using static Cake.Common.Tools.DNU.DNUAliasesMetadata;
 using static Cake.Common.Tools.Chocolatey.ChocolateyAliasesMetadata;
 using static Cake.Common.Tools.XUnit.XUnit2AliasesMetadata;
 using static Cake.Common.Tools.XUnit.XUnitAliasesMetadata;
@@ -64,5 +60,4 @@ using static Cake.Common.Diagnostics.LoggingAliasesMetadata;
 using static Cake.Common.Build.BuildSystemAliasesMetadata;
 using static Cake.Core.Scripting.ScriptHostMetadata;
 using static Cake.Powershell.PowershellAliasesMetadata;
-using static Cake.Common.Tools.DNU.DNUAliasesMetadata;
 Cake.Core.ICakeContext Context;

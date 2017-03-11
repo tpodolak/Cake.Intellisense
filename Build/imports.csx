@@ -23,7 +23,6 @@ using Cake.Common.Tools.Fixie;
 using Cake.Common.Tools.DupFinder;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotCover;
-using Cake.Common.Tools.DNU;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.XUnit;
 using Cake.Common.Tools.XBuild;
