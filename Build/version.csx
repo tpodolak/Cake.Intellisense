@@ -18,7 +18,7 @@ public class BuildVersion
         return new BuildVersion
         {
             Version = version.MajorMinorPatch,
-            SemVersion = version.SemVer
+            SemVersion = version.LegacySemVer
         };
     }
 }

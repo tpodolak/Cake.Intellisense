@@ -16,7 +16,7 @@ var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
 var paths = BuildPaths.GetPaths(Context, parameters, buildVersion);
 
-Setup(contet =>
+Setup(context =>
 {
     Information("Building version {0} of Cake.Intellisense", buildVersion.SemVersion);
     if(!DirectoryExists(paths.Directories.Artifacts))
