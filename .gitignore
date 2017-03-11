@@ -23,14 +23,21 @@ project.lock.json
 
 # Build related
 build-results/
-tools/Cake/
-tools/xunit.runners/
-tools/xunit.runner.console/
-tools/nuget.exe
-tools/gitreleasemanager/
-tools/GitVersion.CommandLine/
-tools/Addins/
-tools/packages.config.md5sum
+!Build/
+Build/*
+!Build/tools/
+Build/tools/*
+!Build/tools/Cake/
+Build/tools/Cake/*
+!Build/tools/Cake/Cake.Common.Metadata.dll
+!Build/tools/Cake/Cake.Common.Metadata.xml
+!Build/tools/Cake/Cake.Core.Metadata.xml
+!Build/tools/Cake/Cake.Core.Metadata.dll
+!Build/*.ps1
+!Build/*.csx
+!Build/*.json
+
+.artifacts/
 
 # mstest test results
 TestResults

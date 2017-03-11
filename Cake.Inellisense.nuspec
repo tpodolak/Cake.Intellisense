@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package 
+    xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata minClientVersion="2.12">
+        <id>Cake.Intellisense</id>
+        <version>$Version</version>
+        <title>Cake.Intellisense</title>
+        <authors>tpodolak</authors>
+        <summary>Cake metadata generator</summary>
+        <description>Metadata generator for Cake libraries which allows partial Intellisense in VSCode</description>
+        <language>en-US</language>
+        <projectUrl>https://github.com/tpodolak/Cake.Intellisense</projectUrl>
+        <iconUrl>https://avatars0.githubusercontent.com/u/7378346</iconUrl>
+        <licenseUrl>https://github.com/tpodolak/Cake.Intellisense/license.txt</licenseUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+    </metadata>
+    <files>
+        <file src="Cake.Intellisense\bin\Release\*.exe" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\*.config" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\*.dll" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\*.xml" target="tools\" />
+    </files>
+</package>

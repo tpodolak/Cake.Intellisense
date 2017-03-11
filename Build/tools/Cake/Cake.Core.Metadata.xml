@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Cake.Core.Metadata</name>
+    </assembly>
+    <members>
+        <member name="M:Cake.Core.Scripting.ScriptHostMetadata.Setup(System.Action)">
+            <summary>
+                        Allows registration of an action that's executed before any tasks are run.
+                        If setup fails, no tasks will be executed but teardown will be performed.
+                        </summary>
+            <param name="action">The action to be executed.</param>
+        </member>
+        <member name="M:Cake.Core.Scripting.ScriptHostMetadata.TaskSetup(System.Action{Cake.Core.ICakeContext,Cake.Core.ITaskSetupContext})">
+            <summary>
+                        Allows registration of an action that's executed before each task is run.
+                        If the task setup fails, its task will not be executed but the task teardown will be performed.
+                        </summary>
+            <param name="action">The action to be executed.</param>
+        </member>
+        <member name="M:Cake.Core.Scripting.ScriptHostMetadata.TaskTeardown(System.Action{Cake.Core.ICakeContext,Cake.Core.ITaskTeardownContext})">
+            <summary>
+                        Allows registration of an action that's executed after each task has been run.
+                        If a task setup action or a task fails with or without recovery, the specified task teardown action will still be executed.
+                        </summary>
+            <param name="action">The action to be executed.</param>
+        </member>
+        <member name="M:Cake.Core.Scripting.ScriptHostMetadata.Teardown(System.Action)">
+            <summary>
+                        Allows registration of an action that's executed after all other tasks have been run.
+                        If a setup action or a task fails with or without recovery, the specified teardown action will still be executed.
+                        </summary>
+            <param name="action">The action to be executed.</param>
+        </member>
+    </members>
+</doc>
