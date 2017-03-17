@@ -18,7 +18,8 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                     new object[] { RemovesCakePropertyAttributesFromProperties() },
                     new object[] { KeepsCommentTriviaWhenRemovingCakeAttributes() },
                     new object[] { KeepsAttributesNotRelatedWithCakeIntact() },
-                    new object[] { RemovesParametersFromObosoleteAttribute() }
+                    new object[] { RemovesParametersFromObosoleteAttribute() },
+                    new object[] { UpdatesAssemblyTitleAttributeWithMetadataAssemblyName() }
                 };
             }
 
@@ -234,6 +235,26 @@ public static class BuildSystemAliases
     {
     }
 }");
+            }
+
+            private static ServiceRewriterTestCase UpdatesAssemblyTitleAttributeWithMetadataAssemblyName()
+            {
+                var assemblyName = typeof(AttributeSyntaxRewriterService).Assembly.GetName().Name;
+                return new ServiceRewriterTestCase(
+                    nameof(UpdatesAssemblyTitleAttributeWithMetadataAssemblyName),
+        $@"[assembly: AssemblyTitle(""{assemblyName}"")]
+namespace Cake.Common
+{{
+    public static class ArgumentAliases
+    {{
+    }}
+}}", $@"[assembly: AssemblyTitle(""{assemblyName}.Metadata"")]
+namespace Cake.Common
+{{
+    public static class ArgumentAliases
+    {{
+    }}
+}}");
             }
         }
     }

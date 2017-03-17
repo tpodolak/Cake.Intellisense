@@ -53,7 +53,8 @@ namespace Cake.Intellisense.Tests.Integration
             {
                 sourcAssembly.Should().NotBeNull();
                 emitedAssembly.Should().NotBeNull();
-
+                emitedAssembly.GetName().Version.ToString().Should().Be(sourcAssembly.GetName().Version.ToString());
+                emitedAssembly.GetName().Name.Should().Be($"{sourcAssembly.GetName().Name}.Metadata");
                 var referencedAssemblies = emitedAssembly.GetReferencedAssemblies().Select(val => val.FullName);
                 var locations =
                     AppDomain.CurrentDomain.GetAssemblies()

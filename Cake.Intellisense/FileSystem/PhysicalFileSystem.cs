@@ -14,6 +14,11 @@ namespace Cake.Intellisense.FileSystem
             return File.ReadAllText(path);
         }
 
+        public void WriteAllBytes(string path, byte[] bytes)
+        {
+            File.WriteAllBytes(path, bytes);
+        }
+
         public bool DirectoryExists(string directory)
         {
             return Directory.Exists(directory);
