@@ -4,7 +4,8 @@ init:
 
 # Build script
 build_script:
-  - ps: .\Build\build.ps1 -Script build.csx -Configuration Release -Target AppVeyour
+  - cd Build
+  - ps: .\build.ps1 -Script build.csx -Configuration Release -Target AppVeyor
 
 # Tests
 test: off
