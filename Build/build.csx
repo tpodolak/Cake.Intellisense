@@ -131,6 +131,9 @@ Task("Publish-NuGet")
     });
 });
 
+Task("AppVeyor")
+  .IsDependentOn("Publish-NuGet");
+
 Task("Patch-AssemblyInfo")
 .Does(() => 
 {

@@ -1,0 +1,1 @@
+Playing around with Roslyn to provide partial intellisense support for Cake scripts
