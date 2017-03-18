@@ -6,6 +6,7 @@ using Cake.Intellisense.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SourceGenerators
 {
@@ -27,20 +28,31 @@ namespace Cake.Intellisense.CodeGeneration.SourceGenerators
 
         public CompilationUnitSyntax Generate(Assembly assembly)
         {
+            var assemblyName = assembly.GetName();
+            var assemblyVersion = assemblyName.Version;
             var compilation = compilationProvider.Get(
                 assembly.GetName().Name,
                 references: new[] { metadataReferenceLoader.CreateFromFile(assembly.Location) });
 
             var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace);
 
-            var compilationSyntax = SyntaxFactory.CompilationUnit();
+            var compilationSyntax = CompilationUnit();
+
+            compilationSyntax = compilationSyntax.AddUsings(UsingDirective(IdentifierName("System.Reflection")))
+                    .WithAttributeLists(List(new[]
+                    {
+                        CreateAssemblyAttributeList("AssemblyTitle", $"{assemblyName.Name}"),
+                        CreateAssemblyAttributeList("AssemblyVersion", $"{assemblyVersion}"),
+                        CreateAssemblyAttributeList("AssemblyFileVersion", $"{assemblyVersion}"),
+                        CreateAssemblyAttributeList("AssemblyInformationalVersion", $"{assemblyVersion}")
+                    }));
 
             foreach (var namespaceSymbol in namespaceSymbols)
             {
                 var classSymbols = CreateNamedTypeDeclaration(namespaceSymbol).ToArray();
                 if (classSymbols.Any())
                 {
-                    var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(namespaceSymbol.ToString())).AddMembers(classSymbols);
+                    var namespaceSyntax = NamespaceDeclaration(IdentifierName(namespaceSymbol.ToString())).AddMembers(classSymbols);
                     compilationSyntax = compilationSyntax.AddMembers(namespaceSyntax);
                 }
             }
@@ -66,6 +78,22 @@ namespace Cake.Intellisense.CodeGeneration.SourceGenerators
                     yield return reccured;
                 }
             }
+        }
+
+        private AttributeListSyntax CreateAssemblyAttributeList(string attributeName, string attributeValue)
+        {
+            return AttributeList(
+                    SingletonSeparatedList(
+                        Attribute(
+                                IdentifierName(attributeName))
+                            .WithArgumentList(
+                                AttributeArgumentList(
+                                    SingletonSeparatedList(
+                                        AttributeArgument(
+                                            LiteralExpression(
+                                                SyntaxKind.StringLiteralExpression,
+                                                Literal(attributeValue))))))))
+                .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)));
         }
     }
 }

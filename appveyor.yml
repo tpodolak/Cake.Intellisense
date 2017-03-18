@@ -1,0 +1,24 @@
+# Build script
+init:
+  - git config --global core.autocrlf true
+
+# Build script
+build_script:
+  - ps: .\Build\build.ps1 -Script build.csx -Configuration Release -Target AppVeyour
+
+# Tests
+test: off
+
+# Branches to build
+branches:
+  # Whitelist
+  only:
+    - master
+    - dev
+    - /r/.*/
+    - /release/.*/
+    - /hotfix/.*/
+
+# # Build cache
+# cache:
+# - tools -> build.cake

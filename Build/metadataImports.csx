@@ -1,10 +1,7 @@
 #r "./tools/Cake/Cake.Core.dll"
 #r "./tools/Cake/Cake.Common.dll"
-#r "./tools/Cake/Cake.Powershell.dll"
 #r "./tools/Cake/Cake.Core.Metadata.dll"
 #r "./tools/Cake/Cake.Common.Metadata.dll"
-#r "./tools/Cake/Cake.PowerShell.AliasesMetadata.dll"
-#r "./tools/Cake/System.Management.Automation.dll"
 
 using static Cake.Common.ArgumentAliases;
 using static Cake.Common.ArgumentAliasesMetadata;

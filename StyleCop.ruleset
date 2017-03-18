@@ -3,9 +3,9 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA0000" Action="Error" />
     <Rule Id="SA1305" Action="Error" />
-    <Rule Id="SA1412" Action="Error" />
     <Rule Id="SA1609" Action="Error" />
     <Rule Id="SA1639" Action="Error" />
+    <Rule Id="SA1412" Action="None" />    
     <Rule Id="SX1309S" Action="None" />
     <Rule Id="SX1309X" Action="None" />
     <Rule Id="SA1101" Action="None" />

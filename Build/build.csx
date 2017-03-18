@@ -11,11 +11,14 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.console&version=2.1.0"
 
 using Cake.Common.Tools.NuGet.Pack;
+using Cake.Common.Tools.NuGet.Push;
 using Cake.Core.Diagnostics;
 
 var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
 var paths = BuildPaths.GetPaths(Context, parameters, buildVersion);
+
+var packages = BuildPackages.GetPackages(paths, buildVersion);
 
 Setup(context =>
 {
@@ -23,6 +26,11 @@ Setup(context =>
     if(!DirectoryExists(paths.Directories.Artifacts))
     {
         CreateDirectory(paths.Directories.Artifacts);
+    }
+
+    if (!DirectoryExists(paths.Directories.TestResults))
+    {
+        CreateDirectory(paths.Directories.TestResults);
     }
 });
 
@@ -43,10 +51,34 @@ Task("Run-Tests")
     .IsDependentOn("Build")
     .Does(()=>
 {
-    XUnit2(paths.Files.TestAssemblies, new XUnit2Settings 
-    { 
-        Parallelism = ParallelismOption.All
-    });
+    Action<ICakeContext> testAction = context => 
+    {
+        context.XUnit2(paths.Files.TestAssemblies, new XUnit2Settings 
+        { 
+            Parallelism = ParallelismOption.All,
+            ShadowCopy = false,
+        });
+    };
+
+    if(parameters.SkipOpenCover)
+    {
+        testAction(Context);
+    }
+    else
+    {
+        OpenCover(testAction,
+                        paths.Files.TestCoverageOutputFilePath,
+                        new OpenCoverSettings {
+                            ReturnTargetCodeOffset = 0,
+                            ArgumentCustomization = args => args.Append("-mergeoutput")
+                        }
+                        .WithFilter("+[Cake.Intellisense*]* -[Cake.Intellisense.Tests*]*")
+                        .ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
+                        .ExcludeByFile("*/*Designer.cs;*/*.g.cs;*/*.g.i.cs"));
+
+        ReportGenerator(paths.Files.TestCoverageOutputFilePath, paths.Directories.TestResults);
+    }
+
 });
 
 Task("Build")
@@ -61,8 +93,9 @@ Task("Build")
 });
 
 Task("Pack")
-.WithCriteria(val => parameters.Configuration == "Release")
+.IsDependentOn("Patch-AssemblyInfo")
 .IsDependentOn("Run-Tests")
+.WithCriteria(val => parameters.Configuration == "Release")
 .Does(() =>
 {
     NuGetPack(paths.Files.CakeIntellisenseNuSpec, new NuGetPackSettings 
@@ -72,15 +105,41 @@ Task("Pack")
     });
 });
 
+Task("Publish-NuGet")
+    .IsDependentOn("Pack")
+    .WithCriteria(context => parameters.ShouldPublish)
+    .Does(() =>
+{
+    var apiKey = EnvironmentVariable("NUGET_API_KEY");
+    if (string.IsNullOrEmpty(apiKey))
+    {
+        throw new InvalidOperationException("Could not resolve NuGet API key.");
+    }
+
+    var apiUrl = EnvironmentVariable("NUGET_API_URL");
+    if (string.IsNullOrEmpty(apiUrl))
+    {
+        throw new InvalidOperationException("Could not resolve NuGet API url.");
+    }
+
+    NuGetPush(packages.NuGetPackage, new NuGetPushSettings
+    {
+        ApiKey = apiKey,
+        Source = apiUrl
+    });
+});
+
 Task("Patch-AssemblyInfo")
 .Does(() => 
 {
     GitVersion(new GitVersionSettings
     {
         UpdateAssemblyInfo = true,
-        OutputType = GitVersionOutput.BuildServer,
-        WorkingDirectory = paths.Directories.RootDir,
+        WorkingDirectory = paths.Directories.RootDir
     });
 });
+
+Task("AppVeyor")
+  .IsDependentOn("Publish-NuGet");
 
 RunTarget(parameters.Target);

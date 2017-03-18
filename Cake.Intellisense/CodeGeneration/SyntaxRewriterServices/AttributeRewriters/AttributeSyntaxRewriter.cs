@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewriters
 {
     internal class AttributeSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly string[] attributesToRemove;
-
-        public AttributeSyntaxRewriter(string[] attributesToRemove)
+        private static readonly string[] AttributesToRemove =
         {
-            this.attributesToRemove = attributesToRemove;
+            CakeAttributeNames.CakeAliasCategory,
+            CakeAttributeNames.CakeMethodAlias,
+            CakeAttributeNames.CakeNamespaceImport,
+            CakeAttributeNames.CakePropertyAlias
+        };
+
+        private readonly Assembly assembly;
+
+        public AttributeSyntaxRewriter(Assembly assembly)
+        {
+            this.assembly = assembly;
         }
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
@@ -45,8 +55,21 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
         public override SyntaxNode VisitAttribute(AttributeSyntax node)
         {
             var obsoleteAttributeName = typeof(ObsoleteAttribute).Name;
-            if (AttributeNameMatches(node, obsoleteAttributeName) || AttributeNameMatches(node, obsoleteAttributeName.Substring(0, obsoleteAttributeName.IndexOf("Attribute"))))
+            var assemblyTitleAttributeName = typeof(AssemblyTitleAttribute).Name;
+            if (AttributeNameMatches(node, obsoleteAttributeName) || AttributeNameMatches(node, obsoleteAttributeName.Substring(0, obsoleteAttributeName.IndexOf("Attribute", StringComparison.Ordinal))))
                 node = node.WithArgumentList(null);
+
+            if (AttributeNameMatches(node, assemblyTitleAttributeName.Substring(0, assemblyTitleAttributeName.IndexOf("Attribute", StringComparison.Ordinal))))
+            {
+                node =
+                    node.WithArgumentList(AttributeArgumentList(SeparatedList(new[]
+                    {
+                        AttributeArgument(
+                            LiteralExpression(
+                                SyntaxKind.StringLiteralExpression,
+                                Literal($"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSuffix}")))
+                    })));
+            }
 
             return base.VisitAttribute(node);
         }
@@ -57,7 +80,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
 
             foreach (var attributeList in originalAttributes)
             {
-                var nodesToRemove = attributeList.Attributes.Where(attribute => attributesToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
+                var nodesToRemove = attributeList.Attributes.Where(attribute => AttributesToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
                 var syntax = attributeList.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia);
 
                 if (syntax.Attributes.Any())

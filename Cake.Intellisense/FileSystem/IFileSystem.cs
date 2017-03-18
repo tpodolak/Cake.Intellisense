@@ -8,6 +8,8 @@ namespace Cake.Intellisense.FileSystem
 
         string ReadAllText(string path);
 
+        void WriteAllBytes(string path, byte[] bytes);
+
         bool DirectoryExists(string directory);
 
         DirectoryInfo CreateDirectory(string path);
