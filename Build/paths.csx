@@ -100,3 +100,18 @@ public class BuildDirectories
         TestResults = testResults;
     }
 }
+
+public class BuildPackages
+{
+    public FilePath NuGetPackage { get; private set;}
+
+    public BuildPackages(FilePath nuGetPackage)
+    {
+        this.NuGetPackage = nuGetPackage;
+    }
+
+    public static BuildPackages GetPackages(BuildPaths paths, BuildVersion version)
+    {
+        return new BuildPackages(paths.Directories.Artifacts.CombineWithFilePath("Cake.Intellisense."+ version.SemVersion + ".nupkg"));
+    }
+}

@@ -11,11 +11,14 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.console&version=2.1.0"
 
 using Cake.Common.Tools.NuGet.Pack;
+using Cake.Common.Tools.NuGet.Push;
 using Cake.Core.Diagnostics;
 
 var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
 var paths = BuildPaths.GetPaths(Context, parameters, buildVersion);
+
+var packages = BuildPackages.GetPackages(paths, buildVersion);
 
 Setup(context =>
 {
@@ -90,14 +93,41 @@ Task("Build")
 });
 
 Task("Pack")
-.WithCriteria(val => parameters.Configuration == "Release")
 .IsDependentOn("Run-Tests")
+.IsDependentOn("Patch-AssemblyInfo")
+.WithCriteria(val => parameters.Configuration == "Release")
 .Does(() =>
 {
     NuGetPack(paths.Files.CakeIntellisenseNuSpec, new NuGetPackSettings 
     {
         Version = buildVersion.SemVersion,
         OutputDirectory = paths.Directories.Artifacts
+    });
+});
+
+Task("Publish-NuGet")
+    .IsDependentOn("Pack")
+    .Does(() =>
+{
+    // Resolve the API key.
+    var apiKey = EnvironmentVariable("NUGET_API_KEY");
+    if (string.IsNullOrEmpty(apiKey))
+    {
+        throw new InvalidOperationException("Could not resolve NuGet API key.");
+    }
+
+    // Resolve the API url.
+    var apiUrl = EnvironmentVariable("NUGET_API_URL");
+    if (string.IsNullOrEmpty(apiUrl))
+    {
+        throw new InvalidOperationException("Could not resolve NuGet API url.");
+    }
+
+    // Push the package.
+    NuGetPush(packages.NuGetPackage, new NuGetPushSettings
+    {
+        ApiKey = apiKey,
+        Source = apiUrl
     });
 });
 
