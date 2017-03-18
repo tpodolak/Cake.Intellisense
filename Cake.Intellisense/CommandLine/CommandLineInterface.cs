@@ -39,7 +39,7 @@ namespace Cake.Intellisense.CommandLine
 
             Logger.Info($"TargetFramework not specified. Retrieving target frameworks for package {options.Package} {options.PackageVersion ?? string.Empty}");
 
-            var package = packageManager.FindPackage(options.PackageVersion, options.PackageVersion);
+            var package = packageManager.FindPackage(options.Package, options.PackageVersion);
 
             if (package == null)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -60,6 +61,12 @@ namespace Cake.Intellisense
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
         {
+            if (options == null)
+            {
+                Logger.Fatal("Unable to parse arguments");
+                return null;
+            }
+
             var generatorResult = new GeneratorResult();
             var targetFramework = new FrameworkName(options.TargetFramework);
             var package = packageManager.InstallPackage(options.Package, options.PackageVersion, targetFramework);

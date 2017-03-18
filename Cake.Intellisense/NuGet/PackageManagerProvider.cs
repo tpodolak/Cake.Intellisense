@@ -1,4 +1,6 @@
-﻿using Cake.Intellisense.Settings;
+﻿using Cake.Intellisense.Logging;
+using Cake.Intellisense.Settings;
+using NLog;
 
 namespace Cake.Intellisense.NuGet
 {
@@ -16,7 +18,12 @@ namespace Cake.Intellisense.NuGet
         public global::NuGet.IPackageManager Get()
         {
             var packageRepository = packageRepositoryProvider.Get();
-            return new global::NuGet.PackageManager(packageRepository, settings.LocalRepositoryPath);
+            var packageManager = new global::NuGet.PackageManager(packageRepository, settings.LocalRepositoryPath)
+            {
+                Logger = new NLogNugetLoggerAdapter(LogManager.GetCurrentClassLogger(typeof(global::NuGet.PackageManager)))
+            };
+
+            return packageManager;
         }
     }
 }
