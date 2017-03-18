@@ -107,6 +107,7 @@ Task("Pack")
 
 Task("Publish-NuGet")
     .IsDependentOn("Pack")
+    .WithCriteria(context => parameters.ShouldPublish)
     .Does(() =>
 {
     // Resolve the API key.
@@ -131,9 +132,6 @@ Task("Publish-NuGet")
     });
 });
 
-Task("AppVeyor")
-  .IsDependentOn("Publish-NuGet");
-
 Task("Patch-AssemblyInfo")
 .Does(() => 
 {
@@ -143,5 +141,8 @@ Task("Patch-AssemblyInfo")
         WorkingDirectory = paths.Directories.RootDir
     });
 });
+
+Task("AppVeyor")
+  .IsDependentOn("Publish-NuGet");
 
 RunTarget(parameters.Target);
