@@ -20,6 +20,6 @@ branches:
     - /release/.*/
     - /hotfix/.*/
 
-# # Build cache
-# cache:
-# - tools -> build.cake
+# Build cache
+cache:
+- Build/tools -> Build/build.csx
