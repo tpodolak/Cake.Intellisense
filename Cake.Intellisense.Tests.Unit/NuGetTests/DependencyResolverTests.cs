@@ -57,7 +57,7 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                     Arg.Any<bool>(),
                     Arg.Any<DependencyVersion>()).Returns(dependentPackage);
 
-                var result = Subject.GetDependentPackagesAndSelf(package, new FrameworkName(".NETFramework,Version=v4.6"));
+                var result = Subject.GetDependentPackagesAndSelf(package, new FrameworkName(".NETFramework,Version=v4.6")).ToList();
 
                 result.Should().HaveCount(1);
                 result.ShouldBeEquivalentTo(new[] { package });
@@ -89,10 +89,9 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
 
             public override object CreateInstance(Type type, params object[] constructorArgs)
             {
-                if (type == typeof(IPackageRepositoryProvider))
+                if (type == typeof(IPackageRepository))
                 {
-                    var nugetPackageRepositoryProvider = Substitute.For<IPackageRepositoryProvider>();
-                    nugetPackageRepositoryProvider.Get().Returns(Use(Substitute.For<IPackageRepository, IDependencyResolver>()));
+                    var nugetPackageRepositoryProvider = Substitute.For<IPackageRepository, IDependencyResolver>();
                     return nugetPackageRepositoryProvider;
                 }
 
@@ -101,12 +100,12 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
 
             private PackageDependencySet CreateDependencySet(IPackage package)
             {
-                var packageFile = Substitute.For<IPackageFile>();
-                packageFile.Path.Returns("lib.dll");
+                var packageAssemblyReference = Substitute.For<IPackageAssemblyReference>();
+                packageAssemblyReference.Path.Returns("lib.dll");
 
-                packageFile.SupportedFrameworks.Returns(new[] { defaultFramework });
+                packageAssemblyReference.SupportedFrameworks.Returns(new[] { defaultFramework });
 
-                package.GetFiles().Returns(new[] { packageFile });
+                package.AssemblyReferences.Returns(new[] { packageAssemblyReference });
                 return new PackageDependencySet(defaultFramework, new[] { new PackageDependency("id") });
             }
         }

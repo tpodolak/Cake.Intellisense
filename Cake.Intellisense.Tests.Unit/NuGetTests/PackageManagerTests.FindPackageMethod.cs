@@ -43,19 +43,19 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var firstPackage = Substitute.For<IPackage>();
                 var secondPackage = Substitute.For<IPackage>();
 
-                var packageFile = Use<IPackageFile>();
+                var packageAssemblyReference = Use<IPackageAssemblyReference>();
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
-                packageFile.TargetFramework.Returns(targetFramework);
+                packageAssemblyReference.TargetFramework.Returns(targetFramework);
                 firstPackage.GetSupportedFrameworks().Returns(new[] { targetFramework });
                 firstPackage.Version.Returns(new SemanticVersion(2, 0, 0, "special"));
                 firstPackage.Id.Returns("Cake.Common");
-                firstPackage.GetFiles().Returns(new[] { packageFile });
+                firstPackage.AssemblyReferences.Returns(new[] { packageAssemblyReference });
 
                 secondPackage.GetSupportedFrameworks().Returns(new[] { targetFramework });
                 secondPackage.Version.Returns(new SemanticVersion(1, 0, 0, 0));
                 secondPackage.Id.Returns("Cake.Common");
-                secondPackage.GetFiles().Returns(new[] { packageFile });
+                secondPackage.AssemblyReferences.Returns(new[] { packageAssemblyReference });
 
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { secondPackage, firstPackage }.AsQueryable());
                 Get<INuGetSettings>().AllowPreReleaseVersions.Returns(allowPreRelease);
@@ -71,23 +71,23 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
                 var firstPackage = Substitute.For<IPackage>();
                 var secondPackage = Substitute.For<IPackage>();
-                var firstPackageFile = Use<IPackageFile>();
-                var secondPackageFile = Substitute.For<IPackageFile>();
-                secondPackageFile.TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.6"));
-                firstPackageFile.TargetFramework.Returns(targetFramework);
+                var firstPackageAssemblyReference = Use<IPackageAssemblyReference>();
+                var secondPackageAssemblyReference = Substitute.For<IPackageAssemblyReference>();
+                secondPackageAssemblyReference.TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.6"));
+                firstPackageAssemblyReference.TargetFramework.Returns(targetFramework);
                 firstPackage.Version.Returns(new SemanticVersion(2, 0, 0, 0));
                 firstPackage.Id.Returns("Cake.Common");
-                firstPackage.GetFiles().Returns(new[] { firstPackageFile });
+                firstPackage.AssemblyReferences.Returns(new[] { firstPackageAssemblyReference });
 
                 secondPackage.Version.Returns(new SemanticVersion(1, 0, 0, 0));
                 secondPackage.Id.Returns("Cake.Common");
-                secondPackage.GetFiles().Returns(new[] { secondPackageFile });
+                secondPackage.AssemblyReferences.Returns(new[] { secondPackageAssemblyReference });
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { secondPackage, firstPackage }.AsQueryable());
 
                 var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
 
                 result.Should().NotBeNull();
-                result.GetFiles().Select(val => val.TargetFramework).Should().ContainSingle(framework => framework == targetFramework);
+                result.AssemblyReferences.Select(val => val.TargetFramework).Should().ContainSingle(framework => framework == targetFramework);
             }
 
             public override object CreateInstance(Type type, params object[] constructorArgs)

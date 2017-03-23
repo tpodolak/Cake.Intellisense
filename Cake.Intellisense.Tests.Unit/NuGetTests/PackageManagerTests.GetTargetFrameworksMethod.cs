@@ -20,10 +20,10 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
             }
 
             [Fact]
-            public void DeducesTargetFrameworkBasedOnPackageFiles()
+            public void DeducesTargetFrameworkBasedOnAssemblyReferences()
             {
-                Get<IPackage>().GetFiles().Returns(new[] { Use<IPackageFile>() });
-                Get<IPackageFile>().TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.5"));
+                Get<IPackage>().AssemblyReferences.Returns(new[] { Use<IPackageAssemblyReference>() });
+                Get<IPackageAssemblyReference>().TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.5"));
 
                 var result = Subject.GetTargetFrameworks(Get<IPackage>());
 

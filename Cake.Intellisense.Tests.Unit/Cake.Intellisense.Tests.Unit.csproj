@@ -217,6 +217,7 @@
     <Compile Include="LoggingTests\NLogNugetLoggerAdapterTests.cs" />
     <Compile Include="MetadataGeneratorTests.cs" />
     <Compile Include="NuGetTests\DependencyResolverTests.cs" />
+    <Compile Include="NuGetTests\PackageAssemblyReferencePathResolverTests.cs" />
     <Compile Include="NuGetTests\PackageManagerProviderTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs" />

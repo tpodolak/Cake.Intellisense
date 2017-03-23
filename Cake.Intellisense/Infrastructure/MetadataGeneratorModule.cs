@@ -4,8 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Autofac.Core;
+using Cake.Intellisense.NuGet;
 using Cake.Intellisense.Settings;
 using Castle.Components.DictionaryAdapter;
+using NuGet;
+using IDependencyResolver = Cake.Intellisense.NuGet.IDependencyResolver;
+using ISettings = Cake.Intellisense.Settings.ISettings;
 using Module = Autofac.Module;
 
 namespace Cake.Intellisense.Infrastructure
@@ -26,9 +31,21 @@ namespace Cake.Intellisense.Infrastructure
             var referencedAssemblies = assembly.GetReferencedAssemblies().Select(Assembly.Load);
 
             builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { assembly }).ToArray())
+                   .Where(type => !type.IsAssignableTo<IPackageRepository>())
+                   .Except<PhysicalFileSystem>()
+                   .Except<DependencyResolver>()
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
             builder.RegisterInstance(Console.Out).As<TextWriter>();
+            builder.RegisterType<PhysicalFileSystem>()
+                   .As<IFileSystem>()
+                   .WithParameter((parameter, context) => parameter.Position == 0, (parameter, context) => context.Resolve<INuGetSettings>().LocalRepositoryPath)
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<LocalPackageRepository>().As<IPackageRepository>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<DependencyResolver>().As<IDependencyResolver>()
+                   .WithParameter((parameter, context) => parameter.ParameterType == typeof(IPackageRepository), (parameter, context) => context.Resolve<IPackageRepository>())
+                   .InstancePerLifetimeScope();
             RegisterSettings(builder);
         }
 

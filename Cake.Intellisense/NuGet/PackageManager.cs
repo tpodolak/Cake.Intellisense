@@ -38,7 +38,7 @@ namespace Cake.Intellisense.NuGet
         public List<FrameworkName> GetTargetFrameworks(IPackage package)
         {
             return
-                package.GetFiles()
+                package.AssemblyReferences
                     .GroupBy(val => val.TargetFramework, packageFile => packageFile.TargetFramework)
                     .Select(group => group.Key)
                     .ToList();

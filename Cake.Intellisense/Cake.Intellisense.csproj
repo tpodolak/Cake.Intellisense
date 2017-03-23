@@ -183,6 +183,7 @@
     <Compile Include="IMetadataGenerator.cs" />
     <Compile Include="Logging\NLogNugetLoggerAdapter.cs" />
     <Compile Include="NuGet\IPackageAssemblyResolver.cs" />
+    <Compile Include="NuGet\IPackageAssemblyReferencePathResolver.cs" />
     <Compile Include="NuGet\PackageAssemblyResolver.cs" />
     <Compile Include="NuGet\IDependencyResolver.cs" />
     <Compile Include="NuGet\IPackageManagerProvider.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="NuGet\DependencyResolver.cs" />
     <Compile Include="NuGet\PackageManager.cs" />
     <Compile Include="NuGet\PackageManagerProvider.cs" />
+    <Compile Include="NuGet\PackageAssemblyReferencePathResolver.cs" />
     <Compile Include="NuGet\PackageRepositoryProvider.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="Reflection\IAssemblyLoader.cs" />
