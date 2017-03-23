@@ -20,7 +20,7 @@ namespace Cake.Intellisense.NuGet
             var packageRepository = packageRepositoryProvider.Get();
             var packageManager = new global::NuGet.PackageManager(packageRepository, settings.LocalRepositoryPath)
             {
-                Logger = new NLogNugetLoggerAdapter(LogManager.GetCurrentClassLogger(typeof(global::NuGet.PackageManager)))
+                Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(typeof(global::NuGet.PackageManager).FullName))
             };
 
             return packageManager;

@@ -37,13 +37,13 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
             [Fact]
             public void ReturnsAndInstallPackage_WhenPackageFoundAndTargetsGivenTargetFramework()
             {
-                var packageFile = Use<IPackageFile>();
+                var packageAssemblyReference = Use<IPackageAssemblyReference>();
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
-                packageFile.TargetFramework.Returns(targetFramework);
+                packageAssemblyReference.TargetFramework.Returns(targetFramework);
                 Get<IPackage>().GetSupportedFrameworks().Returns(new[] { targetFramework });
                 Get<IPackage>().Version.Returns(new SemanticVersion(1, 0, 0, 0));
                 Get<IPackage>().Id.Returns("Cake.Common");
-                Get<IPackage>().GetFiles().Returns(new[] { packageFile });
+                Get<IPackage>().AssemblyReferences.Returns(new[] { packageAssemblyReference });
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { Get<IPackage>() }.AsQueryable());
 
                 var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
@@ -55,13 +55,13 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
             [Fact]
             public void ReturnsNull_WhenPackageFoundAndDoesNotTargetsGivenTargetFramework()
             {
-                var packageFile = Use<IPackageFile>();
+                var packageAssemblyReference = Use<IPackageAssemblyReference>();
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
-                packageFile.TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.6"));
+                packageAssemblyReference.TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.6"));
                 Get<IPackage>().GetSupportedFrameworks().Returns(new[] { targetFramework });
                 Get<IPackage>().Version.Returns(new SemanticVersion(1, 0, 0, 0));
                 Get<IPackage>().Id.Returns("Cake.Common");
-                Get<IPackage>().GetFiles().Returns(new[] { packageFile });
+                Get<IPackage>().AssemblyReferences.Returns(new[] { packageAssemblyReference });
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { Get<IPackage>() }.AsQueryable());
 
                 var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
@@ -76,19 +76,19 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var firstPackage = Substitute.For<IPackage>();
                 var secondPackage = Substitute.For<IPackage>();
 
-                var packageFile = Use<IPackageFile>();
+                var packageAssemblyReference = Use<IPackageAssemblyReference>();
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
-                packageFile.TargetFramework.Returns(targetFramework);
+                packageAssemblyReference.TargetFramework.Returns(targetFramework);
                 firstPackage.GetSupportedFrameworks().Returns(new[] { targetFramework });
                 firstPackage.Version.Returns(new SemanticVersion(1, 0, 0, 0));
                 firstPackage.Id.Returns("Cake.Common");
-                firstPackage.GetFiles().Returns(new[] { packageFile });
+                firstPackage.AssemblyReferences.Returns(new[] { packageAssemblyReference });
 
                 secondPackage.GetSupportedFrameworks().Returns(new[] { targetFramework });
                 secondPackage.Version.Returns(new SemanticVersion(2, 0, 0, 0));
                 secondPackage.Id.Returns("Cake.Common");
-                secondPackage.GetFiles().Returns(new[] { packageFile });
+                secondPackage.AssemblyReferences.Returns(new[] { packageAssemblyReference });
 
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { firstPackage, secondPackage }.AsQueryable());
 
