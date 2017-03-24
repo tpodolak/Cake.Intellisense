@@ -9,9 +9,9 @@ namespace Cake.Intellisense.NuGet
     {
         private readonly IPackageRepository packageRepository;
 
-        public DependencyResolver(IPackageRepositoryProvider packageRepositoryProvider)
+        public DependencyResolver(IPackageRepository packageRepositoryProvider)
         {
-            packageRepository = packageRepositoryProvider.Get();
+            packageRepository = packageRepositoryProvider;
         }
 
         public IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName)
@@ -33,13 +33,13 @@ namespace Cake.Intellisense.NuGet
         private IEnumerable<IPackage> GetDependentPackages(IPackage package, FrameworkName frameworkName)
         {
             return package.DependencySets.SelectMany(x => x.Dependencies)
-                .Select(val => packageRepository.ResolveDependency(val, false, true))
-                .Where(val => IsValidDependency(val, frameworkName));
+                    .Select(val => packageRepository.ResolveDependency(val, false, true))
+                    .Where(val => IsValidDependency(val, frameworkName));
         }
 
         private bool IsValidDependency(IPackage val, FrameworkName frameworkName)
         {
-            return val.GetFiles().Any(file => file.Path.EndsWith(".dll") && file.SupportedFrameworks.Contains(frameworkName));
+            return val.AssemblyReferences.Any(assemblyReference => assemblyReference.Path.EndsWith(".dll") && assemblyReference.SupportedFrameworks.Contains(frameworkName));
         }
     }
 }

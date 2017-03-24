@@ -5,6 +5,7 @@ using Cake.Intellisense.Tests.Unit.XUnitExtensionPoints;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
@@ -16,8 +17,8 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
         [CustomMemberData(nameof(TestCases))]
         public void Verify(ServiceRewriterTestCase testCase)
         {
-            var inputTree = SyntaxFactory.ParseSyntaxTree(testCase.Input);
-            var expectedResultTree = SyntaxFactory.ParseSyntaxTree(testCase.ExpectedResult);
+            var inputTree = ParseSyntaxTree(testCase.Input);
+            var expectedResultTree = ParseSyntaxTree(testCase.ExpectedResult);
 
             var compilation = CSharpCompilation.Create("name", new[] { inputTree });
 

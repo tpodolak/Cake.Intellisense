@@ -10,18 +10,19 @@ namespace Cake.Intellisense.NuGet
     public class PackageAssemblyResolver : IPackageAssemblyResolver
     {
         private readonly IAssemblyLoader assemblyLoader;
+        private readonly IPackageAssemblyReferencePathResolver pathResolver;
 
-        public PackageAssemblyResolver(IAssemblyLoader assemblyLoader)
+        public PackageAssemblyResolver(IAssemblyLoader assemblyLoader, IPackageAssemblyReferencePathResolver pathResolver)
         {
             this.assemblyLoader = assemblyLoader;
+            this.pathResolver = pathResolver;
         }
 
         public List<Assembly> ResolveAssemblies(IPackage package, FrameworkName targetFramework)
         {
-            // TODO how can we get rid of cast, loading assembly from stream drops the location
-            return package.GetFiles().OfType<PhysicalPackageFile>()
-                  .Where(val => val.SupportedFrameworks.Contains(targetFramework) && val.Path.EndsWith(".dll"))
-                  .Select(val => assemblyLoader.LoadFrom(val.SourcePath))
+            return package.AssemblyReferences
+                  .Where(val => val.SupportedFrameworks.Contains(targetFramework))
+                  .Select(val => assemblyLoader.LoadFrom(pathResolver.GetPath(package, val)))
                   .ToList();
         }
     }

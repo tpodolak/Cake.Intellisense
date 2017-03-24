@@ -5,6 +5,7 @@ using Cake.Intellisense.Compilation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters
 {
@@ -30,7 +31,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewr
                 var currentTree = compilation.SyntaxTrees.Single();
                 var semanticModel = compilation.GetSemanticModel(currentTree);
                 var rewrittenNode = metadataRewriterService.Rewrite(assembly, semanticModel, currentTree.GetRoot());
-                compilation = compilation.ReplaceSyntaxTree(currentTree, SyntaxFactory.SyntaxTree(rewrittenNode));
+                compilation = compilation.ReplaceSyntaxTree(currentTree, SyntaxTree(rewrittenNode));
             }
 
             return compilation.SyntaxTrees.Single().GetRoot();

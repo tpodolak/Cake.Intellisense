@@ -6,6 +6,7 @@ using Cake.Intellisense.Documentation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters
 {
@@ -32,7 +33,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewrite
                 var currentNode = node;
                 var declaredSymbol = semanticModel.GetDeclaredSymbol(node);
                 var attributeList = node.AttributeLists;
-                var commentTrivia = SyntaxFactory.TriviaList(SyntaxFactory.Comment(provider.Get(xml, declaredSymbol)), SyntaxFactory.CarriageReturn, SyntaxFactory.LineFeed);
+                var commentTrivia = TriviaList(Comment(provider.Get(xml, declaredSymbol)), CarriageReturn, LineFeed);
 
                 if (node.AttributeLists.Any())
                 {

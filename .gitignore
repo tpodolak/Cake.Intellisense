@@ -96,3 +96,4 @@ packages
 
 # Windows
 Thumbs.db
+*AssemblyInfo.cs

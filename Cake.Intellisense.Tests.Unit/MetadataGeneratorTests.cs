@@ -26,7 +26,7 @@ namespace Cake.Intellisense.Tests.Unit
             public GenerateMethod()
             {
                 Get<IPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
-                                  .Returns(Use<IPackage>());
+                                      .Returns(Use<IPackage>());
                 Get<IDependencyResolver>()
                     .GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
                     .Returns(new List<IPackage>());
@@ -36,7 +36,7 @@ namespace Cake.Intellisense.Tests.Unit
             public void ReturnsNull_WhenNugetPackageNotFound()
             {
                 Get<IPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
-                                              .Returns((IPackage)null);
+                                      .Returns((IPackage)null);
 
                 var metadataGeneratorOptions = new MetadataGeneratorOptions
                 {
@@ -91,38 +91,34 @@ namespace Cake.Intellisense.Tests.Unit
                 Get<ICompiler>().Received(1).Compile(Arg.Is<Microsoft.CodeAnalysis.Compilation>(val => val.AssemblyName == "System.Metadata"), Arg.Is<string>(val => val == "System.Metadata.dll"));
             }
 
-            [Fact(Skip = "Looks like reading assembly from stream remove info about location")]
-            public void LoadMetadataReferencesFromAllAssembliesAndReferencedAssemblies()
+            [Fact]
+            public void LoadMetadataReferencesFromAllDependentPackages()
             {
                 var frameworkVersion = ".NETFramework,Version=v4.5";
                 var packageFile = Use<IPackageFile>();
                 var firstAssembly = typeof(object).Assembly;
                 var assemblies = new List<Assembly>
                 {
-                    firstAssembly,
+                    firstAssembly
                 };
 
                 packageFile.SupportedFrameworks.Returns(new List<FrameworkName> { new FrameworkName(frameworkVersion) });
-                packageFile.Path.Returns("path.dll");
-                Get<IPackage>().GetFiles().Returns(new List<IPackageFile> { packageFile });
 
                 Get<IMetadataReferenceLoader>().CreateFromFile(Arg.Any<string>()).Returns(MetadataReference.CreateFromStream(new MemoryStream()));
                 Get<IMetadataReferenceLoader>().CreateFromStream(Arg.Any<Stream>()).Returns(MetadataReference.CreateFromStream(new MemoryStream()));
 
                 Get<IPackageAssemblyResolver>().ResolveAssemblies(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
-                                                  .Returns(assemblies);
+                                               .Returns(assemblies);
                 Get<ICakeSyntaxRewriterService>().Rewrite(Arg.Any<CompilationUnitSyntax>(), Arg.Any<Assembly>())
-                                                    .Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot());
+                                                 .Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot());
                 Get<IDependencyResolver>().GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
-                                                  .Returns(new List<IPackage> { Get<IPackage>() });
-                Get<IAssemblyLoader>().LoadReferencedAssemblies(Arg.Any<Stream>()).Returns(assemblies);
-
-                Get<ICompiler>().Compile(Arg.Is<CSharpCompilation>(val => val.AssemblyName == "mscorlib.Metadata"), Arg.Any<string>()).Returns(firstAssembly);
+                                          .Returns(new List<IPackage> { Get<IPackage>() });
 
                 Subject.Generate(new MetadataGeneratorOptions { TargetFramework = frameworkVersion });
 
-                Get<ICompiler>().Received(1).Compile(Arg.Is<CSharpCompilation>(val => val.ExternalReferences.Length == 3), Arg.Any<string>());
-                Get<IAssemblyLoader>().Received(1).LoadReferencedAssemblies(Arg.Any<Stream>());
+                Get<IMetadataReferenceLoader>()
+                    .Received(1)
+                    .CreateFromPackages(Arg.Is<IList<IPackage>>(list => list.Count == 1 && list[0] == Get<IPackage>()), Arg.Is<FrameworkName>(framework => framework.FullName == frameworkVersion));
             }
         }
     }

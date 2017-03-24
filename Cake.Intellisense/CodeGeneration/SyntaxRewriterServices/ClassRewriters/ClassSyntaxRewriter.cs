@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters
 {
@@ -49,14 +50,14 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters
 
             var modifierTokens = new List<SyntaxToken>
             {
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword)
+                Token(SyntaxKind.PublicKeyword)
             };
 
             if (node.Modifiers.Any(val => val.Kind() == SyntaxKind.StaticKeyword))
-                modifierTokens.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+                modifierTokens.Add(Token(SyntaxKind.StaticKeyword));
 
-            node = node.WithModifiers(SyntaxFactory.TokenList(modifierTokens))
-                       .WithIdentifier(SyntaxFactory.Identifier(node.Identifier.Text + classSuffix));
+            node = node.WithModifiers(TokenList(modifierTokens))
+                       .WithIdentifier(Identifier(node.Identifier.Text + classSuffix));
 
             return base.VisitClassDeclaration(node);
         }
