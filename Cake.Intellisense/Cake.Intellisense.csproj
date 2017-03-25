@@ -157,6 +157,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="CodeGeneration\MetadataGenerators\GeneratorResult.cs" />
+    <Compile Include="CodeGeneration\MetadataGenerators\Interfaces\IMetadataGenerator.cs" />
+    <Compile Include="CodeGeneration\MetadataGenerators\MetadataGenerator.cs" />
+    <Compile Include="CodeGeneration\MetadataGenerators\MetadataGeneratorOptions.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\CakeSourceGeneratorService.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\Interfaces\ICakeSourceGeneratorService.cs" />
     <Compile Include="CodeGeneration\SourceGenerators\Interfaces\IMetadataGeneratorService.cs" />
@@ -183,8 +187,6 @@
     <Compile Include="Documentation\Interfaces\ICommentProvider.cs" />
     <Compile Include="Documentation\Interfaces\IDocumentationReader.cs" />
     <Compile Include="FileSystem\Interfaces\IFileSystem.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IMetadataGenerator.cs" />
     <Compile Include="Logging\NLogNugetLoggerAdapter.cs" />
     <Compile Include="NuGet\Interfaces\IDependencyResolver.cs" />
     <Compile Include="NuGet\Interfaces\IPackageAssemblyReferencePathResolver.cs" />
@@ -201,7 +203,6 @@
     <Compile Include="Settings\Interfaces\INuGetSettings.cs" />
     <Compile Include="Settings\Interfaces\ISettings.cs" />
     <Compile Include="Settings\SettingsBehavior.cs" />
-    <Compile Include="MetadataGeneratorOptions.cs" />
     <Compile Include="CommandLine\ArgumentParser.cs" />
     <Compile Include="CommandLine\ParserError.cs" />
     <Compile Include="CommandLine\ParserResult.cs" />
@@ -209,9 +210,7 @@
     <Compile Include="Documentation\DocumentationReader.cs" />
     <Compile Include="Documentation\XmlCommentProvider.cs" />
     <Compile Include="FileSystem\PhysicalFileSystem.cs" />
-    <Compile Include="GeneratorResult.cs" />
     <Compile Include="Infrastructure\MetadataGeneratorModule.cs" />
-    <Compile Include="MetadataGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CodeGeneration\SyntaxRewriterServices\CommentRewriters\CommentSyntaxRewriter.cs" />

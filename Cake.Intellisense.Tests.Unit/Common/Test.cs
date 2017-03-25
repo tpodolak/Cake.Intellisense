@@ -10,7 +10,7 @@ namespace Cake.Intellisense.Tests.Unit.Common
 {
     public class Test<T> where T : class
     {
-        private readonly Dictionary<Type, object> container = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _container = new Dictionary<Type, object>();
 
         public T Subject { get; }
 
@@ -20,7 +20,7 @@ namespace Cake.Intellisense.Tests.Unit.Common
 
             // allow to register custom instances via virtual call to CreateInstance
             var localContainer = parameters.ToDictionary(parameterInfo => parameterInfo.ParameterType, parameterInfo => CreateInstance(parameterInfo.ParameterType));
-            localContainer.ForEach(pair => container.Add(pair.Key, pair.Value));
+            localContainer.ForEach(pair => _container.Add(pair.Key, pair.Value));
             Subject = (T)Activator.CreateInstance(typeof(T), localContainer.Values.ToArray());
         }
 
@@ -28,7 +28,7 @@ namespace Cake.Intellisense.Tests.Unit.Common
         {
             object dependency;
             var dependencyType = typeof(TDependency);
-            if (container.TryGetValue(dependencyType, out dependency))
+            if (_container.TryGetValue(dependencyType, out dependency))
                 return (TDependency)dependency;
 
             throw new InvalidOperationException($"Unable to resolve dependency {dependencyType}");
@@ -36,11 +36,11 @@ namespace Cake.Intellisense.Tests.Unit.Common
 
         public object Use(Type dependencyType, params object[] constructorArgs)
         {
-            if (container.ContainsKey(dependencyType))
+            if (_container.ContainsKey(dependencyType))
                 throw new InvalidOperationException($"Dependency {dependencyType} is already registerd");
 
             var instance = CreateInstance(dependencyType, constructorArgs);
-            container.Add(dependencyType, instance);
+            _container.Add(dependencyType, instance);
             return instance;
         }
 
@@ -52,10 +52,10 @@ namespace Cake.Intellisense.Tests.Unit.Common
         public TDependency Use<TDependency>(TDependency instance)
         {
             var dependencyType = typeof(TDependency);
-            if (container.ContainsKey(dependencyType))
+            if (_container.ContainsKey(dependencyType))
                 throw new InvalidOperationException($"Dependency {dependencyType} is already registerd");
 
-            container.Add(dependencyType, instance);
+            _container.Add(dependencyType, instance);
             return instance;
         }
 

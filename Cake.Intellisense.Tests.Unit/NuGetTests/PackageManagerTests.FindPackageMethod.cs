@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Cake.Intellisense.Settings;
 using Cake.Intellisense.Settings.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;

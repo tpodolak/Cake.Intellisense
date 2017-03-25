@@ -5,6 +5,7 @@ using System.Xml.XPath;
 using Cake.Intellisense.Documentation.Interfaces;
 using Microsoft.CodeAnalysis;
 using MoreLinq;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
 
 namespace Cake.Intellisense.Documentation
 {
@@ -39,8 +40,8 @@ namespace Cake.Intellisense.Documentation
             return methodSymbol.GetAttributes()
                 .Any(
                     val =>
-                        val.AttributeClass.Name.EndsWith(CakeAttributeNames.CakePropertyAlias) ||
-                        val.AttributeClass.Name.EndsWith(CakeAttributeNames.CakeMethodAlias));
+                        val.AttributeClass.Name.EndsWith(CakePropertyAlias) ||
+                        val.AttributeClass.Name.EndsWith(CakeMethodAlias));
         }
 
         private XElement GetCommentElement(XDocument documentation, string commentId)

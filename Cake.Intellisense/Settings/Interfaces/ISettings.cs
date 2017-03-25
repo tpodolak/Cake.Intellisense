@@ -1,4 +1,4 @@
-﻿namespace Cake.Intellisense.Settings
+﻿namespace Cake.Intellisense.Settings.Interfaces
 {
     public interface ISettings
     {

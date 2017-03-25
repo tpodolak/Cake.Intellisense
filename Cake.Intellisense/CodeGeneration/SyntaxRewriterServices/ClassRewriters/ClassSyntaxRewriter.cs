@@ -16,11 +16,11 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters
             SyntaxKind.InternalKeyword
         };
 
-        private readonly string classSuffix;
+        private readonly string _classSuffix;
 
         public ClassSyntaxRewriter(string classSuffix)
         {
-            this.classSuffix = classSuffix;
+            _classSuffix = classSuffix;
         }
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
@@ -57,7 +57,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters
                 modifierTokens.Add(Token(SyntaxKind.StaticKeyword));
 
             node = node.WithModifiers(TokenList(modifierTokens))
-                       .WithIdentifier(Identifier(node.Identifier.Text + classSuffix));
+                       .WithIdentifier(Identifier(node.Identifier.Text + _classSuffix));
 
             return base.VisitClassDeclaration(node);
         }

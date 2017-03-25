@@ -12,31 +12,31 @@ using Castle.Components.DictionaryAdapter;
 using NLog;
 using NuGet;
 using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
-using ISettings = Cake.Intellisense.Settings.ISettings;
+using ISettings = Cake.Intellisense.Settings.Interfaces.ISettings;
 using Module = Autofac.Module;
 
 namespace Cake.Intellisense.Infrastructure
 {
     public class MetadataGeneratorModule : Module
     {
-        private readonly NameValueCollection appSettings;
-        private readonly Assembly assembly;
+        private readonly NameValueCollection _appSettings;
+        private readonly Assembly _assembly;
 
         public MetadataGeneratorModule(NameValueCollection appSettings, Assembly assembly)
         {
-            this.appSettings = appSettings;
-            this.assembly = assembly;
+            _appSettings = appSettings;
+            _assembly = assembly;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            var referencedAssemblies = assembly.GetReferencedAssemblies().Select(Assembly.Load);
+            var referencedAssemblies = _assembly.GetReferencedAssemblies().Select(Assembly.Load);
 
             builder.RegisterInstance(Console.Out).As<TextWriter>();
             RegisterSettings(builder);
 
-            builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { assembly }).ToArray())
-                   .Where(type => !type.IsAssignableTo<IPackageRepository>() && !type.IsAssignableTo<global::NuGet.IPackageManager>())
+            builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { _assembly }).ToArray())
+                   .Where(type => !type.IsAssignableTo<IPackageRepository>() && !type.IsAssignableTo<IPackageManager>())
                    .Except<PhysicalFileSystem>()
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
@@ -56,7 +56,7 @@ namespace Cake.Intellisense.Infrastructure
                    .InstancePerLifetimeScope();
 
             builder.RegisterType<global::NuGet.PackageManager>()
-                   .As<global::NuGet.IPackageManager>()
+                   .As<IPackageManager>()
                    .UsingConstructor(typeof(IPackageRepository), typeof(IPackagePathResolver), typeof(IFileSystem))
                    .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.GetType().FullName)))
                    .InstancePerLifetimeScope();
@@ -70,11 +70,11 @@ namespace Cake.Intellisense.Infrastructure
         private void RegisterSettings(ContainerBuilder builder)
         {
             var factory = new DictionaryAdapterFactory();
-            var appSettingsAdapter = new NameValueCollectionAdapter(appSettings);
+            var appSettingsAdapter = new NameValueCollectionAdapter(_appSettings);
             var descriptor = new PropertyDescriptor().AddBehavior(new SettingsBehavior());
             var settingsType = typeof(ISettings);
 
-            foreach (var type in assembly.ExportedTypes.Where(val => val.IsInterface && val.IsAssignableTo<ISettings>() && val != settingsType))
+            foreach (var type in _assembly.ExportedTypes.Where(val => val.IsInterface && val.IsAssignableTo<ISettings>() && val != settingsType))
             {
                 builder.RegisterInstance(factory.GetAdapter(type, appSettingsAdapter, descriptor)).As(type);
             }

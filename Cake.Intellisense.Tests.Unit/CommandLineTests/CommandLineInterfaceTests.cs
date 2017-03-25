@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Versioning;
+using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CommandLine;
 using Cake.Intellisense.CommandLine.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;

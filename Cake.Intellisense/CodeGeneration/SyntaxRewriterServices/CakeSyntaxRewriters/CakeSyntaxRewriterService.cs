@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters.Interfaces;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
-using Cake.Intellisense.Compilation;
 using Cake.Intellisense.Compilation.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,22 +13,22 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewr
 {
     public class CakeSyntaxRewriterService : ICakeSyntaxRewriterService
     {
-        private readonly ICompilationProvider compilationProvider;
-        private readonly IEnumerable<ISyntaxRewriterService> metadataRewriterServices;
+        private readonly ICompilationProvider _compilationProvider;
+        private readonly IEnumerable<ISyntaxRewriterService> _metadataRewriterServices;
 
         public CakeSyntaxRewriterService(ICompilationProvider compilationProvider, IEnumerable<ISyntaxRewriterService> metadataRewriterServices)
         {
-            this.compilationProvider = compilationProvider;
-            this.metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order);
+            _compilationProvider = compilationProvider;
+            _metadataRewriterServices = metadataRewriterServices.OrderBy(service => service.Order);
         }
 
         public SyntaxNode Rewrite(CompilationUnitSyntax compilationUnitSyntax, Assembly assembly)
         {
-            var compilation = compilationProvider.Get(assembly.GetName().Name);
+            var compilation = _compilationProvider.Get(assembly.GetName().Name);
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.Create(compilationUnitSyntax));
 
-            foreach (var metadataRewriterService in metadataRewriterServices)
+            foreach (var metadataRewriterService in _metadataRewriterServices)
             {
                 var currentTree = compilation.SyntaxTrees.Single();
                 var semanticModel = compilation.GetSemanticModel(currentTree);

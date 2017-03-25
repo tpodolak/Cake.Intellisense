@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace Cake.Intellisense
+namespace Cake.Intellisense.CodeGeneration.MetadataGenerators
 {
     public class GeneratorResult
     {

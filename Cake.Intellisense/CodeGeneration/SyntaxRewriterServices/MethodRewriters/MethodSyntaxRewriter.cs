@@ -3,17 +3,18 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriters
 {
     internal class MethodSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly SemanticModel semanticModel;
+        private readonly SemanticModel _semanticModel;
 
         public MethodSyntaxRewriter(SemanticModel semanticModel)
         {
-            this.semanticModel = semanticModel;
+            _semanticModel = semanticModel;
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
@@ -54,7 +55,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var bodyStatements = new List<StatementSyntax>();
 
             var outParams = node.ParameterList.Parameters
-                .Where(val => semanticModel.GetDeclaredSymbol(val).RefKind == RefKind.Out)
+                .Where(val => _semanticModel.GetDeclaredSymbol(val).RefKind == RefKind.Out)
                 .ToList();
 
             if (outParams.Any())
@@ -86,7 +87,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
 
         private bool IsProperty(MethodDeclarationSyntax node)
         {
-            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakePropertyAlias)));
+            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakePropertyAlias)));
         }
 
         private ParameterListSyntax GetParameterList(MethodDeclarationSyntax node)
@@ -94,12 +95,12 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var hasCakeMethodAliasAttribute =
                 node.AttributeLists.Any(
                     attributeLists =>
-                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakeMethodAlias)));
+                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeMethodAlias)));
 
             if (!hasCakeMethodAliasAttribute || !node.ParameterList.Parameters.Any())
                 return node.ParameterList;
 
-            return ParameterList(SeparatedList(node.ParameterList.Parameters.Skip(hasCakeMethodAliasAttribute ? 1 : 0)));
+            return ParameterList(SeparatedList(node.ParameterList.Parameters.Skip(1)));
         }
 
         private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)

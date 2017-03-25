@@ -1,4 +1,6 @@
-﻿namespace Cake.Intellisense.CommandLine.Interfaces
+﻿using Cake.Intellisense.CodeGeneration.MetadataGenerators;
+
+namespace Cake.Intellisense.CommandLine.Interfaces
 {
     public interface ICommandLineInterface
     {

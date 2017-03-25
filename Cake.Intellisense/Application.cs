@@ -2,7 +2,8 @@
 using System.Configuration;
 using System.Reflection;
 using Autofac;
-using Cake.Intellisense.CommandLine;
+using Cake.Intellisense.CodeGeneration.MetadataGenerators;
+using Cake.Intellisense.CodeGeneration.MetadataGenerators.Interfaces;
 using Cake.Intellisense.CommandLine.Interfaces;
 using Cake.Intellisense.Infrastructure;
 using NLog;

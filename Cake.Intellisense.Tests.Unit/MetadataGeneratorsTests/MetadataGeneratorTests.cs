@@ -2,13 +2,10 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
+using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters.Interfaces;
-using Cake.Intellisense.Compilation;
 using Cake.Intellisense.Compilation.Interfaces;
-using Cake.Intellisense.NuGet;
 using Cake.Intellisense.NuGet.Interfaces;
-using Cake.Intellisense.Reflection;
 using Cake.Intellisense.Reflection.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
@@ -21,7 +18,7 @@ using Xunit;
 using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
 using IPackageManager = Cake.Intellisense.NuGet.Interfaces.IPackageManager;
 
-namespace Cake.Intellisense.Tests.Unit
+namespace Cake.Intellisense.Tests.Unit.MetadataGeneratorsTests
 {
     public class MetadataGeneratorTests
     {
@@ -32,7 +29,7 @@ namespace Cake.Intellisense.Tests.Unit
                 Get<IPackageManager>().InstallPackage(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FrameworkName>())
                                       .Returns(Use<IPackage>());
                 Get<IDependencyResolver>()
-                    .GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
+                    .GetDependenciesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
                     .Returns(new List<IPackage>());
             }
 
@@ -114,7 +111,7 @@ namespace Cake.Intellisense.Tests.Unit
                                                .Returns(assemblies);
                 Get<ICakeSyntaxRewriterService>().Rewrite(Arg.Any<CompilationUnitSyntax>(), Arg.Any<Assembly>())
                                                  .Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot());
-                Get<IDependencyResolver>().GetDependentPackagesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
+                Get<IDependencyResolver>().GetDependenciesAndSelf(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
                                           .Returns(new List<IPackage> { Get<IPackage>() });
 
                 Subject.Generate(new MetadataGeneratorOptions { TargetFramework = frameworkVersion });

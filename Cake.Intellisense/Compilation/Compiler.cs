@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Cake.Intellisense.Compilation.Interfaces;
-using Cake.Intellisense.FileSystem;
 using Cake.Intellisense.FileSystem.Interfaces;
-using Cake.Intellisense.Reflection;
 using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
 using NLog;
@@ -15,13 +13,13 @@ namespace Cake.Intellisense.Compilation
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IAssemblyLoader assemblyLoader;
-        private readonly IFileSystem fileSystem;
+        private readonly IAssemblyLoader _assemblyLoader;
+        private readonly IFileSystem _fileSystem;
 
         public Compiler(IAssemblyLoader assemblyLoader, IFileSystem fileSystem)
         {
-            this.assemblyLoader = assemblyLoader;
-            this.fileSystem = fileSystem;
+            _assemblyLoader = assemblyLoader;
+            _fileSystem = fileSystem;
         }
 
         public Assembly Compile(Microsoft.CodeAnalysis.Compilation compilation, string outputPath)
@@ -31,7 +29,7 @@ namespace Cake.Intellisense.Compilation
 
             using (MemoryStream dllStream = new MemoryStream(), pdbStream = new MemoryStream(), xmlStream = new MemoryStream())
             {
-                using (var win32resStream = compilation.CreateDefaultWin32Resources(
+                using (var win32ResStream = compilation.CreateDefaultWin32Resources(
                     versionResource: true, // Important!
                     noManifest: false,
                     manifestContents: null,
@@ -41,7 +39,7 @@ namespace Cake.Intellisense.Compilation
                         peStream: dllStream,
                         pdbStream: pdbStream,
                         xmlDocumentationStream: xmlStream,
-                        win32Resources: win32resStream);
+                        win32Resources: win32ResStream);
 
                     if (!result.Success)
                     {
@@ -57,10 +55,10 @@ namespace Cake.Intellisense.Compilation
                         return null;
                     }
 
-                    fileSystem.WriteAllBytes(outputPath, dllStream.ToArray());
-                    fileSystem.WriteAllBytes(pdbPath, pdbStream.ToArray());
-                    fileSystem.WriteAllBytes(xmlDocPath, xmlStream.ToArray());
-                    return assemblyLoader.LoadFrom(outputPath);
+                    _fileSystem.WriteAllBytes(outputPath, dllStream.ToArray());
+                    _fileSystem.WriteAllBytes(pdbPath, pdbStream.ToArray());
+                    _fileSystem.WriteAllBytes(xmlDocPath, xmlStream.ToArray());
+                    return _assemblyLoader.LoadFrom(outputPath);
                 }
             }
         }

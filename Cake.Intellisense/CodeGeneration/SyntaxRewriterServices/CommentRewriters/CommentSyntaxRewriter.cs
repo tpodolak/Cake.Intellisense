@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Cake.Intellisense.Documentation;
 using Cake.Intellisense.Documentation.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -13,28 +12,28 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewrite
 {
     internal class CommentSyntaxRewriter
     {
-        private readonly IDocumentationReader documentationReader;
-        private readonly ICommentProvider provider;
-        private readonly SemanticModel semanticModel;
+        private readonly IDocumentationReader _documentationReader;
+        private readonly ICommentProvider _provider;
+        private readonly SemanticModel _semanticModel;
 
         public CommentSyntaxRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
         {
-            this.documentationReader = documentationReader;
-            this.provider = provider;
-            this.semanticModel = semanticModel;
+            _documentationReader = documentationReader;
+            _provider = provider;
+            _semanticModel = semanticModel;
         }
 
         public SyntaxNode Visit(Assembly assembly, SyntaxNode rootNode)
         {
             var nodesDict = new Dictionary<CSharpSyntaxNode, CSharpSyntaxNode>();
-            var xml = documentationReader.Read(Path.ChangeExtension(assembly.Location, "xml"));
+            var xml = _documentationReader.Read(Path.ChangeExtension(assembly.Location, "xml"));
 
             foreach (var node in rootNode.DescendantNodes().OfType<MethodDeclarationSyntax>())
             {
                 var currentNode = node;
-                var declaredSymbol = semanticModel.GetDeclaredSymbol(node);
+                var declaredSymbol = _semanticModel.GetDeclaredSymbol(node);
                 var attributeList = node.AttributeLists;
-                var commentTrivia = TriviaList(Comment(provider.Get(xml, declaredSymbol)), CarriageReturn, LineFeed);
+                var commentTrivia = TriviaList(Comment(_provider.Get(xml, declaredSymbol)), CarriageReturn, LineFeed);
 
                 if (node.AttributeLists.Any())
                 {

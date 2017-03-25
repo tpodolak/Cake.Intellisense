@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using FluentAssertions;
 using Xunit;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
 
 namespace Cake.Intellisense.Tests.Integration
 {
@@ -13,25 +15,26 @@ namespace Cake.Intellisense.Tests.Integration
         public class RunMethod
         {
             private const string DefaultFramework = ".NETFramework,Version=v4.5";
-            private readonly Application application = new Application();
+            private readonly Application _application = new Application();
 
             [Theory]
-            [InlineData("Cake.Common", DefaultFramework, "0.18.0")]
-
-            // TODO Run tests in separate asemblies [InlineData("Cake.Powershell", DefaultFramework, "0.3.0")]
+            [InlineData("Cake.Common", DefaultFramework, "0.19.1")]
+            /*
+            [InlineData("Cake.Powershell", DefaultFramework, "0.3.0")]
+            */
             public void CanGenerateMetadataForPackageTest(string package, string framework, string version)
             {
                 var options = CreateMetadataGeneratorOptions(package, framework, version);
-                var result = application.Run(options);
+                var result = _application.Run(options);
                 VerifyGeneratorResult(result, VerifyAliasAssemblyContent);
             }
 
             [Theory]
-            [InlineData(DefaultFramework, "0.18.0")]
+            [InlineData(DefaultFramework, "0.19.1")]
             public void CanGenerateMetadataForCakeCoreLibTest(string framework, string version)
             {
                 var options = CreateMetadataGeneratorOptions("Cake.Core", framework, version);
-                var result = application.Run(options);
+                var result = _application.Run(options);
 
                 VerifyGeneratorResult(result, VerifyScriptEngineAssemblyContent);
             }
@@ -99,7 +102,7 @@ namespace Cake.Intellisense.Tests.Integration
                         sourceType.GetMethods(BindingFlags.Public | BindingFlags.Static)
                             .Where(
                                 val =>
-                                    val.GetCustomAttributes().Any(x => x.GetType().Name == CakeAttributeNames.CakePropertyAlias))
+                                    val.GetCustomAttributes().Any(x => x.GetType().Name == CakePropertyAlias))
                             .ToList();
 
                     if (!sourceMethods.Any() && emitedMethods.Any())

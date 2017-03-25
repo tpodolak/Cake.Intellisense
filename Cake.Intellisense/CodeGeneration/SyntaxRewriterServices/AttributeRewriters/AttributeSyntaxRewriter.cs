@@ -4,6 +4,8 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
+using static Cake.Intellisense.Constants.MetadataGeneration;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewriters
@@ -12,17 +14,17 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
     {
         private static readonly string[] AttributesToRemove =
         {
-            CakeAttributeNames.CakeAliasCategory,
-            CakeAttributeNames.CakeMethodAlias,
-            CakeAttributeNames.CakeNamespaceImport,
-            CakeAttributeNames.CakePropertyAlias
+            CakeAliasCategory,
+            CakeMethodAlias,
+            CakeNamespaceImport,
+            CakePropertyAlias
         };
 
-        private readonly Assembly assembly;
+        private readonly Assembly _assembly;
 
         public AttributeSyntaxRewriter(Assembly assembly)
         {
-            this.assembly = assembly;
+            _assembly = assembly;
         }
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
@@ -67,7 +69,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
                         AttributeArgument(
                             LiteralExpression(
                                 SyntaxKind.StringLiteralExpression,
-                                Literal($"{assembly.GetName().Name}.{MetadataGeneration.MetadataClassSuffix}")))
+                                Literal($"{_assembly.GetName().Name}.{MetadataClassSuffix}")))
                     })));
             }
 

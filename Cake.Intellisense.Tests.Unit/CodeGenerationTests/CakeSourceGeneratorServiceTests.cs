@@ -3,7 +3,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using Cake.Intellisense.CodeGeneration.SourceGenerators;
 using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
-using Cake.Intellisense.Compilation;
 using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Cake.Intellisense.Tests.Unit.Extensions;
@@ -13,6 +12,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSubstitute;
 using Xunit;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
+using static Cake.Intellisense.Constants.CakeEngineNames;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
@@ -71,7 +72,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             public void AddsClassDeclarationSyntax_WhenTypeDecoratedWithCakeAliasCategoryAttribute()
             {
                 var cakeSymbol = Substitute.For<INamedTypeSymbol>();
-                cakeSymbol.Name.Returns(CakeAttributeNames.CakeAliasCategory);
+                cakeSymbol.Name.Returns(CakeAliasCategory);
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 var attributeData = Use<AttributeData>();
@@ -103,7 +104,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 namedTypeSymbol.Kind.Returns(SymbolKind.NamedType);
-                namedTypeSymbol.Name.Returns(CakeEngineNames.ScriptHost);
+                namedTypeSymbol.Name.Returns(ScriptHost);
                 rootNamespaceSymbol.GetTypeMembers().Returns(ImmutableArray.Create(namedTypeSymbol));
                 rootNamespaceSymbol.GetNamespaceMembers().Returns(ImmutableArray.Create<INamespaceSymbol>());
                 Get<Microsoft.CodeAnalysis.Compilation>().ProtectedProperty("CommonGlobalNamespace").Returns(rootNamespaceSymbol);

@@ -2,40 +2,40 @@
 using System.Linq;
 using System.Reflection;
 using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
-using Cake.Intellisense.Compilation;
 using Cake.Intellisense.Compilation.Interfaces;
-using Cake.Intellisense.Reflection;
 using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
+using static Cake.Intellisense.Constants.CakeEngineNames;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SourceGenerators
 {
     public class CakeSourceGeneratorService : ICakeSourceGeneratorService
     {
-        private readonly IMetadataGeneratorService metadataGeneratorService;
-        private readonly IMetadataReferenceLoader metadataReferenceLoader;
-        private readonly ICompilationProvider compilationProvider;
+        private readonly IMetadataGeneratorService _metadataGeneratorService;
+        private readonly IMetadataReferenceLoader _metadataReferenceLoader;
+        private readonly ICompilationProvider _compilationProvider;
 
         public CakeSourceGeneratorService(
             IMetadataGeneratorService metadataGeneratorService,
             IMetadataReferenceLoader metadataReferenceLoader,
             ICompilationProvider compilationProvider)
         {
-            this.metadataGeneratorService = metadataGeneratorService;
-            this.metadataReferenceLoader = metadataReferenceLoader;
-            this.compilationProvider = compilationProvider;
+            _metadataGeneratorService = metadataGeneratorService;
+            _metadataReferenceLoader = metadataReferenceLoader;
+            _compilationProvider = compilationProvider;
         }
 
         public CompilationUnitSyntax Generate(Assembly assembly)
         {
             var assemblyName = assembly.GetName();
             var assemblyVersion = assemblyName.Version;
-            var compilation = compilationProvider.Get(
+            var compilation = _compilationProvider.Get(
                 assembly.GetName().Name,
-                references: new[] { metadataReferenceLoader.CreateFromFile(assembly.Location) });
+                references: new[] { _metadataReferenceLoader.CreateFromFile(assembly.Location) });
 
             var namespaceSymbols = GetNamespaceMembers(compilation.GlobalNamespace);
 
@@ -66,8 +66,8 @@ namespace Cake.Intellisense.CodeGeneration.SourceGenerators
         private IEnumerable<ClassDeclarationSyntax> CreateNamedTypeDeclaration(INamespaceOrTypeSymbol namepace)
         {
             return namepace.GetTypeMembers()
-                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == CakeEngineNames.ScriptHost || val.GetAttributes().Any(x => x.AttributeClass.Name == CakeAttributeNames.CakeAliasCategory)))
-                .Select(val => metadataGeneratorService.CreateNamedTypeDeclaration(val));
+                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == ScriptHost || val.GetAttributes().Any(x => x.AttributeClass.Name == CakeAliasCategory)))
+                .Select(val => _metadataGeneratorService.CreateNamedTypeDeclaration(val));
         }
 
         private IEnumerable<INamespaceOrTypeSymbol> GetNamespaceMembers(INamespaceSymbol symbol)

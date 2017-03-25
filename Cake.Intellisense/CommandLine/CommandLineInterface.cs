@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CommandLine.Interfaces;
-using Cake.Intellisense.NuGet;
 using Cake.Intellisense.NuGet.Interfaces;
 using NLog;
 
@@ -10,23 +10,23 @@ namespace Cake.Intellisense.CommandLine
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IArgumentParser argumentParser;
-        private readonly IConsoleReader consoleReader;
-        private readonly IPackageManager packageManager;
+        private readonly IArgumentParser _argumentParser;
+        private readonly IConsoleReader _consoleReader;
+        private readonly IPackageManager _packageManager;
 
         public CommandLineInterface(
             IArgumentParser argumentParser,
             IConsoleReader consoleReader,
             IPackageManager packageManager)
         {
-            this.argumentParser = argumentParser;
-            this.consoleReader = consoleReader;
-            this.packageManager = packageManager;
+            _argumentParser = argumentParser;
+            _consoleReader = consoleReader;
+            _packageManager = packageManager;
         }
 
         public MetadataGeneratorOptions Interact(string[] args)
         {
-            var parserResult = argumentParser.Parse<MetadataGeneratorOptions>(args);
+            var parserResult = _argumentParser.Parse<MetadataGeneratorOptions>(args);
 
             if (parserResult.Errors.Any())
             {
@@ -41,7 +41,7 @@ namespace Cake.Intellisense.CommandLine
 
             Logger.Info($"TargetFramework not specified. Retrieving target frameworks for package {options.Package} {options.PackageVersion ?? string.Empty}");
 
-            var package = packageManager.FindPackage(options.Package, options.PackageVersion);
+            var package = _packageManager.FindPackage(options.Package, options.PackageVersion);
 
             if (package == null)
             {
@@ -49,7 +49,7 @@ namespace Cake.Intellisense.CommandLine
                 return null;
             }
 
-            var frameworks = packageManager.GetTargetFrameworks(package);
+            var frameworks = _packageManager.GetTargetFrameworks(package);
 
             int dependencyId = -1;
 
@@ -64,7 +64,7 @@ namespace Cake.Intellisense.CommandLine
             {
                 Logger.Info("Please select framework");
             }
-            while (!consoleReader.TryRead(out dependencyId) && (dependencyId < 0 || dependencyId >= frameworks.Count));
+            while (!_consoleReader.TryRead(out dependencyId) && (dependencyId < 0 || dependencyId >= frameworks.Count));
 
             var targetFramework = frameworks[dependencyId];
             options.TargetFramework = targetFramework.FullName;

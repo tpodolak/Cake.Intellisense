@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.NuGet;
+using Cake.Intellisense.Settings.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
@@ -13,21 +14,14 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
 {
     public class DependencyResolverTests
     {
-        public class GetDependentPackagesAndSelfMethod : Test<DependencyResolver>
+        public class GetDependenciesAndSelfMethod : Test<DependencyResolver>
         {
-            private readonly FrameworkName defaultFramework = new FrameworkName(".NETFramework,Version=v4.5");
+            private readonly FrameworkName _defaultFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
-            public GetDependentPackagesAndSelfMethod()
+            public GetDependenciesAndSelfMethod()
             {
                 Use<IPackage>();
-            }
-
-            [Fact]
-            public void ReturnsEmptyList_WhenPackageNull()
-            {
-                var result = Subject.GetDependentPackagesAndSelf(null, defaultFramework);
-
-                result.Should().BeEmpty();
+                Get<INuGetSettings>().RecursiveDependencyResolution.Returns(true);
             }
 
             [Fact]
@@ -36,7 +30,7 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var package = Get<IPackage>();
                 package.DependencySets.Returns(Enumerable.Empty<PackageDependencySet>());
 
-                var result = Subject.GetDependentPackagesAndSelf(package, defaultFramework);
+                var result = Subject.GetDependenciesAndSelf(package, _defaultFramework);
 
                 result.Should().HaveCount(1);
                 result.ShouldBeEquivalentTo(new[] { package });
@@ -57,14 +51,14 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                     Arg.Any<bool>(),
                     Arg.Any<DependencyVersion>()).Returns(dependentPackage);
 
-                var result = Subject.GetDependentPackagesAndSelf(package, new FrameworkName(".NETFramework,Version=v4.6")).ToList();
+                var result = Subject.GetDependenciesAndSelf(package, new FrameworkName(".NETFramework,Version=v4.6")).ToList();
 
                 result.Should().HaveCount(1);
                 result.ShouldBeEquivalentTo(new[] { package });
             }
 
             [Fact]
-            public void RecursivelySeachForAllPackagesSupportingGivenFramework()
+            public void RecursivelySeachForAllPackagesSupportingGivenFramework_WhenRecursiveDependencyResolutionEnabled()
             {
                 var package = Substitute.For<IPackage>();
                 var firstDependentPackage = Substitute.For<IPackage>();
@@ -81,10 +75,35 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                     Arg.Any<bool>(),
                     Arg.Any<DependencyVersion>()).Returns(firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage);
 
-                var result = Subject.GetDependentPackagesAndSelf(package, defaultFramework).ToList();
+                var result = Subject.GetDependenciesAndSelf(package, _defaultFramework).ToList();
 
                 result.Should().HaveCount(4);
                 result.ShouldBeEquivalentTo(new[] { package, firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage });
+            }
+
+            [Fact]
+            public void FlatSeachForAllPackagesSupportingGivenFramework_WhenRecursiveDependencyResolutionDisabled()
+            {
+                var package = Substitute.For<IPackage>();
+                var firstDependentPackage = Substitute.For<IPackage>();
+                var secondDependentPackage = Substitute.For<IPackage>();
+                var secondLevelDependencyPackage = Substitute.For<IPackage>();
+                var packageDependencySets = new[] { CreateDependencySet(firstDependentPackage), CreateDependencySet(secondDependentPackage) };
+                package.DependencySets.Returns(packageDependencySets);
+                var dependencySets = new[] { CreateDependencySet(secondLevelDependencyPackage) };
+                firstDependentPackage.DependencySets.Returns(dependencySets);
+                ((IDependencyResolver)Get<IPackageRepository>()).ResolveDependency(
+                    Arg.Any<PackageDependency>(),
+                    Arg.Any<IPackageConstraintProvider>(),
+                    Arg.Any<bool>(),
+                    Arg.Any<bool>(),
+                    Arg.Any<DependencyVersion>()).Returns(firstDependentPackage, secondDependentPackage, secondLevelDependencyPackage);
+                Get<INuGetSettings>().RecursiveDependencyResolution.Returns(false);
+
+                var result = Subject.GetDependenciesAndSelf(package, _defaultFramework).ToList();
+
+                result.Should().HaveCount(3);
+                result.ShouldBeEquivalentTo(new[] { package, firstDependentPackage, secondDependentPackage });
             }
 
             public override object CreateInstance(Type type, params object[] constructorArgs)
@@ -103,10 +122,10 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var packageAssemblyReference = Substitute.For<IPackageAssemblyReference>();
                 packageAssemblyReference.Path.Returns("lib.dll");
 
-                packageAssemblyReference.SupportedFrameworks.Returns(new[] { defaultFramework });
+                packageAssemblyReference.SupportedFrameworks.Returns(new[] { _defaultFramework });
 
                 package.AssemblyReferences.Returns(new[] { packageAssemblyReference });
-                return new PackageDependencySet(defaultFramework, new[] { new PackageDependency("id") });
+                return new PackageDependencySet(_defaultFramework, new[] { new PackageDependency("id") });
             }
         }
     }

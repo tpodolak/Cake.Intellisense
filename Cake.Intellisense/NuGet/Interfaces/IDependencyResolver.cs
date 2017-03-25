@@ -6,6 +6,6 @@ namespace Cake.Intellisense.NuGet.Interfaces
 {
     public interface IDependencyResolver
     {
-        IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName);
+        IEnumerable<IPackage> GetDependenciesAndSelf(IPackage package, FrameworkName frameworkName);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
+using Cake.Intellisense.Settings.Interfaces;
 using NuGet;
 using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
 
@@ -8,34 +9,38 @@ namespace Cake.Intellisense.NuGet
 {
     public class DependencyResolver : IDependencyResolver
     {
-        private readonly IPackageRepository packageRepository;
+        private readonly IPackageRepository _packageRepository;
+        private readonly INuGetSettings _nugetSettings;
 
-        public DependencyResolver(IPackageRepository packageRepository)
+        public DependencyResolver(IPackageRepository packageRepository, INuGetSettings nugetSettings)
         {
-            this.packageRepository = packageRepository;
+            _packageRepository = packageRepository;
+            _nugetSettings = nugetSettings;
         }
 
-        public IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName)
+        public IEnumerable<IPackage> GetDependenciesAndSelf(IPackage package, FrameworkName frameworkName)
         {
-            if (package == null)
-                yield break;
-
             yield return package;
 
-            foreach (var dependency in GetDependentPackages(package, frameworkName))
+            foreach (var dependency in GetDependencies(package, frameworkName))
             {
-                foreach (var innerPackage in GetDependentPackagesAndSelf(dependency, frameworkName))
+                if (_nugetSettings.RecursiveDependencyResolution)
                 {
-                    yield return innerPackage;
+                    foreach (var innerPackage in GetDependenciesAndSelf(dependency, frameworkName))
+                        yield return innerPackage;
+                }
+                else
+                {
+                    yield return dependency;
                 }
             }
         }
 
-        private IEnumerable<IPackage> GetDependentPackages(IPackage package, FrameworkName frameworkName)
+        private IEnumerable<IPackage> GetDependencies(IPackage package, FrameworkName frameworkName)
         {
             return package.DependencySets.SelectMany(x => x.Dependencies)
-                    .Select(val => packageRepository.ResolveDependency(val, false, true))
-                    .Where(val => IsValidDependency(val, frameworkName));
+                          .Select(val => _packageRepository.ResolveDependency(val, false, true))
+                          .Where(val => IsValidDependency(val, frameworkName));
         }
 
         private bool IsValidDependency(IPackage val, FrameworkName frameworkName)

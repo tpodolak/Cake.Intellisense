@@ -7,5 +7,7 @@
         string LocalRepositoryPath { get; set; }
 
         bool AllowPreReleaseVersions { get; set; }
+
+        bool RecursiveDependencyResolution { get; set; }
     }
 }

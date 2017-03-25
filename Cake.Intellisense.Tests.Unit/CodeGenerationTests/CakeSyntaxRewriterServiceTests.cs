@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
-using Cake.Intellisense.Compilation;
 using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Microsoft.CodeAnalysis;

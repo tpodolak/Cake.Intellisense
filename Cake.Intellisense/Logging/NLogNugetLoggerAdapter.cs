@@ -7,11 +7,11 @@ namespace Cake.Intellisense.Logging
 {
     public class NLogNugetLoggerAdapter : ILogger
     {
-        private readonly NLog.ILogger logger;
+        private readonly NLog.ILogger _logger;
 
         public NLogNugetLoggerAdapter(NLog.ILogger logger)
         {
-            this.logger = logger;
+            _logger = logger;
         }
 
         public FileConflictResolution ResolveFileConflict(string message)
@@ -21,7 +21,7 @@ namespace Cake.Intellisense.Logging
 
         public void Log(MessageLevel level, string message, params object[] args)
         {
-            logger.Log(Convert(level), message, args);
+            _logger.Log(Convert(level), message, args);
         }
 
         private LogLevel Convert(MessageLevel level)

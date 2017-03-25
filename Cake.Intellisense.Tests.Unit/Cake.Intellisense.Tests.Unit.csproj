@@ -215,7 +215,7 @@
     <Compile Include="DocumentationTests\XmlCommentProviderTests.cs" />
     <Compile Include="Extensions\NSubstituteExtensions.cs" />
     <Compile Include="LoggingTests\NLogNugetLoggerAdapterTests.cs" />
-    <Compile Include="MetadataGeneratorTests.cs" />
+    <Compile Include="MetadataGeneratorsTests\MetadataGeneratorTests.cs" />
     <Compile Include="NuGetTests\DependencyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageAssemblyReferencePathResolverTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.cs" />
@@ -251,7 +251,6 @@
       <Name>Cake.Intellisense</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
