@@ -44,7 +44,7 @@ namespace Cake.Intellisense.Infrastructure
             builder.RegisterType<PhysicalFileSystem>()
                    .As<IFileSystem>()
                    .WithParameter((parameter, context) => parameter.Position == 0, (parameter, context) => context.Resolve<INuGetSettings>().LocalRepositoryPath)
-                   .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.Logger.GetType().FullName)))
+                   .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.GetType().FullName)))
                    .InstancePerLifetimeScope();
 
             builder.RegisterType<LocalPackageRepository>()
@@ -58,7 +58,7 @@ namespace Cake.Intellisense.Infrastructure
             builder.RegisterType<global::NuGet.PackageManager>()
                    .As<global::NuGet.IPackageManager>()
                    .UsingConstructor(typeof(IPackageRepository), typeof(IPackagePathResolver), typeof(IFileSystem))
-                   .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.Logger.GetType().FullName)))
+                   .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.GetType().FullName)))
                    .InstancePerLifetimeScope();
 
             builder.RegisterType<DependencyResolver>()
