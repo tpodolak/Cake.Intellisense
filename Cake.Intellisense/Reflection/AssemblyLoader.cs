@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using NLog;
 using ILogger = NLog.ILogger;
 

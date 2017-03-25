@@ -2,7 +2,7 @@
 using System.Runtime.Versioning;
 using NuGet;
 
-namespace Cake.Intellisense.NuGet
+namespace Cake.Intellisense.NuGet.Interfaces
 {
     public interface IDependencyResolver
     {

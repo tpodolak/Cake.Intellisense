@@ -1,4 +1,4 @@
-﻿namespace Cake.Intellisense.CommandLine
+﻿namespace Cake.Intellisense.CommandLine.Interfaces
 {
     public interface IConsoleReader
     {

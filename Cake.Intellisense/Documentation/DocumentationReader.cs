@@ -1,5 +1,7 @@
 ﻿using System.Xml.Linq;
+using Cake.Intellisense.Documentation.Interfaces;
 using Cake.Intellisense.FileSystem;
+using Cake.Intellisense.FileSystem.Interfaces;
 
 namespace Cake.Intellisense.Documentation
 {

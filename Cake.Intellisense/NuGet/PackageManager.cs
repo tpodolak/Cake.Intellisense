@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.Settings;
+using Cake.Intellisense.Settings.Interfaces;
 using NuGet;
+using IPackageManager = Cake.Intellisense.NuGet.Interfaces.IPackageManager;
 
 namespace Cake.Intellisense.NuGet
 {
@@ -14,13 +16,13 @@ namespace Cake.Intellisense.NuGet
         private readonly INuGetSettings settings;
 
         public PackageManager(
-            IPackageManagerProvider packageManagerProvider,
-            IPackageRepositoryProvider packageRepositoryProvider,
+            IPackageRepository packageRepository,
+            global::NuGet.IPackageManager packageManager,
             INuGetSettings settings)
         {
+            this.packageRepository = packageRepository;
+            this.packageManager = packageManager;
             this.settings = settings;
-            packageManager = packageManagerProvider.Get();
-            packageRepository = packageRepositoryProvider.Get();
         }
 
         public IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework)

@@ -2,7 +2,9 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Cake.Intellisense.CodeGeneration.SourceGenerators;
+using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
 using Cake.Intellisense.Compilation;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Cake.Intellisense.Tests.Unit.Extensions;
 using FluentAssertions;

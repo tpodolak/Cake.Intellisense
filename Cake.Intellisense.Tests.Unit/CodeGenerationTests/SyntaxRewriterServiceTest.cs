@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Cake.Intellisense.Tests.Unit.XUnitExtensionPoints;
 using FluentAssertions;

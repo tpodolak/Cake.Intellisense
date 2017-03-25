@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cake.Intellisense.NuGet.Interfaces;
 using NuGet;
 
 namespace Cake.Intellisense.NuGet

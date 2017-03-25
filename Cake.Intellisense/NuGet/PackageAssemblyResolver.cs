@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using Cake.Intellisense.NuGet.Interfaces;
 using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using NuGet;
 
 namespace Cake.Intellisense.NuGet

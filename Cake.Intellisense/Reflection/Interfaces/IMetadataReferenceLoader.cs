@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.CodeAnalysis;
 using NuGet;
 
-namespace Cake.Intellisense.Reflection
+namespace Cake.Intellisense.Reflection.Interfaces
 {
     public interface IMetadataReferenceLoader
     {

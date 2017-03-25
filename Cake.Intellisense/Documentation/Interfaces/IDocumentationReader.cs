@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace Cake.Intellisense.Documentation
+namespace Cake.Intellisense.Documentation.Interfaces
 {
     public interface IDocumentationReader
     {

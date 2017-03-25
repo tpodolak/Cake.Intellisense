@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Cake.Intellisense.Documentation.Interfaces;
 using Microsoft.CodeAnalysis;
 using MoreLinq;
 

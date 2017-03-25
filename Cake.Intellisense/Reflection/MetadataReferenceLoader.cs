@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.NuGet;
+using Cake.Intellisense.NuGet.Interfaces;
+using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
 using MoreLinq;
 using NuGet;

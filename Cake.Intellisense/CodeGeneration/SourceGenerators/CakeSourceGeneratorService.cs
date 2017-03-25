@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
 using Cake.Intellisense.Compilation;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

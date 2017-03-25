@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Cake.Intellisense.CommandLine.Interfaces;
 
 namespace Cake.Intellisense.CommandLine
 {

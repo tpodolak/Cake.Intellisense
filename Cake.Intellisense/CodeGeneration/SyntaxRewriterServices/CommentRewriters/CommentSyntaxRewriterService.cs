@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
 using Cake.Intellisense.Documentation;
+using Cake.Intellisense.Documentation.Interfaces;
 using Microsoft.CodeAnalysis;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters

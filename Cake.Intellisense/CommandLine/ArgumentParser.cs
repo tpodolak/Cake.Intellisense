@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Cake.Intellisense.CommandLine.Interfaces;
 using CommandLine;
 
 namespace Cake.Intellisense.CommandLine

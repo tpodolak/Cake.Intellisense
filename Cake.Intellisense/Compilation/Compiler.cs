@@ -1,10 +1,12 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.FileSystem;
+using Cake.Intellisense.FileSystem.Interfaces;
 using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Emit;
 using NLog;
 
 namespace Cake.Intellisense.Compilation

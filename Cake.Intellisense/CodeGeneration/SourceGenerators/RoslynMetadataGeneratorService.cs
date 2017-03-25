@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Threading;
+using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;

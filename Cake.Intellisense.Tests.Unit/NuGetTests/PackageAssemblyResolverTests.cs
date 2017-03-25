@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
 using Cake.Intellisense.NuGet;
+using Cake.Intellisense.NuGet.Interfaces;
 using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 using NuGet;
 using Xunit;
 

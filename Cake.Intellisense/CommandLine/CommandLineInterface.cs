@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using Cake.Intellisense.CommandLine.Interfaces;
 using Cake.Intellisense.NuGet;
+using Cake.Intellisense.NuGet.Interfaces;
 using NLog;
 
 namespace Cake.Intellisense.CommandLine

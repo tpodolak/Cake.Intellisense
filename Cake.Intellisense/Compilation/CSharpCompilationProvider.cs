@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cake.Intellisense.Compilation.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

@@ -2,17 +2,22 @@
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.CodeGeneration.SourceGenerators;
+using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters.Interfaces;
 using Cake.Intellisense.Compilation;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.NuGet;
+using Cake.Intellisense.NuGet.Interfaces;
 using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NLog;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using IDependencyResolver = Cake.Intellisense.NuGet.IDependencyResolver;
-using IFileSystem = Cake.Intellisense.FileSystem.IFileSystem;
-using IPackageManager = Cake.Intellisense.NuGet.IPackageManager;
+using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
+using IFileSystem = Cake.Intellisense.FileSystem.Interfaces.IFileSystem;
+using IPackageManager = Cake.Intellisense.NuGet.Interfaces.IPackageManager;
 
 namespace Cake.Intellisense
 {

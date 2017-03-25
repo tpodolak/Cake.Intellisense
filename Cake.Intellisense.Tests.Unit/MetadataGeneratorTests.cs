@@ -3,9 +3,13 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters.Interfaces;
 using Cake.Intellisense.Compilation;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.NuGet;
+using Cake.Intellisense.NuGet.Interfaces;
 using Cake.Intellisense.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
@@ -14,8 +18,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSubstitute;
 using NuGet;
 using Xunit;
-using IDependencyResolver = Cake.Intellisense.NuGet.IDependencyResolver;
-using IPackageManager = Cake.Intellisense.NuGet.IPackageManager;
+using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
+using IPackageManager = Cake.Intellisense.NuGet.Interfaces.IPackageManager;
 
 namespace Cake.Intellisense.Tests.Unit
 {
@@ -105,7 +109,6 @@ namespace Cake.Intellisense.Tests.Unit
                 packageFile.SupportedFrameworks.Returns(new List<FrameworkName> { new FrameworkName(frameworkVersion) });
 
                 Get<IMetadataReferenceLoader>().CreateFromFile(Arg.Any<string>()).Returns(MetadataReference.CreateFromStream(new MemoryStream()));
-                Get<IMetadataReferenceLoader>().CreateFromStream(Arg.Any<Stream>()).Returns(MetadataReference.CreateFromStream(new MemoryStream()));
 
                 Get<IPackageAssemblyResolver>().ResolveAssemblies(Arg.Any<IPackage>(), Arg.Any<FrameworkName>())
                                                .Returns(assemblies);

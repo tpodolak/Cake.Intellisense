@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Autofac.Core;
+using Cake.Intellisense.Logging;
 using Cake.Intellisense.NuGet;
 using Cake.Intellisense.Settings;
+using Cake.Intellisense.Settings.Interfaces;
 using Castle.Components.DictionaryAdapter;
+using NLog;
 using NuGet;
-using IDependencyResolver = Cake.Intellisense.NuGet.IDependencyResolver;
+using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
 using ISettings = Cake.Intellisense.Settings.ISettings;
 using Module = Autofac.Module;
 
@@ -30,23 +32,39 @@ namespace Cake.Intellisense.Infrastructure
         {
             var referencedAssemblies = assembly.GetReferencedAssemblies().Select(Assembly.Load);
 
+            builder.RegisterInstance(Console.Out).As<TextWriter>();
+            RegisterSettings(builder);
+
             builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { assembly }).ToArray())
-                   .Where(type => !type.IsAssignableTo<IPackageRepository>())
+                   .Where(type => !type.IsAssignableTo<IPackageRepository>() && !type.IsAssignableTo<global::NuGet.IPackageManager>())
                    .Except<PhysicalFileSystem>()
-                   .Except<DependencyResolver>()
                    .AsImplementedInterfaces()
                    .InstancePerLifetimeScope();
-            builder.RegisterInstance(Console.Out).As<TextWriter>();
+
             builder.RegisterType<PhysicalFileSystem>()
                    .As<IFileSystem>()
                    .WithParameter((parameter, context) => parameter.Position == 0, (parameter, context) => context.Resolve<INuGetSettings>().LocalRepositoryPath)
+                   .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.Logger.GetType().FullName)))
                    .InstancePerLifetimeScope();
-            builder.RegisterType<LocalPackageRepository>().As<IPackageRepository>()
+
+            builder.RegisterType<LocalPackageRepository>()
+                   .Keyed<IPackageRepository>(nameof(LocalPackageRepository))
                    .InstancePerLifetimeScope();
-            builder.RegisterType<DependencyResolver>().As<IDependencyResolver>()
-                   .WithParameter((parameter, context) => parameter.ParameterType == typeof(IPackageRepository), (parameter, context) => context.Resolve<IPackageRepository>())
+
+            builder.Register(componentContext => componentContext.Resolve<IPackageRepositoryFactory>().CreateRepository(componentContext.Resolve<INuGetSettings>().PackageSource))
+                   .As<IPackageRepository>()
                    .InstancePerLifetimeScope();
-            RegisterSettings(builder);
+
+            builder.RegisterType<global::NuGet.PackageManager>()
+                   .As<global::NuGet.IPackageManager>()
+                   .UsingConstructor(typeof(IPackageRepository), typeof(IPackagePathResolver), typeof(IFileSystem))
+                   .OnActivated(args => args.Instance.Logger = new NLogNugetLoggerAdapter(LogManager.GetLogger(args.Instance.Logger.GetType().FullName)))
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<DependencyResolver>()
+                   .As<IDependencyResolver>()
+                   .WithParameter((parameter, context) => parameter.ParameterType == typeof(IPackageRepository), (parameter, context) => context.ResolveKeyed<IPackageRepository>(nameof(LocalPackageRepository)))
+                   .InstancePerLifetimeScope();
         }
 
         private void RegisterSettings(ContainerBuilder builder)

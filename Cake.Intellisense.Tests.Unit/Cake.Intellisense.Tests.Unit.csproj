@@ -218,13 +218,11 @@
     <Compile Include="MetadataGeneratorTests.cs" />
     <Compile Include="NuGetTests\DependencyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageAssemblyReferencePathResolverTests.cs" />
-    <Compile Include="NuGetTests\PackageManagerProviderTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs" />
     <Compile Include="NuGetTests\PackageAssemblyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs" />
-    <Compile Include="NuGetTests\PackageRepositoryProviderTests.cs" />
     <Compile Include="CodeGenerationTests\CakeSyntaxRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\CommentSyntaxRewriterServiceTest.cs" />
     <Compile Include="CodeGenerationTests\AttributeSyntaxRewriterServiceTest.cs" />

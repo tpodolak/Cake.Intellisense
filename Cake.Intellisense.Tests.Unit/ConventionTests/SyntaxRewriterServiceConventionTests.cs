@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;

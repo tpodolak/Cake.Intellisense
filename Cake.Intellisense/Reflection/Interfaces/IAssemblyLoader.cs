@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
-namespace Cake.Intellisense.Reflection
+namespace Cake.Intellisense.Reflection.Interfaces
 {
     public interface IAssemblyLoader
     {

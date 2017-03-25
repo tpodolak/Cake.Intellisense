@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cake.Intellisense.FileSystem.Interfaces;
 
 namespace Cake.Intellisense.FileSystem
 {

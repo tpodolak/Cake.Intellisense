@@ -127,7 +127,7 @@ namespace Cake.Intellisense.Tests.Integration
                 {
                 "--Package", package, "--PackageVersion", version ?? string.Empty, "--TargetFramework", targetFramework,
                 "--OutputFolder", Path.Combine(Environment.CurrentDirectory, "Result")
-            };
+                };
             }
 
             private bool SameAliasMethod(MethodInfo sourceMethod, MethodInfo emitedMethod)

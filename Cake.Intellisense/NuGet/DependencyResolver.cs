@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.Versioning;
 using NuGet;
+using IDependencyResolver = Cake.Intellisense.NuGet.Interfaces.IDependencyResolver;
 
 namespace Cake.Intellisense.NuGet
 {
@@ -9,9 +10,9 @@ namespace Cake.Intellisense.NuGet
     {
         private readonly IPackageRepository packageRepository;
 
-        public DependencyResolver(IPackageRepository packageRepositoryProvider)
+        public DependencyResolver(IPackageRepository packageRepository)
         {
-            packageRepository = packageRepositoryProvider;
+            this.packageRepository = packageRepository;
         }
 
         public IEnumerable<IPackage> GetDependentPackagesAndSelf(IPackage package, FrameworkName frameworkName)

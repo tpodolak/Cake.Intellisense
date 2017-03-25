@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Cake.Intellisense.FileSystem
+namespace Cake.Intellisense.FileSystem.Interfaces
 {
     public interface IFileSystem
     {

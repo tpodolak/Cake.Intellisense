@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Cake.Intellisense.Compilation
+namespace Cake.Intellisense.Compilation.Interfaces
 {
     public interface ICompilationProvider
     {

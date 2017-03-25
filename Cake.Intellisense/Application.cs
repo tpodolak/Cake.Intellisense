@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Reflection;
 using Autofac;
 using Cake.Intellisense.CommandLine;
+using Cake.Intellisense.CommandLine.Interfaces;
 using Cake.Intellisense.Infrastructure;
 using NLog;
 
