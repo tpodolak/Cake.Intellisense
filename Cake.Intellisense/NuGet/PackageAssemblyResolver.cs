@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -15,8 +16,8 @@ namespace Cake.Intellisense.NuGet
 
         public PackageAssemblyResolver(IAssemblyLoader assemblyLoader, IPackageAssemblyReferencePathResolver pathResolver)
         {
-            _assemblyLoader = assemblyLoader;
-            _pathResolver = pathResolver;
+            _assemblyLoader = assemblyLoader ?? throw new ArgumentNullException(nameof(assemblyLoader));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
         }
 
         public List<Assembly> ResolveAssemblies(IPackage package, FrameworkName targetFramework)

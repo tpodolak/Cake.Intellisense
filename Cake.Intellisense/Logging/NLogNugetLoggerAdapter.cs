@@ -11,7 +11,7 @@ namespace Cake.Intellisense.Logging
 
         public NLogNugetLoggerAdapter(NLog.ILogger logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public FileConflictResolution ResolveFileConflict(string message)

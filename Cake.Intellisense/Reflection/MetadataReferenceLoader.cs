@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -17,8 +18,8 @@ namespace Cake.Intellisense.Reflection
 
         public MetadataReferenceLoader(IAssemblyLoader assemblyLoader, IPackageAssemblyResolver packageAssemblyResolver)
         {
-            _assemblyLoader = assemblyLoader;
-            _packageAssemblyResolver = packageAssemblyResolver;
+            _assemblyLoader = assemblyLoader ?? throw new ArgumentNullException(nameof(assemblyLoader));
+            _packageAssemblyResolver = packageAssemblyResolver ?? throw new ArgumentNullException(nameof(packageAssemblyResolver));
         }
 
         public PortableExecutableReference CreateFromFile(string path)

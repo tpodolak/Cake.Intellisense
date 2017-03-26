@@ -24,8 +24,8 @@ namespace Cake.Intellisense.Infrastructure
 
         public MetadataGeneratorModule(NameValueCollection appSettings, Assembly assembly)
         {
-            _appSettings = appSettings;
-            _assembly = assembly;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            _assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
         }
 
         protected override void Load(ContainerBuilder builder)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,7 +15,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
 
         public MethodSyntaxRewriter(SemanticModel semanticModel)
         {
-            _semanticModel = semanticModel;
+            _semanticModel = semanticModel ?? throw new ArgumentNullException(nameof(semanticModel));
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
 using Cake.Intellisense.Documentation.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -10,13 +11,13 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewrite
         private readonly IDocumentationReader _documentationReader;
         private readonly ICommentProvider _commentProvider;
 
+        public int Order { get; } = 0;
+
         public CommentSyntaxRewriterService(IDocumentationReader documentationReader, ICommentProvider commentProvider)
         {
-            _documentationReader = documentationReader;
-            _commentProvider = commentProvider;
+            _documentationReader = documentationReader ?? throw new ArgumentNullException(nameof(documentationReader));
+            _commentProvider = commentProvider ?? throw new ArgumentNullException(nameof(commentProvider));
         }
-
-        public int Order { get; } = 0;
 
         public SyntaxNode Rewrite(Assembly assembly, SemanticModel semanticModel, SyntaxNode node)
         {

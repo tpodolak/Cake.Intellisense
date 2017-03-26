@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CommandLine.Interfaces;
 using Cake.Intellisense.NuGet.Interfaces;
@@ -19,9 +20,9 @@ namespace Cake.Intellisense.CommandLine
             IConsoleReader consoleReader,
             IPackageManager packageManager)
         {
-            _argumentParser = argumentParser;
-            _consoleReader = consoleReader;
-            _packageManager = packageManager;
+            _argumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
+            _consoleReader = consoleReader ?? throw new ArgumentNullException(nameof(consoleReader));
+            _packageManager = packageManager ?? throw new ArgumentNullException(nameof(packageManager));
         }
 
         public MetadataGeneratorOptions Interact(string[] args)

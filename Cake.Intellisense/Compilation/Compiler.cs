@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cake.Intellisense.Compilation.Interfaces;
@@ -18,8 +19,8 @@ namespace Cake.Intellisense.Compilation
 
         public Compiler(IAssemblyLoader assemblyLoader, IFileSystem fileSystem)
         {
-            _assemblyLoader = assemblyLoader;
-            _fileSystem = fileSystem;
+            _assemblyLoader = assemblyLoader ?? throw new ArgumentNullException(nameof(assemblyLoader));
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         public Assembly Compile(Microsoft.CodeAnalysis.Compilation compilation, string outputPath)

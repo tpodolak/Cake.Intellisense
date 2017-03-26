@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,9 +19,9 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewrite
 
         public CommentSyntaxRewriter(IDocumentationReader documentationReader, ICommentProvider provider, SemanticModel semanticModel)
         {
-            _documentationReader = documentationReader;
-            _provider = provider;
-            _semanticModel = semanticModel;
+            _documentationReader = documentationReader ?? throw new ArgumentNullException(nameof(documentationReader));
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            _semanticModel = semanticModel ?? throw new ArgumentNullException(nameof(semanticModel));
         }
 
         public SyntaxNode Visit(Assembly assembly, SyntaxNode rootNode)

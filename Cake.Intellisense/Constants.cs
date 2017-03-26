@@ -5,7 +5,7 @@
         public static class RoslynCodeGeneration
         {
             public const string CSharpCodeGenerationServiceTypeName = "Microsoft.CodeAnalysis.CSharp.CodeGeneration.CSharpCodeGenerationService";
-
+            public const string CodeGenerationService = "Microsoft.CodeAnalysis.CodeGeneration.ICodeGenerationService";
             public const string CreateNamedTypeDeclarationMethodName = "CreateNamedTypeDeclaration";
         }
 

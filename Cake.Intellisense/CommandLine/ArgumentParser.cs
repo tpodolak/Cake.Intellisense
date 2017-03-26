@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cake.Intellisense.CommandLine.Interfaces;
@@ -12,7 +13,7 @@ namespace Cake.Intellisense.CommandLine
 
         public ArgumentParser(TextWriter textWriter)
         {
-            _parser = new Parser(settings => settings.HelpWriter = textWriter);
+            _parser = new Parser(settings => settings.HelpWriter = textWriter ?? throw new ArgumentNullException(nameof(textWriter)));
         }
 
         public ParserResult<T> Parse<T>(string[] arguments) where T : class, new()

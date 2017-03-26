@@ -31,7 +31,7 @@ namespace Cake.Intellisense.CodeGeneration.SourceGenerators
 
             var languageServices = project.LanguageServices;
             var host = nameof(languageServices.GetService);
-            var service = typeof(ILanguageService).Assembly.GetType("Microsoft.CodeAnalysis.CodeGeneration.ICodeGenerationService");
+            var service = typeof(ILanguageService).Assembly.GetType(Constants.RoslynCodeGeneration.CodeGenerationService);
 
             return (ILanguageService)languageServices.GetType().GetMethod(host).MakeGenericMethod(service).Invoke(languageServices, null);
         }

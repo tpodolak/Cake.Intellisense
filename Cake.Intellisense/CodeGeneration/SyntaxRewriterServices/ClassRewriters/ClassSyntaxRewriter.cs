@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,7 +21,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters
 
         public ClassSyntaxRewriter(string classSuffix)
         {
-            _classSuffix = classSuffix;
+            _classSuffix = classSuffix ?? throw new ArgumentNullException(nameof(classSuffix));
         }
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)

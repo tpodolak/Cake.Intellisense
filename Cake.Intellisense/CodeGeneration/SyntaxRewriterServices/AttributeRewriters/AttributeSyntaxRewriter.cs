@@ -24,7 +24,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
 
         public AttributeSyntaxRewriter(Assembly assembly)
         {
-            _assembly = assembly;
+            _assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
         }
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)

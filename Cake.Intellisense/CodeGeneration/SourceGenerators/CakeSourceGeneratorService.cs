@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
@@ -24,9 +25,9 @@ namespace Cake.Intellisense.CodeGeneration.SourceGenerators
             IMetadataReferenceLoader metadataReferenceLoader,
             ICompilationProvider compilationProvider)
         {
-            _metadataGeneratorService = metadataGeneratorService;
-            _metadataReferenceLoader = metadataReferenceLoader;
-            _compilationProvider = compilationProvider;
+            _metadataGeneratorService = metadataGeneratorService ?? throw new ArgumentNullException(nameof(metadataGeneratorService));
+            _metadataReferenceLoader = metadataReferenceLoader ?? throw new ArgumentNullException(nameof(metadataReferenceLoader));
+            _compilationProvider = compilationProvider ?? throw new ArgumentNullException(nameof(compilationProvider));
         }
 
         public CompilationUnitSyntax Generate(Assembly assembly)

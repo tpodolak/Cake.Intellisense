@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.CodeGeneration.MetadataGenerators.Interfaces;
@@ -42,15 +43,15 @@ namespace Cake.Intellisense.CodeGeneration.MetadataGenerators
             ICompilationProvider compilationProvider,
             IFileSystem fileSystem)
         {
-            _cakeSourceGenerator = cakeSourceGenerator;
-            _cakeSyntaxRewriterService = cakeSyntaxRewriterService;
-            _packageManager = packageManager;
-            _dependencyResolver = dependencyResolver;
-            _packageAssemblyResolver = packageAssemblyResolver;
-            _compiler = compiler;
-            _metadataReferenceLoader = metadataReferenceLoader;
-            _compilationProvider = compilationProvider;
-            _fileSystem = fileSystem;
+            _cakeSourceGenerator = cakeSourceGenerator ?? throw new ArgumentNullException(nameof(cakeSourceGenerator));
+            _cakeSyntaxRewriterService = cakeSyntaxRewriterService ?? throw new ArgumentNullException(nameof(cakeSyntaxRewriterService));
+            _packageManager = packageManager ?? throw new ArgumentNullException(nameof(packageManager));
+            _dependencyResolver = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
+            _packageAssemblyResolver = packageAssemblyResolver ?? throw new ArgumentNullException(nameof(packageAssemblyResolver));
+            _compiler = compiler ?? throw new ArgumentNullException(nameof(compiler));
+            _metadataReferenceLoader = metadataReferenceLoader ?? throw new ArgumentNullException(nameof(metadataReferenceLoader));
+            _compilationProvider = compilationProvider ?? throw new ArgumentNullException(nameof(compilationProvider));
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)

@@ -19,9 +19,9 @@ namespace Cake.Intellisense.NuGet
             global::NuGet.IPackageManager packageManager,
             INuGetSettings settings)
         {
-            _packageRepository = packageRepository;
-            _packageManager = packageManager;
-            _settings = settings;
+            _packageRepository = packageRepository ?? throw new ArgumentNullException(nameof(packageRepository));
+            _packageManager = packageManager ?? throw new ArgumentNullException(nameof(packageManager));
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework)

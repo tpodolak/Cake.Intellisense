@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using Cake.Intellisense.Documentation.Interfaces;
 using Cake.Intellisense.FileSystem.Interfaces;
 
@@ -10,7 +11,7 @@ namespace Cake.Intellisense.Documentation
 
         public DocumentationReader(IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem;
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         public XDocument Read(string documentationFile)

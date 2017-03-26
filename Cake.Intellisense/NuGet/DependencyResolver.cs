@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.Settings.Interfaces;
@@ -14,8 +15,8 @@ namespace Cake.Intellisense.NuGet
 
         public DependencyResolver(IPackageRepository packageRepository, INuGetSettings nugetSettings)
         {
-            _packageRepository = packageRepository;
-            _nugetSettings = nugetSettings;
+            _packageRepository = packageRepository ?? throw new ArgumentNullException(nameof(packageRepository));
+            _nugetSettings = nugetSettings ?? throw new ArgumentNullException(nameof(nugetSettings));
         }
 
         public IEnumerable<IPackage> GetDependenciesAndSelf(IPackage package, FrameworkName frameworkName)
