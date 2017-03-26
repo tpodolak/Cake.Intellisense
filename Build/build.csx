@@ -85,11 +85,7 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() => 
 {
-    var setings = new MSBuildSettings
-                        {
-                            Configuration = parameters.Configuration
-                        };
-    MSBuild(paths.Files.Solution, setings);
+    MSBuild(paths.Files.Solution, settings=> settings.SetConfiguration(parameters.Configuration));
 });
 
 Task("Pack")
