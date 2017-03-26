@@ -1,4 +1,6 @@
-﻿namespace Cake.Intellisense
+﻿using System;
+
+namespace Cake.Intellisense
 {
     public class Program
     {
@@ -6,6 +8,7 @@
         {
             var app = new Application();
             app.Run(args);
+            Console.ReadKey();
         }
     }
 }

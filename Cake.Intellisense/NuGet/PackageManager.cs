@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Cake.Intellisense.Settings;
+using Cake.Intellisense.Settings.Interfaces;
 using NuGet;
+using IPackageManager = Cake.Intellisense.NuGet.Interfaces.IPackageManager;
 
 namespace Cake.Intellisense.NuGet
 {
     public class PackageManager : IPackageManager
     {
-        private readonly global::NuGet.IPackageManager packageManager;
-        private readonly IPackageRepository packageRepository;
-        private readonly INuGetSettings settings;
+        private readonly global::NuGet.IPackageManager _packageManager;
+        private readonly IPackageRepository _packageRepository;
+        private readonly INuGetSettings _settings;
 
         public PackageManager(
-            IPackageManagerProvider packageManagerProvider,
-            IPackageRepositoryProvider packageRepositoryProvider,
+            IPackageRepository packageRepository,
+            global::NuGet.IPackageManager packageManager,
             INuGetSettings settings)
         {
-            this.settings = settings;
-            packageManager = packageManagerProvider.Get();
-            packageRepository = packageRepositoryProvider.Get();
+            _packageRepository = packageRepository ?? throw new ArgumentNullException(nameof(packageRepository));
+            _packageManager = packageManager ?? throw new ArgumentNullException(nameof(packageManager));
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public IPackage InstallPackage(string packageId, string version, FrameworkName targetFramework)
@@ -30,7 +31,7 @@ namespace Cake.Intellisense.NuGet
             if (package == null)
                 return null;
 
-            packageManager.InstallPackage(package, false, true);
+            _packageManager.InstallPackage(package, false, true);
 
             return package;
         }
@@ -56,14 +57,14 @@ namespace Cake.Intellisense.NuGet
 
         public IPackage FindPackage(string packageId, string version)
         {
-            var packages = packageRepository.FindPackagesById(packageId).ToList();
+            var packages = _packageRepository.FindPackagesById(packageId).ToList();
 
             if (string.IsNullOrWhiteSpace(version))
-                return packages.LastOrDefault(package => settings.AllowPreReleaseVersions || package.IsReleaseVersion());
+                return packages.LastOrDefault(package => _settings.AllowPreReleaseVersions || package.IsReleaseVersion());
 
             var semanticVersion = new SemanticVersion(new Version(version));
 
-            return packageRepository.FindPackagesById(packageId).SingleOrDefault(package => package.Version == semanticVersion);
+            return _packageRepository.FindPackagesById(packageId).SingleOrDefault(package => package.Version == semanticVersion);
         }
     }
 }

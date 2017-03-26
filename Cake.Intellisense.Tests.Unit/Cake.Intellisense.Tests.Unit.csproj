@@ -215,16 +215,14 @@
     <Compile Include="DocumentationTests\XmlCommentProviderTests.cs" />
     <Compile Include="Extensions\NSubstituteExtensions.cs" />
     <Compile Include="LoggingTests\NLogNugetLoggerAdapterTests.cs" />
-    <Compile Include="MetadataGeneratorTests.cs" />
+    <Compile Include="MetadataGeneratorsTests\MetadataGeneratorTests.cs" />
     <Compile Include="NuGetTests\DependencyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageAssemblyReferencePathResolverTests.cs" />
-    <Compile Include="NuGetTests\PackageManagerProviderTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs" />
     <Compile Include="NuGetTests\PackageAssemblyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs" />
-    <Compile Include="NuGetTests\PackageRepositoryProviderTests.cs" />
     <Compile Include="CodeGenerationTests\CakeSyntaxRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\CommentSyntaxRewriterServiceTest.cs" />
     <Compile Include="CodeGenerationTests\AttributeSyntaxRewriterServiceTest.cs" />
@@ -253,7 +251,6 @@
       <Name>Cake.Intellisense</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

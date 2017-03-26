@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
-using Cake.Intellisense.NuGet;
+using Cake.Intellisense.NuGet.Interfaces;
+using Cake.Intellisense.Reflection.Interfaces;
 using Microsoft.CodeAnalysis;
 using MoreLinq;
 using NuGet;
@@ -11,13 +13,13 @@ namespace Cake.Intellisense.Reflection
 {
     public class MetadataReferenceLoader : IMetadataReferenceLoader
     {
-        private readonly IAssemblyLoader assemblyLoader;
-        private readonly IPackageAssemblyResolver packageAssemblyResolver;
+        private readonly IAssemblyLoader _assemblyLoader;
+        private readonly IPackageAssemblyResolver _packageAssemblyResolver;
 
         public MetadataReferenceLoader(IAssemblyLoader assemblyLoader, IPackageAssemblyResolver packageAssemblyResolver)
         {
-            this.assemblyLoader = assemblyLoader;
-            this.packageAssemblyResolver = packageAssemblyResolver;
+            _assemblyLoader = assemblyLoader ?? throw new ArgumentNullException(nameof(assemblyLoader));
+            _packageAssemblyResolver = packageAssemblyResolver ?? throw new ArgumentNullException(nameof(packageAssemblyResolver));
         }
 
         public PortableExecutableReference CreateFromFile(string path)
@@ -25,18 +27,13 @@ namespace Cake.Intellisense.Reflection
             return MetadataReference.CreateFromFile(path);
         }
 
-        public PortableExecutableReference CreateFromStream(Stream stream)
-        {
-            return MetadataReference.CreateFromStream(stream);
-        }
-
         public IList<PortableExecutableReference> CreateFromPackages(IList<IPackage> packages, FrameworkName targetFramework)
         {
-            var packageAssemblies = packages.SelectMany(package => packageAssemblyResolver.ResolveAssemblies(package, targetFramework)).ToList();
+            var packageAssemblies = packages.SelectMany(package => _packageAssemblyResolver.ResolveAssemblies(package, targetFramework)).ToList();
 
             var referencedAssemblyReferences =
                 packageAssemblies
-                    .SelectMany(packageFile => assemblyLoader.LoadReferencedAssemblies(packageFile))
+                    .SelectMany(packageFile => _assemblyLoader.LoadReferencedAssemblies(packageFile))
                     .Select(assembly => CreateFromFile(assembly.Location))
                     .ToList();
 

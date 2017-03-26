@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters;
-using Cake.Intellisense.Compilation;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using MoreLinq;
 using NSubstitute;
 using Xunit;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
@@ -36,7 +37,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                         val.Rewrite(Arg.Any<Assembly>(), Arg.Any<SemanticModel>(), Arg.Any<SyntaxNode>())
                             .Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot()));
 
-                Subject.Rewrite(SyntaxFactory.CompilationUnit(), GetType().Assembly);
+                Subject.Rewrite(CompilationUnit(), GetType().Assembly);
 
                 Received.InOrder(() =>
                 {
@@ -51,7 +52,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 var syntaxRewriterServices = Get<IEnumerable<ISyntaxRewriterService>>().OrderBy(val => val.Order).ToList();
                 syntaxRewriterServices.ForEach(service => service.Rewrite(Arg.Any<Assembly>(), Arg.Any<SemanticModel>(), Arg.Any<SyntaxNode>()).Returns(CSharpSyntaxTree.ParseText(string.Empty).GetRoot()));
 
-                Subject.Rewrite(SyntaxFactory.CompilationUnit(), GetType().Assembly);
+                Subject.Rewrite(CompilationUnit(), GetType().Assembly);
 
                 Received.InOrder(() =>
                 {

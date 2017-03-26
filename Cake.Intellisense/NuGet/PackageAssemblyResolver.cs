@@ -1,28 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using Cake.Intellisense.Reflection;
+using Cake.Intellisense.NuGet.Interfaces;
+using Cake.Intellisense.Reflection.Interfaces;
 using NuGet;
 
 namespace Cake.Intellisense.NuGet
 {
     public class PackageAssemblyResolver : IPackageAssemblyResolver
     {
-        private readonly IAssemblyLoader assemblyLoader;
-        private readonly IPackageAssemblyReferencePathResolver pathResolver;
+        private readonly IAssemblyLoader _assemblyLoader;
+        private readonly IPackageAssemblyReferencePathResolver _pathResolver;
 
         public PackageAssemblyResolver(IAssemblyLoader assemblyLoader, IPackageAssemblyReferencePathResolver pathResolver)
         {
-            this.assemblyLoader = assemblyLoader;
-            this.pathResolver = pathResolver;
+            _assemblyLoader = assemblyLoader ?? throw new ArgumentNullException(nameof(assemblyLoader));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
         }
 
         public List<Assembly> ResolveAssemblies(IPackage package, FrameworkName targetFramework)
         {
             return package.AssemblyReferences
                   .Where(val => val.SupportedFrameworks.Contains(targetFramework))
-                  .Select(val => assemblyLoader.LoadFrom(pathResolver.GetPath(package, val)))
+                  .Select(val => _assemblyLoader.LoadFrom(_pathResolver.GetPath(package, val)))
                   .ToList();
         }
     }

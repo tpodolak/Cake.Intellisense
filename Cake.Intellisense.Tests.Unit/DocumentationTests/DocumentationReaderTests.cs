@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 using Cake.Intellisense.Documentation;
-using Cake.Intellisense.FileSystem;
+using Cake.Intellisense.FileSystem.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;

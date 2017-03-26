@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters;
-using Cake.Intellisense.Documentation;
+using Cake.Intellisense.Documentation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Microsoft.CodeAnalysis;
 using NSubstitute;

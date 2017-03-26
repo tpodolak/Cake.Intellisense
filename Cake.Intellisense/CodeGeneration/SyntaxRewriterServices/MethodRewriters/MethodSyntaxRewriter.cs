@@ -1,18 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriters
 {
     internal class MethodSyntaxRewriter : CSharpSyntaxRewriter
     {
-        private readonly SemanticModel semanticModel;
+        private readonly SemanticModel _semanticModel;
 
         public MethodSyntaxRewriter(SemanticModel semanticModel)
         {
-            this.semanticModel = semanticModel;
+            _semanticModel = semanticModel ?? throw new ArgumentNullException(nameof(semanticModel));
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
@@ -22,11 +25,11 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var parameterListSyntax = GetParameterList(node);
 
             node = node.WithParameterList(parameterListSyntax)
-                .WithBody(SyntaxFactory.Block(bodyStatements))
+                .WithBody(Block(bodyStatements))
                 .WithModifiers(modifiers)
                 .WithoutTrailingTrivia()
                 .WithSemicolonToken(
-                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)
+                    MissingToken(SyntaxKind.SemicolonToken)
                         .WithLeadingTrivia(node.SemicolonToken.LeadingTrivia)
                         .WithTrailingTrivia(node.SemicolonToken.TrailingTrivia));
 
@@ -40,11 +43,11 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
         {
             var modifierTokens = new List<SyntaxToken>
             {
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.StaticKeyword)
+                Token(SyntaxKind.PublicKeyword),
+                Token(SyntaxKind.StaticKeyword)
             };
 
-            var syntaxTokenList = SyntaxFactory.TokenList(modifierTokens);
+            var syntaxTokenList = TokenList(modifierTokens);
             return syntaxTokenList;
         }
 
@@ -53,22 +56,22 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var bodyStatements = new List<StatementSyntax>();
 
             var outParams = node.ParameterList.Parameters
-                .Where(val => semanticModel.GetDeclaredSymbol(val).RefKind == RefKind.Out)
+                .Where(val => _semanticModel.GetDeclaredSymbol(val).RefKind == RefKind.Out)
                 .ToList();
 
             if (outParams.Any())
             {
-                var outAssignments = outParams.Select(val => SyntaxFactory.ExpressionStatement(SyntaxFactory.AssignmentExpression(
+                var outAssignments = outParams.Select(val => ExpressionStatement(AssignmentExpression(
                     SyntaxKind.SimpleAssignmentExpression,
-                    SyntaxFactory.IdentifierName(val.Identifier),
-                    SyntaxFactory.DefaultExpression(val.Type))));
+                    IdentifierName(val.Identifier),
+                    DefaultExpression(val.Type))));
 
                 bodyStatements.AddRange(outAssignments);
             }
 
             if ((node.ReturnType as PredefinedTypeSyntax)?.Keyword.Kind() != SyntaxKind.VoidKeyword)
             {
-                bodyStatements.Add(SyntaxFactory.ReturnStatement(SyntaxFactory.DefaultExpression(node.ReturnType)));
+                bodyStatements.Add(ReturnStatement(DefaultExpression(node.ReturnType)));
             }
 
             return bodyStatements;
@@ -76,16 +79,16 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
 
         private PropertyDeclarationSyntax GetPropertyDeclaration(MethodDeclarationSyntax node)
         {
-            return SyntaxFactory.PropertyDeclaration(node.ReturnType, node.Identifier)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword))
+            return PropertyDeclaration(node.ReturnType, node.Identifier)
+                .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
                 .AddAttributeLists(node.AttributeLists.ToArray())
                 .AddAccessorListAccessors(
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
+                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
         }
 
         private bool IsProperty(MethodDeclarationSyntax node)
         {
-            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakePropertyAlias)));
+            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakePropertyAlias)));
         }
 
         private ParameterListSyntax GetParameterList(MethodDeclarationSyntax node)
@@ -93,12 +96,12 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var hasCakeMethodAliasAttribute =
                 node.AttributeLists.Any(
                     attributeLists =>
-                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeAttributeNames.CakeMethodAlias)));
+                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeMethodAlias)));
 
             if (!hasCakeMethodAliasAttribute || !node.ParameterList.Parameters.Any())
                 return node.ParameterList;
 
-            return SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(node.ParameterList.Parameters.Skip(hasCakeMethodAliasAttribute ? 1 : 0)));
+            return ParameterList(SeparatedList(node.ParameterList.Parameters.Skip(1)));
         }
 
         private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)

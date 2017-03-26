@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
 using Cake.Intellisense.NuGet;
-using Cake.Intellisense.Reflection;
+using Cake.Intellisense.NuGet.Interfaces;
+using Cake.Intellisense.Reflection.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 using NuGet;
 using Xunit;
 
@@ -31,7 +30,7 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 Get<IPackageAssemblyReferencePathResolver>().GetPath(Arg.Any<IPackage>(), Arg.Is<IPackageAssemblyReference>(assemblyRef => assemblyRef == secondPackageReference))
                                                             .Returns("secondAssembly");
 
-                Get<IAssemblyLoader>().LoadFrom(Arg.Is<string>(path => path == "firstAssembly")).Returns(this.GetType().Assembly);
+                Get<IAssemblyLoader>().LoadFrom(Arg.Is<string>(path => path == "firstAssembly")).Returns(GetType().Assembly);
                 Get<IAssemblyLoader>().LoadFrom(Arg.Is<string>(path => path == "secondAssembly")).Returns(typeof(string).Assembly);
 
                 Use<IPackage>().AssemblyReferences.Returns(new[] { secondPackageReference, firstPackageReference });
@@ -39,7 +38,7 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var result = Subject.ResolveAssemblies(Get<IPackage>(), targetFramework);
 
                 result.Should().HaveCount(1);
-                result.Should().ContainSingle(assembly => assembly == this.GetType().Assembly);
+                result.Should().ContainSingle(assembly => assembly == GetType().Assembly);
                 Get<IPackageAssemblyReferencePathResolver>().Received(1).GetPath(Arg.Any<IPackage>(), Arg.Any<IPackageAssemblyReference>());
                 Get<IAssemblyLoader>().Received(1).LoadFrom(Arg.Any<string>());
             }

@@ -2,7 +2,8 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Cake.Intellisense.CodeGeneration.SourceGenerators;
-using Cake.Intellisense.Compilation;
+using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
+using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Cake.Intellisense.Tests.Unit.Extensions;
 using FluentAssertions;
@@ -11,6 +12,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSubstitute;
 using Xunit;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
+using static Cake.Intellisense.Constants.CakeEngineNames;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
@@ -42,7 +46,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 secondLevelSymbol.GetTypeMembers().Returns(ImmutableArray.Create<INamedTypeSymbol>());
                 Get<Microsoft.CodeAnalysis.Compilation>().ProtectedProperty("CommonGlobalNamespace").Returns(rootNamespaceSymbol);
 
-                Subject.Generate(this.GetType().Assembly);
+                Subject.Generate(GetType().Assembly);
 
                 rootNamespaceSymbol.Received().GetNamespaceMembers();
                 firstLevelSymbol.Received().GetNamespaceMembers();
@@ -57,7 +61,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 rootNamespaceSymbol.GetNamespaceMembers().Returns(ImmutableArray.Create<INamespaceSymbol>());
                 Get<Microsoft.CodeAnalysis.Compilation>().ProtectedProperty("CommonGlobalNamespace").Returns(rootNamespaceSymbol);
 
-                var result = Subject.Generate(this.GetType().Assembly);
+                var result = Subject.Generate(GetType().Assembly);
 
                 result.Should().NotBeNull();
                 result.Members.OfType<NamespaceDeclarationSyntax>().Should().BeEmpty();
@@ -68,7 +72,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             public void AddsClassDeclarationSyntax_WhenTypeDecoratedWithCakeAliasCategoryAttribute()
             {
                 var cakeSymbol = Substitute.For<INamedTypeSymbol>();
-                cakeSymbol.Name.Returns(CakeAttributeNames.CakeAliasCategory);
+                cakeSymbol.Name.Returns(CakeAliasCategory);
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 var attributeData = Use<AttributeData>();
@@ -78,9 +82,9 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 rootNamespaceSymbol.GetTypeMembers().Returns(ImmutableArray.Create(namedTypeSymbol));
                 rootNamespaceSymbol.GetNamespaceMembers().Returns(ImmutableArray.Create<INamespaceSymbol>());
                 Get<Microsoft.CodeAnalysis.Compilation>().ProtectedProperty("CommonGlobalNamespace").Returns(rootNamespaceSymbol);
-                Get<IMetadataGeneratorService>().CreateNamedTypeDeclaration(Arg.Any<INamedTypeSymbol>()).Returns(SyntaxFactory.ClassDeclaration("MyClass"));
+                Get<IMetadataGeneratorService>().CreateNamedTypeDeclaration(Arg.Any<INamedTypeSymbol>()).Returns(ClassDeclaration("MyClass"));
 
-                var result = Subject.Generate(this.GetType().Assembly);
+                var result = Subject.Generate(GetType().Assembly);
 
                 result.Members.OfType<NamespaceDeclarationSyntax>().Should().HaveCount(1);
                 result.Members.OfType<NamespaceDeclarationSyntax>()
@@ -100,13 +104,13 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 namedTypeSymbol.Kind.Returns(SymbolKind.NamedType);
-                namedTypeSymbol.Name.Returns(CakeEngineNames.ScriptHost);
+                namedTypeSymbol.Name.Returns(ScriptHost);
                 rootNamespaceSymbol.GetTypeMembers().Returns(ImmutableArray.Create(namedTypeSymbol));
                 rootNamespaceSymbol.GetNamespaceMembers().Returns(ImmutableArray.Create<INamespaceSymbol>());
                 Get<Microsoft.CodeAnalysis.Compilation>().ProtectedProperty("CommonGlobalNamespace").Returns(rootNamespaceSymbol);
-                Get<IMetadataGeneratorService>().CreateNamedTypeDeclaration(Arg.Any<INamedTypeSymbol>()).Returns(SyntaxFactory.ClassDeclaration("MyClass"));
+                Get<IMetadataGeneratorService>().CreateNamedTypeDeclaration(Arg.Any<INamedTypeSymbol>()).Returns(ClassDeclaration("MyClass"));
 
-                var result = Subject.Generate(this.GetType().Assembly);
+                var result = Subject.Generate(GetType().Assembly);
 
                 result.Members.OfType<NamespaceDeclarationSyntax>().Should().HaveCount(1);
                 result.Members.OfType<NamespaceDeclarationSyntax>()

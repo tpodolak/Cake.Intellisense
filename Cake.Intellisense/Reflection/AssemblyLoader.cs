@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using Cake.Intellisense.Reflection.Interfaces;
 using NLog;
 using ILogger = NLog.ILogger;
 
@@ -22,19 +22,6 @@ namespace Cake.Intellisense.Reflection
             return Assembly.Load(assembly);
         }
 
-        public Assembly Load(Stream stream)
-        {
-            var memoryStream = stream as MemoryStream;
-
-            if (memoryStream == null)
-            {
-                using (memoryStream = new MemoryStream())
-                    stream.CopyTo(memoryStream);
-            }
-
-            return Assembly.Load(memoryStream.ToArray());
-        }
-
         public IEnumerable<Assembly> LoadReferencedAssemblies(Assembly assembly)
         {
             return assembly.GetReferencedAssemblies().Select(ReflectionOnlyLoad).Where(val => val != null);
@@ -43,11 +30,6 @@ namespace Cake.Intellisense.Reflection
         public IEnumerable<Assembly> LoadReferencedAssemblies(string assemblyFile)
         {
             return LoadReferencedAssemblies(LoadFrom(assemblyFile));
-        }
-
-        public IEnumerable<Assembly> LoadReferencedAssemblies(Stream stream)
-        {
-            return LoadReferencedAssemblies(Load(stream));
         }
 
         private Assembly ReflectionOnlyLoad(AssemblyName assemblyName)

@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 using Xunit;
+using static Cake.Intellisense.Constants.CakeAttributeNames;
 
 namespace Cake.Intellisense.Tests.Unit.DocumentationTests
 {
@@ -13,8 +14,8 @@ namespace Cake.Intellisense.Tests.Unit.DocumentationTests
     {
         public class GetMethod : Test<XmlCommentProvider>
         {
-            private readonly XDocument emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
-            private readonly XDocument validDocument = XDocument.Parse(
+            private readonly XDocument _emptyDocument = XDocument.Parse("<?xml version=\"1.0\"?><doc></doc>");
+            private readonly XDocument _validDocument = XDocument.Parse(
 @"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -57,7 +58,7 @@ namespace Cake.Intellisense.Tests.Unit.DocumentationTests
             {
                 Get<ISymbol>().GetDocumentationCommentId().Returns(string.Empty);
 
-                var result = Subject.Get(emptyDocument, Get<ISymbol>());
+                var result = Subject.Get(_emptyDocument, Get<ISymbol>());
 
                 result.Should().BeEmpty();
             }
@@ -67,7 +68,7 @@ namespace Cake.Intellisense.Tests.Unit.DocumentationTests
             {
                 Get<ISymbol>().GetDocumentationCommentId().Returns(@"M:Cake.Common.ArgumentAliases.Argument``1(Cake.Core.ICakeContext,System.String,``0)");
 
-                var result = Subject.Get(validDocument, Get<ISymbol>());
+                var result = Subject.Get(_validDocument, Get<ISymbol>());
 
                 result.Should().NotBeNull();
                 result.Should().Be(@"///             <summary>
@@ -95,8 +96,8 @@ namespace Cake.Intellisense.Tests.Unit.DocumentationTests
             }
 
             [Theory]
-            [InlineData(CakeAttributeNames.CakePropertyAlias)]
-            [InlineData(CakeAttributeNames.CakeMethodAlias)]
+            [InlineData(CakePropertyAlias)]
+            [InlineData(CakeMethodAlias)]
             public void ReturnsValidCSharpCommentWitFirstParamRemoved_WhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
             {
                 var attributeData = Use<AttributeData>();
@@ -114,7 +115,7 @@ namespace Cake.Intellisense.Tests.Unit.DocumentationTests
                 methodSymbol.Kind.Returns(SymbolKind.Method);
                 methodSymbol.GetAttributes().Returns(ImmutableArray.Create(attributeData));
 
-                var result = Subject.Get(validDocument, Get<IMethodSymbol>());
+                var result = Subject.Get(_validDocument, Get<IMethodSymbol>());
 
                 result.Should().NotBeNull();
                 result.Should().Be(@"///             <summary>

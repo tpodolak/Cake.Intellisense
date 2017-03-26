@@ -1,4 +1,5 @@
-﻿using Cake.Intellisense.CommandLine;
+﻿using Cake.Intellisense.CodeGeneration.MetadataGenerators;
+using Cake.Intellisense.CommandLine;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using Xunit;

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Cake.Intellisense.NuGet;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
@@ -97,25 +95,6 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 result.Should().NotBeNull();
                 result.Version.Should().Be(new SemanticVersion(2, 0, 0, 0));
                 Get<IPackageManager>().Received().InstallPackage(Arg.Any<IPackage>(), Arg.Any<bool>(), Arg.Any<bool>());
-            }
-
-            public override object CreateInstance(Type type, params object[] constructorArgs)
-            {
-                if (type == typeof(IPackageRepositoryProvider))
-                {
-                    var nugetPackageRepositoryProvider = Substitute.For<IPackageRepositoryProvider>();
-                    nugetPackageRepositoryProvider.Get().Returns(Use<IPackageRepository>());
-                    return nugetPackageRepositoryProvider;
-                }
-
-                if (type == typeof(IPackageManagerProvider))
-                {
-                    var nugetPackageManagerProvider = Substitute.For<IPackageManagerProvider>();
-                    nugetPackageManagerProvider.Get().Returns(Use<IPackageManager>());
-                    return nugetPackageManagerProvider;
-                }
-
-                return base.CreateInstance(type, constructorArgs);
             }
         }
     }
