@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Cake.Intellisense.CommandLine.Interfaces;
 using CommandLine;
 
@@ -13,17 +11,19 @@ namespace Cake.Intellisense.CommandLine
 
         public ArgumentParser(TextWriter textWriter)
         {
-            _parser = new Parser(settings => settings.HelpWriter = textWriter ?? throw new ArgumentNullException(nameof(textWriter)));
+            _parser = new Parser();
         }
 
         public ParserResult<T> Parse<T>(string[] arguments) where T : class, new()
         {
-            T parsedResult = null;
-            var errors = new List<ParserError>(0);
-            var result = _parser.ParseArguments<T>(arguments);
+            var parsedResult = new T();
+            var errors = new List<ParserError>();
 
-            result.WithParsed(obj => parsedResult = obj)
-                  .WithNotParsed(err => errors = err.Select(val => new ParserError { Type = val.Tag.ToString(), Value = val.ToString() }).ToList());
+            if (!_parser.ParseArguments(arguments, parsedResult))
+            {
+                errors.Add(new ParserError { Value = "Unable to parse arguments" });
+                return new ParserResult<T>(null, errors);
+            }
 
             return new ParserResult<T>(parsedResult, errors);
         }

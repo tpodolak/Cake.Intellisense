@@ -22,5 +22,5 @@ branches:
     - /hotfix/.*/
 
 # Build cache
-# cache:
-# - Build/tools -> Build/build.csx
+ cache:
+  - Build/tools -> Build/build.csx

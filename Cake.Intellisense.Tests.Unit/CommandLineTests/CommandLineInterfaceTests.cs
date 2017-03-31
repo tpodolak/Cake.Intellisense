@@ -3,6 +3,7 @@ using System.Runtime.Versioning;
 using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CommandLine;
 using Cake.Intellisense.CommandLine.Interfaces;
+using Cake.Intellisense.Infrastructure.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using FluentAssertions;
 using NSubstitute;
@@ -17,7 +18,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
         public class InteractMethod : Test<CommandLineInterface>
         {
             [Fact]
-            public void ReturnsNullWhenParserErrorsOccured()
+            public void ReturnsNull_WhenParserErrorsOccured()
             {
                 var errorList = new List<ParserError>
                 {
@@ -32,10 +33,11 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 
                 result.Should().BeNull();
                 Get<IPackageManager>().DidNotReceive().FindPackage(Arg.Any<string>(), Arg.Any<string>());
+                Get<IEnvironment>().Received(1).Exit(Arg.Any<int>());
             }
 
             [Fact]
-            public void ReturnsNullWhenPackageNotFoundInNuget()
+            public void ReturnsNull_WhenPackageNotFoundInNuget()
             {
                 Get<IArgumentParser>()
                     .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
@@ -48,10 +50,11 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 
                 result.Should().BeNull();
                 Get<IPackageManager>().Received(1).FindPackage(Arg.Any<string>(), Arg.Any<string>());
+                Get<IEnvironment>().Received(1).Exit(Arg.Any<int>());
             }
 
             [Fact]
-            public void ReturnsIntactMetadataGeneratorOptionsWhenFrameworkSpecified()
+            public void ReturnsIntactMetadataGeneratorOptions_WhenFrameworkSpecified()
             {
                 var frameworkVersion = ".NETFramework,Version=v4.5";
                 var outputFolder = "outputFolder";
@@ -82,7 +85,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
             [InlineData("")]
             [InlineData(" ")]
             [InlineData(null)]
-            public void ListsAllAvailableFrameworksWhenTargetFrameworkNotSpecified(string targetFramework)
+            public void ListsAllAvailableFrameworks_WhenTargetFrameworkNotSpecified(string targetFramework)
             {
                 int index = -1;
                 int resultIndex = 0;

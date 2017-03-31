@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CommandLine.Interfaces;
+using Cake.Intellisense.Infrastructure.Interfaces;
 using Cake.Intellisense.NuGet.Interfaces;
 using NLog;
 
@@ -11,18 +11,24 @@ namespace Cake.Intellisense.CommandLine
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly IEnvironment _environment;
         private readonly IArgumentParser _argumentParser;
         private readonly IConsoleReader _consoleReader;
         private readonly IPackageManager _packageManager;
+        private readonly IHelpScreenGenerator _helpScreenGenerator;
 
         public CommandLineInterface(
             IArgumentParser argumentParser,
             IConsoleReader consoleReader,
-            IPackageManager packageManager)
+            IPackageManager packageManager,
+            IEnvironment environment,
+            IHelpScreenGenerator helpScreenGenerator)
         {
             _argumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
             _consoleReader = consoleReader ?? throw new ArgumentNullException(nameof(consoleReader));
             _packageManager = packageManager ?? throw new ArgumentNullException(nameof(packageManager));
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _helpScreenGenerator = helpScreenGenerator ?? throw new ArgumentNullException(nameof(helpScreenGenerator));
         }
 
         public MetadataGeneratorOptions Interact(string[] args)
@@ -31,7 +37,8 @@ namespace Cake.Intellisense.CommandLine
 
             if (parserResult.Errors.Any())
             {
-                Logger.Error("Error while parsing arguments");
+                Logger.Info(_helpScreenGenerator.Generate<MetadataGeneratorOptions>());
+                _environment.Exit(1);
                 return null;
             }
 
@@ -47,6 +54,7 @@ namespace Cake.Intellisense.CommandLine
             if (package == null)
             {
                 Logger.Error($"Unable to find package {options.Package} {options.PackageVersion ?? string.Empty}");
+                _environment.Exit(1);
                 return null;
             }
 

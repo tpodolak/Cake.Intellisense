@@ -5,6 +5,7 @@ using System.Runtime.Versioning;
 using Cake.Intellisense.CodeGeneration.MetadataGenerators.Interfaces;
 using Cake.Intellisense.CodeGeneration.SourceGenerators.Interfaces;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters.Interfaces;
+using Cake.Intellisense.CommandLine;
 using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.NuGet.Interfaces;
 using Cake.Intellisense.Reflection.Interfaces;
@@ -56,12 +57,6 @@ namespace Cake.Intellisense.CodeGeneration.MetadataGenerators
 
         public GeneratorResult Generate(MetadataGeneratorOptions options)
         {
-            if (options == null)
-            {
-                Logger.Fatal("Unable to parse arguments");
-                return null;
-            }
-
             var generatorResult = new GeneratorResult();
             var targetFramework = new FrameworkName(options.TargetFramework);
             var package = _packageManager.InstallPackage(options.Package, options.PackageVersion, targetFramework);
