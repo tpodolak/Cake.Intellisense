@@ -72,7 +72,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             public void AddsClassDeclarationSyntax_WhenTypeDecoratedWithCakeAliasCategoryAttribute()
             {
                 var cakeSymbol = Substitute.For<INamedTypeSymbol>();
-                cakeSymbol.Name.Returns(CakeAliasCategory);
+                cakeSymbol.Name.Returns(CakeAliasCategoryName);
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 var attributeData = Use<AttributeData>();
@@ -104,7 +104,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                 var namedTypeSymbol = Use<INamedTypeSymbol>();
                 var rootNamespaceSymbol = Use<INamespaceSymbol>();
                 namedTypeSymbol.Kind.Returns(SymbolKind.NamedType);
-                namedTypeSymbol.Name.Returns(ScriptHost);
+                namedTypeSymbol.Name.Returns(ScriptHostName);
                 rootNamespaceSymbol.GetTypeMembers().Returns(ImmutableArray.Create(namedTypeSymbol));
                 rootNamespaceSymbol.GetNamespaceMembers().Returns(ImmutableArray.Create<INamespaceSymbol>());
                 Get<Microsoft.CodeAnalysis.Compilation>().ProtectedProperty("CommonGlobalNamespace").Returns(rootNamespaceSymbol);

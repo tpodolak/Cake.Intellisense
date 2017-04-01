@@ -32,7 +32,6 @@ namespace Cake.Intellisense.Infrastructure
         {
             var referencedAssemblies = _assembly.GetReferencedAssemblies().Select(Assembly.Load);
 
-            builder.RegisterInstance(Console.Out).As<TextWriter>();
             RegisterSettings(builder);
 
             builder.RegisterAssemblyTypes(referencedAssemblies.Union(new[] { _assembly }).ToArray())

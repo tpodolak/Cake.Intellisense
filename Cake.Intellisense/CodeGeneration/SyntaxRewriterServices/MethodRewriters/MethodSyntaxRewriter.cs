@@ -88,7 +88,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
 
         private bool IsProperty(MethodDeclarationSyntax node)
         {
-            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakePropertyAlias)));
+            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakePropertyAliasName)));
         }
 
         private ParameterListSyntax GetParameterList(MethodDeclarationSyntax node)
@@ -96,7 +96,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var hasCakeMethodAliasAttribute =
                 node.AttributeLists.Any(
                     attributeLists =>
-                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeMethodAlias)));
+                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeMethodAliasName)));
 
             if (!hasCakeMethodAliasAttribute || !node.ParameterList.Parameters.Any())
                 return node.ParameterList;

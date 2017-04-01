@@ -40,8 +40,8 @@ namespace Cake.Intellisense.Documentation
             return methodSymbol.GetAttributes()
                 .Any(
                     val =>
-                        val.AttributeClass.Name.EndsWith(CakePropertyAlias) ||
-                        val.AttributeClass.Name.EndsWith(CakeMethodAlias));
+                        val.AttributeClass.Name.EndsWith(CakePropertyAliasName) ||
+                        val.AttributeClass.Name.EndsWith(CakeMethodAliasName));
         }
 
         private XElement GetCommentElement(XDocument documentation, string commentId)

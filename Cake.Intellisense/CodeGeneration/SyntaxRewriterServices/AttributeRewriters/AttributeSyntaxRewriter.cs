@@ -14,10 +14,10 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
     {
         private static readonly string[] AttributesToRemove =
         {
-            CakeAliasCategory,
-            CakeMethodAlias,
-            CakeNamespaceImport,
-            CakePropertyAlias
+            CakeAliasCategoryName,
+            CakeMethodAliasName,
+            CakeNamespaceImportName,
+            CakePropertyAliasName
         };
 
         private readonly Assembly _assembly;

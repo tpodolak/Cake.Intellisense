@@ -96,8 +96,8 @@ namespace Cake.Intellisense.Tests.Unit.DocumentationTests
             }
 
             [Theory]
-            [InlineData(CakePropertyAlias)]
-            [InlineData(CakeMethodAlias)]
+            [InlineData(CakePropertyAliasName)]
+            [InlineData(CakeMethodAliasName)]
             public void ReturnsValidCSharpCommentWitFirstParamRemoved_WhenSymbolIsMethodDecoratedWithCakeAttributes(string methodAttribute)
             {
                 var attributeData = Use<AttributeData>();

@@ -9,7 +9,7 @@ namespace Cake.Intellisense.CommandLine
     {
         private readonly Parser _parser;
 
-        public ArgumentParser(TextWriter textWriter)
+        public ArgumentParser()
         {
             _parser = new Parser();
         }
