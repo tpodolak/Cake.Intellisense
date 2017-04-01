@@ -138,6 +138,7 @@ Task("Patch-AssemblyInfo")
 Task("Upload-Coverage-Report")
     .WithCriteria(() => FileExists(paths.Files.TestCoverageOutputFilePath))
     .WithCriteria(() => !parameters.IsLocalBuild)
+    .WithCriteria(() => !parameters.IsPullRequest)
     .WithCriteria(() => parameters.IsMaster)
     .IsDependentOn("Publish-NuGet")
     .Does(() =>

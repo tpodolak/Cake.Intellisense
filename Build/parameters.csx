@@ -7,6 +7,7 @@ public class BuildParameters
     public bool IsMaster { get; private set; }
     public bool IsLocalBuild { get; private set; }
     public bool IsTagged { get; private set; }
+    public bool IsPullRequest {get; private set; }
     public bool ShouldPublish
     {
         get
@@ -30,7 +31,8 @@ public class BuildParameters
             SkipOpenCover = context.Argument<bool>("SkipOpenCover", false),
             IsLocalBuild = buildSystem.IsLocalBuild,
             IsMaster = StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.AppVeyor.Environment.Repository.Branch),
-            IsTagged = IsBuildTagged(buildSystem)
+            IsTagged = IsBuildTagged(buildSystem),
+            IsPullRequest = IsPullRequestBuild(buildSystem)
         };
     }
 
@@ -38,5 +40,10 @@ public class BuildParameters
     {
         return buildSystem.AppVeyor.Environment.Repository.Tag.IsTag
             && !string.IsNullOrWhiteSpace(buildSystem.AppVeyor.Environment.Repository.Tag.Name);
+    }
+
+    private static bool IsPullRequestBuild(BuildSystem buildSystem)
+    {
+        return buildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
     }
 }
