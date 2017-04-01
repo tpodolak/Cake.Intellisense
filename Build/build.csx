@@ -2,6 +2,7 @@
 #load "./parameters.csx"
 #load "./version.csx"
 #load "./paths.csx"
+
 // Install tools.
 #tool "nuget:https://www.nuget.org/api/v2?package=gitreleasemanager&version=0.5.0"
 #tool "nuget:https://www.nuget.org/api/v2?package=GitVersion.CommandLine&version=3.6.2"
@@ -10,9 +11,7 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=ReportGenerator&version=2.4.5"
 #tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.console&version=2.1.0"
 
-using Cake.Common.Tools.NuGet.Pack;
-using Cake.Common.Tools.NuGet.Push;
-using Cake.Core.Diagnostics;
+#addin Cake.Coveralls
 
 var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
@@ -132,6 +131,25 @@ Task("Patch-AssemblyInfo")
     {
         UpdateAssemblyInfo = true,
         WorkingDirectory = paths.Directories.RootDir
+    });
+});
+
+
+Task("Upload-Coverage-Report")
+    .WithCriteria(() => FileExists(paths.Files.TestCoverageOutputFilePath))
+    .WithCriteria(() => !parameters.IsLocalBuild)
+    .WithCriteria(() => parameters.IsMaster)
+    .IsDependentOn("AppVeyor")
+    .Does(() =>
+{
+    var repoKey = EnvironmentVariable("COVERALLS_REPO_TOKEN");
+    if (string.IsNullOrEmpty(repoKey))
+    {
+        throw new InvalidOperationException("Could not resolve Coveralls Repo key.");
+    }
+    CoverallsIo(paths.Files.TestCoverageOutputFilePath, new CoverallsIoSettings
+    {
+        RepoToken = repoKey
     });
 });
 
