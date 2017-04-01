@@ -6,7 +6,7 @@ init:
 # Build script
 build_script:
   - cd Build
-  - ps: .\build.ps1 -Script build.csx -Configuration Release -Target Upload-Coverage-Report
+  - ps: .\build.ps1 -Script build.csx -Configuration Release -Target AppVeyor
 
 # Tests
 test: off

@@ -139,7 +139,7 @@ Task("Upload-Coverage-Report")
     .WithCriteria(() => FileExists(paths.Files.TestCoverageOutputFilePath))
     .WithCriteria(() => !parameters.IsLocalBuild)
     .WithCriteria(() => parameters.IsMaster)
-    .IsDependentOn("AppVeyor")
+    .IsDependentOn("Publish-NuGet")
     .Does(() =>
 {
     var repoKey = EnvironmentVariable("COVERALLS_REPO_TOKEN");
@@ -154,6 +154,6 @@ Task("Upload-Coverage-Report")
 });
 
 Task("AppVeyor")
-  .IsDependentOn("Publish-NuGet");
+  .IsDependentOn("Upload-Coverage-Report");
 
 RunTarget(parameters.Target);
