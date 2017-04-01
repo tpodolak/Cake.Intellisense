@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.Versioning;
 using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CakeSyntaxRewriters.Interfaces;
+using Cake.Intellisense.CommandLine;
 using Cake.Intellisense.Compilation.Interfaces;
 using Cake.Intellisense.NuGet.Interfaces;
 using Cake.Intellisense.Reflection.Interfaces;

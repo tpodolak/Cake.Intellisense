@@ -206,6 +206,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineTests\HelpScreenGeneratorTests.cs" />
     <Compile Include="Common\Test.cs" />
     <Compile Include="CodeGenerationTests\CakeSourceGeneratorServiceTests.cs" />
     <Compile Include="CommandLineTests\ArgumentParserTests.cs" />

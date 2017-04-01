@@ -1,10 +1,10 @@
 ﻿using CommandLine;
 
-namespace Cake.Intellisense.CodeGeneration.MetadataGenerators
+namespace Cake.Intellisense.CommandLine
 {
     public class MetadataGeneratorOptions
     {
-        [Option("Package", Required = true, HelpText = "Cake\\Cake adding package")]
+        [Option("Package", Required = true, HelpText = "Cake or Cake addin package")]
         public string Package { get; set; }
 
         [Option("PackageVersion", Required = false, HelpText = "Package version")]

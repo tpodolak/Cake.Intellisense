@@ -23,4 +23,4 @@ branches:
 
 # Build cache
 cache:
-- Build/tools -> Build/build.csx
+  - Build/tools -> Build/build.csx

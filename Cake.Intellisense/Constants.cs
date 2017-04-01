@@ -11,15 +11,20 @@
 
         public static class CakeAttributeNames
         {
-            public const string CakeMethodAlias = "CakeMethodAliasAttribute";
-            public const string CakeAliasCategory = "CakeAliasCategoryAttribute";
-            public const string CakePropertyAlias = "CakePropertyAliasAttribute";
-            public const string CakeNamespaceImport = "CakeNamespaceImportAttribute";
+            public const string CakeMethodAliasName = "CakeMethodAliasAttribute";
+            public const string CakeMethodAliasFullName = "Cake.Core.Annotations.CakeMethodAliasAttribute";
+            public const string CakeAliasCategoryName = "CakeAliasCategoryAttribute";
+            public const string CakeAliasCategoryFullName = "Cake.Core.Annotations.CakeAliasCategoryAttribute";
+            public const string CakePropertyAliasName = "CakePropertyAliasAttribute";
+            public const string CakePropertyAliasFullName = "Cake.Core.Annotations.CakePropertyAliasAttribute";
+            public const string CakeNamespaceImportName = "CakeNamespaceImportAttribute";
+            public const string CakeNamespaceImportFullName = "Cake.Core.Annotations.CakeNamespaceImportAttribute";
         }
 
         public static class CakeEngineNames
         {
-            public const string ScriptHost = "ScriptHost";
+            public const string ScriptHostName = "ScriptHost";
+            public const string ScripHostFullName = "Cake.Core.Scripting.ScriptHost";
         }
 
         public static class MetadataGeneration

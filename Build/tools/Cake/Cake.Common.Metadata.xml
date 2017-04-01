@@ -5661,6 +5661,117 @@
                         <param name="settings">The settings.</param>
                     
         </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereAll">
+                        <summary>
+                        Gets all Visual Studio product installation paths.
+                        </summary>
+                        
+                        <returns>The Visual Studio installation paths.</returns>
+                        <example>
+                        <code>
+                            var latestInstallationPaths = VSWhereAll();
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereAll(Cake.Common.Tools.VSWhere.All.VSWhereAllSettings)">
+                        <summary>
+                        Gets all Visual Studio product installation paths.
+                        </summary>
+                        
+                        <param name="settings">The settings.</param>
+                        <returns>The Visual Studio installation paths.</returns>
+                        <example>
+                        <code>
+                            var latestInstallationPaths = VSWhereAll(new VSWhereAllSettings { Requires = "'Microsoft.Component.MSBuild" });
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereLatest">
+                        <summary>
+                        Gets the latest Visual Studio product installation path.
+                        </summary>
+                        
+                        <returns>The Visual Studio installation path.</returns>
+                        <example>
+                        <code>
+                            var latestInstallationPath = VSWhereLatest();
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereLatest(Cake.Common.Tools.VSWhere.Latest.VSWhereLatestSettings)">
+                        <summary>
+                        Gets the latest Visual Studio product installation path.
+                        </summary>
+                        
+                        <param name="settings">The settings.</param>
+                        <returns>The Visual Studio installation path.</returns>
+                        <example>
+                        <code>
+                             var latestInstallationPath = VSWhereLatest(new VSWhereLatestSettings { Requires = "'Microsoft.Component.MSBuild" });
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereLegacy(Cake.Common.Tools.VSWhere.Legacy.VSWhereLegacySettings)">
+                        <summary>
+                        Gets the legacy Visual Studio product installation paths.
+                        </summary>
+                        
+                        <param name="settings">The settings.</param>
+                        <returns>The Visual Studio installation paths.</returns>
+                        <example>
+                        <code>
+                             var legacyInstallationPaths = VSWhereLegacy(new VSWhereLegacySettings());
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereLegacy(System.Boolean)">
+                        <summary>
+                        Gets the legacy Visual Studio product installation paths.
+                        </summary>
+                        
+                        <param name="latest">Get the latest version.</param>
+                        <returns>The Visual Studio installation path.</returns>
+                        <example>
+                        <code>
+                            var legacyInstallationPath = VSWhereLegacy(true);
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereProducts(System.String)">
+                        <summary>
+                        Gets Visual Studio product installation paths.
+                        </summary>
+                        
+                        <param name="products">The products to find.</param>
+                        <returns>The Visual Studio installation paths.</returns>
+                        <example>
+                        <code>
+                            var latestInstallationPaths = VSWhereProducts("Microsoft.VisualStudio.Product.BuildTools");
+                        </code>
+                        </example>
+                    
+        </member>
+        <member name="M:Cake.Common.Tools.VSWhere.VSWhereAliasesMetadata.VSWhereProducts(System.String,Cake.Common.Tools.VSWhere.Product.VSWhereProductSettings)">
+                        <summary>
+                        Gets Visual Studio product installation paths.
+                        </summary>
+                        
+                        <param name="products">The products to find.</param>
+                        <param name="settings">The settings.</param>
+                        <returns>The Visual Studio installation paths.</returns>
+                        <example>
+                        <code>
+                            var latestInstallationPaths = VSWhereProducts("Microsoft.VisualStudio.Product.BuildTools", new VSWhereProductSettings { Requires = "'Microsoft.Component.MSBuild" });
+                        </code>
+                        </example>
+                    
+        </member>
         <member name="M:Cake.Common.Tools.WiX.WiXAliasesMetadata.WiXCandle(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath},Cake.Common.Tools.WiX.CandleSettings)">
                         <summary>
                         Compiles all <c>.wxs</c> sources in the provided source files.

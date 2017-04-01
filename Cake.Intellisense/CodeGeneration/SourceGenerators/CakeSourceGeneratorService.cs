@@ -67,7 +67,7 @@ namespace Cake.Intellisense.CodeGeneration.SourceGenerators
         private IEnumerable<ClassDeclarationSyntax> CreateNamedTypeDeclaration(INamespaceOrTypeSymbol namepace)
         {
             return namepace.GetTypeMembers()
-                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == ScriptHost || val.GetAttributes().Any(x => x.AttributeClass.Name == CakeAliasCategory)))
+                .Where(val => val.Kind == SymbolKind.NamedType && (val.Name == ScriptHostName || val.GetAttributes().Any(x => x.AttributeClass.Name == CakeAliasCategoryName)))
                 .Select(val => _metadataGeneratorService.CreateNamedTypeDeclaration(val));
         }
 
