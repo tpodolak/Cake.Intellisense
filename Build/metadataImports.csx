@@ -1,7 +1,7 @@
 #r "./tools/Cake/Cake.Core.dll"
 #r "./tools/Cake/Cake.Common.dll"
-#r "./tools/Cake/Cake.Core.Metadata.dll"
-#r "./tools/Cake/Cake.Common.Metadata.dll"
+#r "./tools/Cake.Metadata/Cake.Core.Metadata.dll"
+#r "./tools/Cake.Metadata/Cake.Common.Metadata.dll"
 
 using static Cake.Common.ArgumentAliases;
 using static Cake.Common.ArgumentAliasesMetadata;
