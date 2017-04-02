@@ -1,5 +1,6 @@
 ## Cake.Intellisense
 Cake and Cake addins metadata generator which provides partial intellisense support for Cake build scripts for omnisharp editors.
+
 [![Build status](https://ci.appveyor.com/api/projects/status/5q5b7f3r6dkiie20?svg=true)](https://ci.appveyor.com/project/tpodolak/cake-intellisense)
 
 ## Code Coverage
