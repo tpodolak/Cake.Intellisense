@@ -40,6 +40,9 @@
       <HintPath>..\packages\Autofac.4.3.0\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions, Version=4.18.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.4.18.0\lib\net45\FluentAssertions.dll</HintPath>
       <Private>True</Private>
@@ -220,10 +223,10 @@
     <Compile Include="NuGetTests\DependencyResolverTests.cs" />
     <Compile Include="NuGetTests\PackageAssemblyReferencePathResolverTests.cs" />
     <Compile Include="NuGetTests\PackageManagerTests.cs" />
-    <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs" />
-    <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs" />
+    <Compile Include="NuGetTests\PackageManagerTests.FindPackageMethod.cs">
+      <DependentUpon>PackageManagerTests.cs</DependentUpon>
+    </Compile>
     <Compile Include="NuGetTests\PackageAssemblyResolverTests.cs" />
-    <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs" />
     <Compile Include="CodeGenerationTests\CakeSyntaxRewriterServiceTests.cs" />
     <Compile Include="CodeGenerationTests\CommentSyntaxRewriterServiceTest.cs" />
     <Compile Include="CodeGenerationTests\AttributeSyntaxRewriterServiceTest.cs" />
@@ -231,6 +234,28 @@
     <Compile Include="CodeGenerationTests\SyntaxRewriterServiceTest.cs" />
     <Compile Include="CodeGenerationTests\MethodSyntaxRewriterServiceTest.cs" />
     <Compile Include="Common\ServiceRewriterTestCase.cs" />
+    <Compile Include="NuGetTests\PackageManagerTests.GetTargetFrameworksMethod.cs">
+      <DependentUpon>PackageManagerTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs">
+      <DependentUpon>PackageManagerTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsTests\SettingsBehaviorTests.CopyMethod.cs">
+      <DependentUpon>SettingsBehaviorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsTests\SettingsBehaviorTests.cs" />
+    <Compile Include="SettingsTests\SettingsBehaviorTests.ExecutionOrderProperty.cs">
+      <DependentUpon>SettingsBehaviorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsTests\SettingsBehaviorTests.GetKeyMethod.cs">
+      <DependentUpon>SettingsBehaviorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsTests\SettingsBehaviorTests.GetPropertyValueMethod.cs">
+      <DependentUpon>SettingsBehaviorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsTests\SettingsBehaviorTests.InitializeMethod.cs">
+      <DependentUpon>SettingsBehaviorTests.cs</DependentUpon>
+    </Compile>
     <Compile Include="XUnitExtensionPoints\CustomMemberDataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
