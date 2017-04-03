@@ -195,10 +195,12 @@
     <Compile Include="NuGet\Interfaces\IPackageAssemblyReferencePathResolver.cs" />
     <Compile Include="NuGet\Interfaces\IPackageAssemblyResolver.cs" />
     <Compile Include="NuGet\Interfaces\IPackageManager.cs" />
+    <Compile Include="NuGet\Interfaces\IPackagesIntegrityValidator.cs" />
     <Compile Include="NuGet\PackageAssemblyResolver.cs" />
     <Compile Include="NuGet\DependencyResolver.cs" />
     <Compile Include="NuGet\PackageManager.cs" />
     <Compile Include="NuGet\PackageAssemblyReferencePathResolver.cs" />
+    <Compile Include="NuGet\PackagesIntegrityValidator.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="Reflection\Interfaces\IAssemblyLoader.cs" />
     <Compile Include="Reflection\Interfaces\IMetadataReferenceLoader.cs" />

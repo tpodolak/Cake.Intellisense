@@ -59,6 +59,12 @@ namespace Cake.Intellisense.CommandLine
             }
 
             var frameworks = _packageManager.GetTargetFrameworks(package);
+            if (frameworks.Count == 0)
+            {
+                Logger.Error("Unable to find target frameworks");
+                _environment.Exit(1);
+                return null;
+            }
 
             int dependencyId = -1;
 

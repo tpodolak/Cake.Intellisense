@@ -240,6 +240,8 @@
     <Compile Include="NuGetTests\PackageManagerTests.InstallPackageMethod.cs">
       <DependentUpon>PackageManagerTests.cs</DependentUpon>
     </Compile>
+    <Compile Include="NuGetTests\PackagesIntegrityValidatorTests.cs" />
+    <Compile Include="ReflectionTests\MetadataReferenceLoaderTests.cs" />
     <Compile Include="SettingsTests\SettingsBehaviorTests.CopyMethod.cs">
       <DependentUpon>SettingsBehaviorTests.cs</DependentUpon>
     </Compile>
