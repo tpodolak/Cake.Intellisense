@@ -20,6 +20,7 @@ namespace Cake.Intellisense.Tests.Integration.EndToEndTests
                 get
                 {
                     yield return new object[] { "Cake.Common", DefaultFramework, "0.19.1" };
+                    yield return new object[] { "Cake.Coveralls", DefaultFramework, "0.4.0" };
 
                     // TODO Get rid of loading assembly to AppDomain
                     // yield return new object[] { "Cake.Powershell", DefaultFramework, "0.3.0" };

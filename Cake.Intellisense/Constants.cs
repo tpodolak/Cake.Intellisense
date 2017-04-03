@@ -31,5 +31,10 @@
         {
             public const string MetadataClassSuffix = "Metadata";
         }
+
+        public static class Packages
+        {
+            public const string CakeCore = "Cake.Core";
+        }
     }
 }

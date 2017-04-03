@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Versioning;
-using Cake.Intellisense.CodeGeneration.MetadataGenerators;
 using Cake.Intellisense.CommandLine;
 using Cake.Intellisense.CommandLine.Interfaces;
 using Cake.Intellisense.Infrastructure.Interfaces;
@@ -33,7 +32,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 
                 result.Should().BeNull();
                 Get<IPackageManager>().DidNotReceive().FindPackage(Arg.Any<string>(), Arg.Any<string>());
-                Get<IEnvironment>().Received(1).Exit(Arg.Any<int>());
+                Get<IEnvironment>().Received(1).Exit(Arg.Is<int>(exitCode => exitCode == 1));
             }
 
             [Fact]
@@ -50,7 +49,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 
                 result.Should().BeNull();
                 Get<IPackageManager>().Received(1).FindPackage(Arg.Any<string>(), Arg.Any<string>());
-                Get<IEnvironment>().Received(1).Exit(Arg.Any<int>());
+                Get<IEnvironment>().Received(1).Exit(Arg.Is<int>(exitCode => exitCode == 1));
             }
 
             [Fact]
@@ -111,6 +110,27 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
                 result.Should().NotBeNull();
                 result.TargetFramework.Should().Be(frameworkName.FullName);
                 Get<IConsoleReader>().Received(1).TryRead(out resultIndex);
+            }
+
+            [Fact]
+            public void ReturnsNull_WhenTargetFrameworks_Empty()
+            {
+                var frameworkNames = new List<FrameworkName>();
+
+                Get<IArgumentParser>()
+                    .Parse<MetadataGeneratorOptions>(Arg.Any<string[]>())
+                    .Returns(
+                        new ParserResult<MetadataGeneratorOptions>(
+                            new MetadataGeneratorOptions(),
+                            new List<ParserError>()));
+
+                Get<IPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns(Use<IPackage>());
+                Get<IPackageManager>().GetTargetFrameworks(Arg.Any<IPackage>()).Returns(frameworkNames);
+
+                var result = Subject.Interact(new string[0]);
+
+                result.Should().BeNull();
+                Get<IEnvironment>().Received(1).Exit(Arg.Is<int>(exitCode => exitCode == 1));
             }
         }
     }
