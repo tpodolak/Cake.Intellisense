@@ -100,6 +100,44 @@ Task("Pack")
     });
 });
 
+
+Task("Zip-Files")
+.IsDependentOn("Run-Tests")
+    .Does(() =>
+{
+    var rootPath = paths.Directories.RootDir.Combine("Cake.Intellisense").Combine("bin").Combine(parameters.Configuration);
+    var files = GetFiles(rootPath + "/**/*");
+    Zip(rootPath, packages.ZipPackage, files);
+});
+
+
+Task("Publish-GitHub-Release")
+    .WithCriteria(() => parameters.ShouldPublish)
+    .IsDependentOn("Zip-Files")
+    .Does(() =>
+{
+    var userName = EnvironmentVariable("GITHUB_USERNAME");
+    var password = EnvironmentVariable("GITHUB_PASSWORD");
+
+    if(string.IsNullOrWhiteSpace(userName))
+    {
+        throw new InvalidOperationException("Could not resolve Github username.");
+    }
+
+    if (string.IsNullOrWhiteSpace(password))
+    {
+        throw new InvalidOperationException("Could not resolve Github password.");
+    }
+
+    GitReleaseManagerAddAssets(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.Version, packages.ZipPackage.ToString());
+    GitReleaseManagerClose(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.Version);
+});
+
+Task("Publish")
+.WithCriteria(context => parameters.ShouldPublish)
+.IsDependentOn("Publish-NuGet")
+.IsDependentOn("Publish-GitHub-Release");
+
 Task("Publish-NuGet")
     .IsDependentOn("Pack")
     .WithCriteria(context => parameters.ShouldPublish)
@@ -148,6 +186,7 @@ Task("Upload-Coverage-Report")
     {
         throw new InvalidOperationException("Could not resolve Coveralls Repo key.");
     }
+
     CoverallsIo(paths.Files.TestCoverageOutputFilePath, new CoverallsIoSettings
     {
         RepoToken = repoKey
@@ -155,6 +194,7 @@ Task("Upload-Coverage-Report")
 });
 
 Task("AppVeyor")
-  .IsDependentOn("Upload-Coverage-Report");
+  .IsDependentOn("Upload-Coverage-Report")
+  .IsDependentOn("Publish");
 
 RunTarget(parameters.Target);

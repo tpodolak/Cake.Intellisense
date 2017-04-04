@@ -66,6 +66,7 @@ public class BuildFiles
     public FilePath TestCoverageOutputFilePath { get; set;}
     public FilePath CakeIntellisenseNuSpec { get; private set; }
     public ICollection<FilePath> TestAssemblies { get; private set; }
+
     public BuildFiles(FilePath solution,
                       FilePath cakeIntellisenseNuSpec,
                       FilePath testCoverageOutputFilePath,
@@ -105,13 +106,18 @@ public class BuildPackages
 {
     public FilePath NuGetPackage { get; private set;}
 
-    public BuildPackages(FilePath nuGetPackage)
+    public FilePath ZipPackage { get; private set; }
+    public BuildPackages(FilePath nuGetPackage, FilePath zipPackage)
     {
         this.NuGetPackage = nuGetPackage;
+        this.ZipPackage = zipPackage;
     }
 
     public static BuildPackages GetPackages(BuildPaths paths, BuildVersion version)
     {
-        return new BuildPackages(paths.Directories.Artifacts.CombineWithFilePath("Cake.Intellisense."+ version.SemVersion + ".nupkg"));
+        var fileNameWithoutExtension = "Cake.Intellisense." + version.SemVersion;
+        return new BuildPackages(
+            paths.Directories.Artifacts.CombineWithFilePath(fileNameWithoutExtension + ".nupkg"),
+            paths.Directories.Artifacts.CombineWithFilePath(fileNameWithoutExtension + ".zip"));
     }
 }
