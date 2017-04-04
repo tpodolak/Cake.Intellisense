@@ -12,7 +12,7 @@ public class BuildParameters
     {
         get
         {
-            return !IsLocalBuild && IsMaster && IsTagged;
+            return !IsLocalBuild && IsMaster && IsTagged && !IsPullRequest;
         }
     }
     

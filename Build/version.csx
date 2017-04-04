@@ -14,7 +14,7 @@ public class BuildVersion
         {
             OutputType = GitVersionOutput.Json,
         });
-
+        
         return new BuildVersion
         {
             Version = version.MajorMinorPatch,
