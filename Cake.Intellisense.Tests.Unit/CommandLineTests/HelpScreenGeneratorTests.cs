@@ -18,7 +18,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
                 var assemblyAttributes = assembly.GetCustomAttributes().ToList();
                 var assemblyTitle = assemblyAttributes.OfType<AssemblyTitleAttribute>().Single().Title;
                 var assemblyCopyright = assemblyAttributes.OfType<AssemblyCopyrightAttribute>().Single().Copyright;
-                var assemblyVersion = assembly.GetName().Version;
+                var assemblyVersion = assemblyAttributes.OfType<AssemblyInformationalVersionAttribute>().Single().InformationalVersion;
 
                 var result = Subject.Generate<MetadataGeneratorOptions>();
 

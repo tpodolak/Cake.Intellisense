@@ -46,6 +46,7 @@ Task("Clean")
 
 Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
+    .IsDependentOn("Patch-AssemblyInfo")
     .Does(() =>
 {
     NuGetRestore(paths.Files.Solution);
@@ -94,7 +95,6 @@ Task("Build")
 });
 
 Task("Pack")
-.IsDependentOn("Patch-AssemblyInfo")
 .IsDependentOn("Run-Tests")
 .WithCriteria(val => parameters.Configuration == "Release")
 .Does(() =>
@@ -225,6 +225,12 @@ Task("AppVeyor")
     {
         throw new Exception("An error occurred during the publishing of Cake.  All publishing tasks have been attempted.");
     }
+});
+
+Teardown(context =>
+{
+    var result = context.Successful ? "succeeded" : "failed";
+    Information("Cake.Intellisense {0} - build {1}", buildVersion.SemVersion, result);
 });
 
 RunTarget(parameters.Target);

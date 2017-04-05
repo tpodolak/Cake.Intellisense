@@ -14,7 +14,7 @@ namespace Cake.Intellisense.CommandLine
 
             var helpText = HelpText.AutoBuild(new T());
             var assemblyTitle = assemblyAttributes.OfType<AssemblyTitleAttribute>().Single().Title;
-            var assemblyVersion = assembly.GetName().Version;
+            var assemblyVersion = assemblyAttributes.OfType<AssemblyInformationalVersionAttribute>().Single().InformationalVersion;
 
             helpText.Heading = $"{assemblyTitle} {assemblyVersion}";
             helpText.Copyright = assemblyAttributes.OfType<AssemblyCopyrightAttribute>().Single().Copyright;
