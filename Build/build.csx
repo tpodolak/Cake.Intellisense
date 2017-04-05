@@ -16,13 +16,13 @@
 var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
 var paths = BuildPaths.GetPaths(Context, parameters, buildVersion);
-
+var publishingError = false;
 var packages = BuildPackages.GetPackages(paths, buildVersion);
 
 Setup(context =>
 {
     Information("Building version {0} of Cake.Intellisense", buildVersion.SemVersion);
-    if(!DirectoryExists(paths.Directories.Artifacts))
+    if (!DirectoryExists(paths.Directories.Artifacts))
     {
         CreateDirectory(paths.Directories.Artifacts);
     }
@@ -31,10 +31,15 @@ Setup(context =>
     {
         CreateDirectory(paths.Directories.TestResults);
     }
+
+    if (!FileExists(paths.Files.ReleaseNotes))
+    {
+        using (System.IO.File.Create(paths.Files.ReleaseNotes.ToString())) ;
+    }
 });
 
 Task("Clean")
-    .Does(()=>
+    .Does(() =>
 {
     CleanDirectories(paths.Directories.ToClean);
 });
@@ -48,18 +53,18 @@ Task("Restore-NuGet-Packages")
 
 Task("Run-Tests")
     .IsDependentOn("Build")
-    .Does(()=>
+    .Does(() =>
 {
-    Action<ICakeContext> testAction = context => 
+    Action<ICakeContext> testAction = context =>
     {
-        context.XUnit2(paths.Files.TestAssemblies, new XUnit2Settings 
-        { 
+        context.XUnit2(paths.Files.TestAssemblies, new XUnit2Settings
+        {
             Parallelism = ParallelismOption.All,
             ShadowCopy = false,
         });
     };
 
-    if(parameters.SkipOpenCover)
+    if (parameters.SkipOpenCover)
     {
         testAction(Context);
     }
@@ -67,7 +72,8 @@ Task("Run-Tests")
     {
         OpenCover(testAction,
                         paths.Files.TestCoverageOutputFilePath,
-                        new OpenCoverSettings {
+                        new OpenCoverSettings
+                        {
                             ReturnTargetCodeOffset = 0,
                             ArgumentCustomization = args => args.Append("-mergeoutput")
                         }
@@ -82,9 +88,9 @@ Task("Run-Tests")
 
 Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
-    .Does(() => 
+    .Does(() =>
 {
-    MSBuild(paths.Files.Solution, settings=> settings.SetConfiguration(parameters.Configuration));
+    MSBuild(paths.Files.Solution, settings => settings.SetConfiguration(parameters.Configuration));
 });
 
 Task("Pack")
@@ -93,7 +99,7 @@ Task("Pack")
 .WithCriteria(val => parameters.Configuration == "Release")
 .Does(() =>
 {
-    NuGetPack(paths.Files.CakeIntellisenseNuSpec, new NuGetPackSettings 
+    NuGetPack(paths.Files.CakeIntellisenseNuSpec, new NuGetPackSettings
     {
         Version = buildVersion.SemVersion,
         OutputDirectory = paths.Directories.Artifacts
@@ -119,7 +125,7 @@ Task("Publish-GitHub-Release")
     var userName = EnvironmentVariable("GITHUB_USERNAME");
     var password = EnvironmentVariable("GITHUB_PASSWORD");
 
-    if(string.IsNullOrWhiteSpace(userName))
+    if (string.IsNullOrWhiteSpace(userName))
     {
         throw new InvalidOperationException("Could not resolve Github username.");
     }
@@ -132,12 +138,18 @@ Task("Publish-GitHub-Release")
     Version parsedVersion;
     GitReleaseManagerCreate(userName, password, "tpodolak", "Cake.Intellisense", new GitReleaseManagerCreateSettings
     {
-        Milestone = buildVersion.Version,
-        Name = buildVersion.Version,
-        Prerelease = !Version.TryParse(buildVersion.Version, out parsedVersion),
+        Name = buildVersion.SemVersion,
+        Prerelease = !Version.TryParse(buildVersion.SemVersion, out parsedVersion),
+        TargetCommitish = "master",
+        InputFilePath = MakeAbsolute(paths.Files.ReleaseNotes)
     });
-    GitReleaseManagerAddAssets(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.Version, packages.ZipPackage.ToString());
-    GitReleaseManagerClose(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.Version);
+
+    GitReleaseManagerAddAssets(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.SemVersion, MakeAbsolute(packages.ZipPackage).ToString());
+    GitReleaseManagerClose(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.SemVersion);
+}).OnError(exception =>
+{
+    Information("Publish-GitHub-Release Task failed, but continuing with next Task...");
+    publishingError = true;
 });
 
 Task("Publish")
@@ -167,10 +179,14 @@ Task("Publish-NuGet")
         ApiKey = apiKey,
         Source = apiUrl
     });
+}).OnError(exception =>
+{
+    Information("Publish-NuGet Task failed, but continuing with next Task...");
+    publishingError = true;
 });
 
 Task("Patch-AssemblyInfo")
-.Does(() => 
+.Does(() =>
 {
     GitVersion(new GitVersionSettings
     {
@@ -202,6 +218,13 @@ Task("Upload-Coverage-Report")
 
 Task("AppVeyor")
   .IsDependentOn("Upload-Coverage-Report")
-  .IsDependentOn("Publish");
+  .IsDependentOn("Publish")
+  .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of Cake.  All publishing tasks have been attempted.");
+    }
+});
 
 RunTarget(parameters.Target);

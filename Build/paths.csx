@@ -21,6 +21,7 @@ public class BuildPaths
             buildDirectories.RootDir.CombineWithFilePath("Cake.Intellisense.sln"),
             buildDirectories.RootDir.CombineWithFilePath("Cake.Inellisense.nuspec"),
             buildDirectories.TestResults.CombineWithFilePath("OpenCover.xml"),
+            buildDirectories.Artifacts.CombineWithFilePath("ReleaseNotes.md"),
             testAssemblies);
         
         return new BuildPaths
@@ -65,17 +66,20 @@ public class BuildFiles
     public FilePath Solution { get; private set; }
     public FilePath TestCoverageOutputFilePath { get; set;}
     public FilePath CakeIntellisenseNuSpec { get; private set; }
+    public FilePath ReleaseNotes { get; private set; }
     public ICollection<FilePath> TestAssemblies { get; private set; }
 
     public BuildFiles(FilePath solution,
                       FilePath cakeIntellisenseNuSpec,
                       FilePath testCoverageOutputFilePath,
+                      FilePath releaseNotes,
                       ICollection<FilePath> testAssemblies)
     {
         Solution = solution;
         CakeIntellisenseNuSpec = cakeIntellisenseNuSpec;
         TestAssemblies = testAssemblies;
         TestCoverageOutputFilePath = testCoverageOutputFilePath;
+        ReleaseNotes = releaseNotes;
     }
 }
 
