@@ -129,6 +129,13 @@ Task("Publish-GitHub-Release")
         throw new InvalidOperationException("Could not resolve Github password.");
     }
 
+    Version parsedVersion;
+    GitReleaseManagerCreate(userName, password, "tpodolak", "Cake.Intellisense", new GitReleaseManagerCreateSettings
+    {
+        Milestone = buildVersion.Version,
+        Name = buildVersion.Version,
+        Prerelease = !Version.TryParse(buildVersion.Version, out parsedVersion),
+    });
     GitReleaseManagerAddAssets(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.Version, packages.ZipPackage.ToString());
     GitReleaseManagerClose(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.Version);
 });
