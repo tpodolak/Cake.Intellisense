@@ -18,6 +18,7 @@ var buildVersion = BuildVersion.Calculate(Context);
 var paths = BuildPaths.GetPaths(Context, parameters, buildVersion);
 var publishingError = false;
 var packages = BuildPackages.GetPackages(paths, buildVersion);
+var releaseNotes = ParseReleaseNotes(paths.Files.AllReleaseNotes);
 
 Setup(context =>
 {
@@ -32,9 +33,9 @@ Setup(context =>
         CreateDirectory(paths.Directories.TestResults);
     }
 
-    if (!FileExists(paths.Files.ReleaseNotes))
+    if(FileExists(paths.Files.CurrentReleaseNotes))
     {
-        using (System.IO.File.Create(paths.Files.ReleaseNotes.ToString())) ;
+        DeleteFile(paths.Files.CurrentReleaseNotes);
     }
 });
 
@@ -102,7 +103,8 @@ Task("Pack")
     NuGetPack(paths.Files.CakeIntellisenseNuSpec, new NuGetPackSettings
     {
         Version = buildVersion.SemVersion,
-        OutputDirectory = paths.Directories.Artifacts
+        OutputDirectory = paths.Directories.Artifacts,
+        ReleaseNotes = releaseNotes.Notes.ToArray()
     });
 });
 
@@ -118,7 +120,7 @@ Task("Zip-Files")
 
 
 Task("Publish-GitHub-Release")
-    .WithCriteria(() => parameters.ShouldPublish)
+    .WithCriteria(context => parameters.ShouldPublish && releaseNotes.Version.ToString() == buildVersion.SemVersion)
     .IsDependentOn("Zip-Files")
     .Does(() =>
 {
@@ -136,16 +138,19 @@ Task("Publish-GitHub-Release")
     }
 
     Version parsedVersion;
+    System.IO.File.WriteAllLines(MakeAbsolute(paths.Files.CurrentReleaseNotes).ToString(), releaseNotes.Notes);
     GitReleaseManagerCreate(userName, password, "tpodolak", "Cake.Intellisense", new GitReleaseManagerCreateSettings
     {
         Name = buildVersion.SemVersion,
         Prerelease = !Version.TryParse(buildVersion.SemVersion, out parsedVersion),
         TargetCommitish = "master",
-        InputFilePath = MakeAbsolute(paths.Files.ReleaseNotes)
+        InputFilePath = MakeAbsolute(paths.Files.CurrentReleaseNotes)
     });
 
     GitReleaseManagerAddAssets(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.SemVersion, MakeAbsolute(packages.ZipPackage).ToString());
     GitReleaseManagerClose(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.SemVersion);
+    GitReleaseManagerPublish(userName, password, "tpodolak", "Cake.Intellisense", buildVersion.SemVersion);
+
 }).OnError(exception =>
 {
     Information("Publish-GitHub-Release Task failed, but continuing with next Task...");
@@ -159,7 +164,7 @@ Task("Publish")
 
 Task("Publish-NuGet")
     .IsDependentOn("Pack")
-    .WithCriteria(context => parameters.ShouldPublish)
+    .WithCriteria(context => parameters.ShouldPublish && releaseNotes.Version.ToString() == buildVersion.SemVersion)
     .Does(() =>
 {
     var apiKey = EnvironmentVariable("NUGET_API_KEY");
