@@ -187,6 +187,7 @@
     <Compile Include="Compilation\Interfaces\ICompiler.cs" />
     <Compile Include="Documentation\Interfaces\ICommentProvider.cs" />
     <Compile Include="Documentation\Interfaces\IDocumentationReader.cs" />
+    <Compile Include="Extensions\AttributeSyntaxExtensions.cs" />
     <Compile Include="FileSystem\Interfaces\IFileSystem.cs" />
     <Compile Include="Infrastructure\Environment.cs" />
     <Compile Include="Infrastructure\Interfaces\IEnvironment.cs" />

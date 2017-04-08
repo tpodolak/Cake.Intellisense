@@ -10,7 +10,7 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=OpenCover&version=4.6.519"
 #tool "nuget:https://www.nuget.org/api/v2?package=ReportGenerator&version=2.4.5"
 #tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.console&version=2.1.0"
-
+#tool "nuget:https://www.nuget.org/api/v2?package=JetBrains.ReSharper.CommandLineTools&version=2017.1.20170407.131846"
 #addin Cake.Coveralls
 
 var parameters = BuildParameters.GetParameters(Context);
@@ -33,7 +33,7 @@ Setup(context =>
         CreateDirectory(paths.Directories.TestResults);
     }
 
-    if(FileExists(paths.Files.CurrentReleaseNotes))
+    if (FileExists(paths.Files.CurrentReleaseNotes))
     {
         DeleteFile(paths.Files.CurrentReleaseNotes);
     }
@@ -73,7 +73,7 @@ Task("Run-Tests")
     else
     {
         OpenCover(testAction,
-                        paths.Files.TestCoverageOutputFilePath,
+                        paths.Files.TestCoverageOutput,
                         new OpenCoverSettings
                         {
                             ReturnTargetCodeOffset = 0,
@@ -83,13 +83,14 @@ Task("Run-Tests")
                         .ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
                         .ExcludeByFile("*/*Designer.cs;*/*.g.cs;*/*.g.i.cs"));
 
-        ReportGenerator(paths.Files.TestCoverageOutputFilePath, paths.Directories.TestResults);
+        ReportGenerator(paths.Files.TestCoverageOutput, paths.Directories.TestResults);
     }
 
 });
 
 Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
+    .IsDependentOn("Find-Duplicates")
     .Does(() =>
 {
     MSBuild(paths.Files.Solution, settings => settings.SetConfiguration(parameters.Configuration));
@@ -191,6 +192,7 @@ Task("Publish-NuGet")
 });
 
 Task("Patch-AssemblyInfo")
+.WithCriteria(()=> !parameters.IsLocalBuild)
 .Does(() =>
 {
     GitVersion(new GitVersionSettings
@@ -202,7 +204,7 @@ Task("Patch-AssemblyInfo")
 
 
 Task("Upload-Coverage-Report")
-    .WithCriteria(() => FileExists(paths.Files.TestCoverageOutputFilePath))
+    .WithCriteria(() => FileExists(paths.Files.TestCoverageOutput))
     .WithCriteria(() => !parameters.IsLocalBuild)
     .WithCriteria(() => !parameters.IsPullRequest)
     .WithCriteria(() => parameters.IsMaster)
@@ -215,7 +217,7 @@ Task("Upload-Coverage-Report")
         throw new InvalidOperationException("Could not resolve Coveralls Repo key.");
     }
 
-    CoverallsIo(paths.Files.TestCoverageOutputFilePath, new CoverallsIoSettings
+    CoverallsIo(paths.Files.TestCoverageOutput, new CoverallsIoSettings
     {
         RepoToken = repoKey
     });
@@ -230,6 +232,21 @@ Task("AppVeyor")
     {
         throw new Exception("An error occurred during the publishing of Cake.  All publishing tasks have been attempted.");
     }
+});
+
+
+Task("Find-Duplicates")
+.Does(() =>
+{
+    var projectFile = paths.Directories.RootDir.Combine("Cake.Intellisense")
+                                               .CombineWithFilePath("Cake.Intellisense.csproj");
+
+    DupFinder(projectFile, new DupFinderSettings
+    {
+       ShowText = true,
+       OutputFile = paths.Files.DupeFinderOutput,
+       ThrowExceptionOnFindingDuplicates = true
+    });
 });
 
 Teardown(context =>

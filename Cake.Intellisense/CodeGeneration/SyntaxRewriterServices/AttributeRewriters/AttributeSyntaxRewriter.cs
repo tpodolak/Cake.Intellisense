@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Cake.Intellisense.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -56,12 +57,14 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
 
         public override SyntaxNode VisitAttribute(AttributeSyntax node)
         {
+            var attributeSimpleName = node.GetSimpleName();
             var obsoleteAttributeName = typeof(ObsoleteAttribute).Name;
             var assemblyTitleAttributeName = typeof(AssemblyTitleAttribute).Name;
-            if (AttributeNameMatches(node, obsoleteAttributeName) || AttributeNameMatches(node, obsoleteAttributeName.Substring(0, obsoleteAttributeName.IndexOf("Attribute", StringComparison.Ordinal))))
+
+            if (attributeSimpleName.StartsWith(obsoleteAttributeName) || attributeSimpleName.StartsWith(obsoleteAttributeName.Substring(0, obsoleteAttributeName.IndexOf("Attribute", StringComparison.Ordinal))))
                 node = node.WithArgumentList(null);
 
-            if (AttributeNameMatches(node, assemblyTitleAttributeName.Substring(0, assemblyTitleAttributeName.IndexOf("Attribute", StringComparison.Ordinal))))
+            if (attributeSimpleName.StartsWith(assemblyTitleAttributeName.Substring(0, assemblyTitleAttributeName.IndexOf("Attribute", StringComparison.Ordinal))))
             {
                 node =
                     node.WithArgumentList(AttributeArgumentList(SeparatedList(new[]
@@ -82,7 +85,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
 
             foreach (var attributeList in originalAttributes)
             {
-                var nodesToRemove = attributeList.Attributes.Where(attribute => AttributesToRemove.Any(attr => AttributeNameMatches(attribute, attr))).ToArray();
+                var nodesToRemove = attributeList.Attributes.Where(attribute => AttributesToRemove.Any(attr => attribute.GetSimpleName().StartsWith(attr))).ToArray();
                 var syntax = attributeList.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia);
 
                 if (syntax.Attributes.Any())
@@ -90,28 +93,6 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewri
             }
 
             return newAttributes;
-        }
-
-        private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)
-        {
-            return
-                GetSimpleNameFromNode(attribute)
-                    .Identifier
-                    .Text
-                    .StartsWith(attributeName);
-        }
-
-        private SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
-        {
-            var identifierNameSyntax = node.Name as IdentifierNameSyntax;
-            var qualifiedNameSyntax = node.Name as QualifiedNameSyntax;
-
-            return
-                identifierNameSyntax
-                ??
-                qualifiedNameSyntax?.Right
-                ??
-                (node.Name as AliasQualifiedNameSyntax).Name;
         }
     }
 }

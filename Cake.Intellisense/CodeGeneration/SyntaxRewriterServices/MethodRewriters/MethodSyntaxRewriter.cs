@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cake.Intellisense.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -88,7 +89,7 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
 
         private bool IsProperty(MethodDeclarationSyntax node)
         {
-            return node.AttributeLists.Any(list => list.Attributes.Any(attr => AttributeNameMatches(attr, CakePropertyAliasName)));
+            return node.AttributeLists.Any(list => list.Attributes.Any(attr => attr.GetSimpleName().StartsWith(CakePropertyAliasName)));
         }
 
         private ParameterListSyntax GetParameterList(MethodDeclarationSyntax node)
@@ -96,34 +97,12 @@ namespace Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriter
             var hasCakeMethodAliasAttribute =
                 node.AttributeLists.Any(
                     attributeLists =>
-                        attributeLists.Attributes.Any(attr => AttributeNameMatches(attr, CakeMethodAliasName)));
+                        attributeLists.Attributes.Any(attr => attr.GetSimpleName().StartsWith(CakeMethodAliasName)));
 
             if (!hasCakeMethodAliasAttribute || !node.ParameterList.Parameters.Any())
                 return node.ParameterList;
 
             return ParameterList(SeparatedList(node.ParameterList.Parameters.Skip(1)));
-        }
-
-        private bool AttributeNameMatches(AttributeSyntax attribute, string attributeName)
-        {
-            return
-                GetSimpleNameFromNode(attribute)
-                .Identifier
-                .Text
-                .StartsWith(attributeName);
-        }
-
-        private SimpleNameSyntax GetSimpleNameFromNode(AttributeSyntax node)
-        {
-            var identifierNameSyntax = node.Name as IdentifierNameSyntax;
-            var qualifiedNameSyntax = node.Name as QualifiedNameSyntax;
-
-            return
-                identifierNameSyntax
-                ??
-                qualifiedNameSyntax?.Right
-                ??
-                (node.Name as AliasQualifiedNameSyntax).Name;
         }
     }
 }
