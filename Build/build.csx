@@ -89,8 +89,8 @@ Task("Run-Tests")
 });
 
 Task("Build")
-    .IsDependentOn("Find-Duplicates")
     .IsDependentOn("Restore-NuGet-Packages")
+    .IsDependentOn("Find-Duplicates")
     .Does(() =>
 {
     MSBuild(paths.Files.Solution, settings => settings.SetConfiguration(parameters.Configuration));
