@@ -22,7 +22,7 @@ var releaseNotes = ParseReleaseNotes(paths.Files.AllReleaseNotes);
 
 Setup(context =>
 {
-    Information("Building version {0} {1} of Cake.Intellisense", buildVersion.SemVersion, releaseNotes.Version);
+    Information("Building version {0} of Cake.Intellisense", buildVersion.SemVersion);
     if (!DirectoryExists(paths.Directories.Artifacts))
     {
         CreateDirectory(paths.Directories.Artifacts);
