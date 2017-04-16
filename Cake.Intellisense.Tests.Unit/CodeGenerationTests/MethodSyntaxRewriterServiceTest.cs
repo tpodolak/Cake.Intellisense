@@ -25,14 +25,14 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesCakeContextParam_WhenMethodIsCakeAlias),
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
     public static void Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
     }
 }",
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
     public static void Argument<T>(System.String name)
@@ -45,13 +45,13 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(KeepsParametersIntacts_WhenMethodNotDecoratedWithCakeMethodAliasAttribute),
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     public static void Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
     }
 }",
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     public static void Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
@@ -63,14 +63,14 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(KeepsMethodIntact_WhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters),
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
     public static void Argument<T>()
     {
     }
 }",
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
     public static void Argument<T>()
@@ -83,14 +83,14 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(ConvertsMethodDecoratedWithCakePropertyAliasAttributeToProperty),
-    @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
     public static global::Cake.Common.Build.AppVeyor.IAppVeyorProvider AppVeyor(this global::Cake.Core.ICakeContext context)
     {
     }
 }",
-    @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
     public static global::Cake.Common.Build.AppVeyor.IAppVeyorProvider AppVeyor
@@ -104,7 +104,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(AppendMethodBodyWithProperReturnsStatements_WhenMethodReturnsValue),
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
@@ -114,7 +114,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
      {
      }
 }",
-    @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
@@ -132,13 +132,13 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(AppendMethodBodyWithOutParametersAssigned_WhenMethodHasOutParameters),
-    @"public static class ProcessAliases
+                    @"public static class ProcessAliases
 {
     public static void StartProcess(this global::Cake.Core.ICakeContext context, ref global::Cake.Core.IO.FilePath fileName, out global::Cake.Core.IO.ProcessSettings settings, out global::System.Collections.Generic.IEnumerable<System.String> redirectedOutput)
     {
     }
 }",
-    @"public static class ProcessAliases
+                    @"public static class ProcessAliases
 {
     public static void StartProcess(this global::Cake.Core.ICakeContext context, ref global::Cake.Core.IO.FilePath fileName, out global::Cake.Core.IO.ProcessSettings settings, out global::System.Collections.Generic.IEnumerable<System.String> redirectedOutput)
     {
@@ -152,11 +152,11 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(ConvertsAbstractMethodToPublicStaticMethods),
-    @"public abstract class ScriptHost
+                    @"public abstract class ScriptHost
 {
     public abstract global::Cake.Core.CakeReport RunTarget(System.String target);
 }",
-    @"public abstract class ScriptHost
+                    @"public abstract class ScriptHost
 {
     public static global::Cake.Core.CakeReport RunTarget(System.String target)
     {

@@ -14,7 +14,10 @@ public class BuildPaths
         var configuration =  parameters.Configuration;
         var buildDirectories = GetBuildDirectories(context, version);
         var testAssemblies = buildDirectories.TestDirs
-                                             .Select(dir => dir.Combine("bin").Combine(configuration).CombineWithFilePath(dir.GetDirectoryName() + ".dll"))
+                                             .Select(dir => dir.Combine("bin")
+                                                               .Combine(configuration)
+                                                               .Combine(parameters.TargetFramework)
+                                                               .CombineWithFilePath(dir.GetDirectoryName() + ".dll"))
                                              .ToList();
 
         var buildFiles = new BuildFiles(
