@@ -9,8 +9,8 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=coveralls.io&version=1.3.4"
 #tool "nuget:https://www.nuget.org/api/v2?package=OpenCover&version=4.6.519"
 #tool "nuget:https://www.nuget.org/api/v2?package=ReportGenerator&version=2.4.5"
-#tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.console&version=2.1.0"
 #tool "nuget:https://www.nuget.org/api/v2?package=JetBrains.ReSharper.CommandLineTools&version=2017.1.20170407.131846"
+#tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.visualstudio&version=2.2.0"
 #addin Cake.Coveralls
 
 var parameters = BuildParameters.GetParameters(Context);
@@ -50,7 +50,7 @@ Task("Restore-NuGet-Packages")
     .IsDependentOn("Patch-AssemblyInfo")
     .Does(() =>
 {
-    NuGetRestore(paths.Files.Solution);
+    DotNetCoreRestore(paths.Files.Solution.ToString());
 });
 
 Task("Run-Tests")
@@ -59,10 +59,17 @@ Task("Run-Tests")
 {
     Action<ICakeContext> testAction = context =>
     {
-        context.XUnit2(paths.Files.TestAssemblies, new XUnit2Settings
+        var testAdapterPath = context.Directory("tools/xunit.runner.visualstudio/build/_common");
+        var argumentBuilder = new ProcessArgumentBuilder();
+        argumentBuilder.Append("vstest")
+                       .Append(string.Join(" ", paths.Files.TestAssemblies.Select(val => MakeAbsolute(val).ToString())))
+                       .AppendSwitch("--Framework:", string.Empty, parameters.TargetFrameworkFull)
+                       .AppendSwitch("--TestAdapterPath:", string.Empty, MakeAbsolute(testAdapterPath).ToString())
+                       .Append("--Parallel");
+
+        context.StartProcess("dotnet.exe", new ProcessSettings
         {
-            Parallelism = ParallelismOption.All,
-            ShadowCopy = false,
+            Arguments = argumentBuilder
         });
     };
 
@@ -77,7 +84,7 @@ Task("Run-Tests")
                         new OpenCoverSettings
                         {
                             ReturnTargetCodeOffset = 0,
-                            ArgumentCustomization = args => args.Append("-mergeoutput")
+                            OldStyle = true,
                         }
                         .WithFilter("+[Cake.Intellisense*]* -[Cake.Intellisense.Tests*]*")
                         .ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
@@ -93,10 +100,13 @@ Task("Build")
     .IsDependentOn("Find-Duplicates")
     .Does(() =>
 {
-    MSBuild(paths.Files.Solution, settings => settings.SetConfiguration(parameters.Configuration));
+    DotNetCoreBuild(paths.Files.Solution.ToString(), new DotNetCoreBuildSettings 
+    {
+        Configuration = parameters.Configuration,
+    });
 });
 
-Task("Pack")
+Task("NuGet-Pack")
 .IsDependentOn("Run-Tests")
 .WithCriteria(val => parameters.Configuration == "Release")
 .Does(() =>
@@ -164,7 +174,7 @@ Task("Publish")
 .IsDependentOn("Publish-GitHub-Release");
 
 Task("Publish-NuGet")
-    .IsDependentOn("Pack")
+    .IsDependentOn("NuGet-Pack")
     .WithCriteria(context => parameters.ShouldPublish && releaseNotes.Version.ToString() == buildVersion.SemVersion)
     .Does(() =>
 {

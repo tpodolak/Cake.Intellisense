@@ -36,13 +36,13 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(ProperlyAppendsXmlCommentToMethodWithoutAttributes),
-    @"public abstract class ScriptHost
+                    @"public abstract class ScriptHost
 {
     public void Task(System.String name)
     {
     }
 }",
-    $@"public abstract class ScriptHost
+                    $@"public abstract class ScriptHost
 {{
 {xmlComment}
 public void Task(System.String name)
@@ -55,14 +55,14 @@ public void Task(System.String name)
             {
                 return new ServiceRewriterTestCase(
                     nameof(ProperlyAppendsXmlCommentToMethodWithAttributes),
-    @"public abstract class ScriptHost
+                    @"public abstract class ScriptHost
 {
     [CakeMethodAliasAttribute]
     public void Task(System.String name)
     {
     }
 }",
-    $@"public abstract class ScriptHost
+                    $@"public abstract class ScriptHost
 {{
 {xmlComment}
 [CakeMethodAliasAttribute]

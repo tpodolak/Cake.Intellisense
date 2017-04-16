@@ -7,7 +7,10 @@ public class BuildParameters
     public bool IsMaster { get; private set; }
     public bool IsLocalBuild { get; private set; }
     public bool IsTagged { get; private set; }
-    public bool IsPullRequest {get; private set; }
+    public bool IsPullRequest { get; private set; }
+    public string TargetFramework { get; private set; }
+    public string TargetFrameworkFull { get; private set; }
+
     public bool ShouldPublish
     {
         get
@@ -32,7 +35,9 @@ public class BuildParameters
             IsLocalBuild = buildSystem.IsLocalBuild,
             IsMaster = StringComparer.OrdinalIgnoreCase.Equals("master", buildSystem.AppVeyor.Environment.Repository.Branch),
             IsTagged = IsBuildTagged(buildSystem),
-            IsPullRequest = IsPullRequestBuild(buildSystem)
+            IsPullRequest = IsPullRequestBuild(buildSystem),
+            TargetFramework = "net452",
+            TargetFrameworkFull = ".NETFramework,Version=v4.52"
         };
     }
 
