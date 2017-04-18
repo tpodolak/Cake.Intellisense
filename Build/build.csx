@@ -125,7 +125,10 @@ Task("Zip-Files")
 .IsDependentOn("Run-Tests")
     .Does(() =>
 {
-    var rootPath = paths.Directories.RootDir.Combine("Cake.Intellisense").Combine("bin").Combine(parameters.Configuration);
+    var rootPath = paths.Directories.RootDir.Combine("Cake.Intellisense")
+                                            .Combine("bin")
+                                            .Combine(parameters.Configuration)
+                                            .Combine(parameters.TargetFramework);
     var files = GetFiles(rootPath + "/**/*");
     Zip(rootPath, packages.ZipPackage, files);
 });
