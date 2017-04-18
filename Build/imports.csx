@@ -1,4 +1,4 @@
-// #load "./metadataImports.csx"
+//#load "./metadataImports.csx"
 
 using Cake.Core;
 using Cake.Core.IO;
@@ -46,3 +46,8 @@ using Cake.Common.IO;
 using Cake.Common.Diagnostics;
 using Cake.Common.Build;
 using Cake.Common.Tools.NuGet.Push;
+using Cake.Common.Tools.DotNetCore.Build;
+using Cake.Common.Tools.NuGet.Pack;
+using Cake.Common.Tools.GitReleaseManager.Create;
+using Cake.Common.Tools.DotNetCore.Pack;
+using Cake.Common.Tools.DotNetCore.Test;

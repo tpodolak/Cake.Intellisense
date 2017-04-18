@@ -16,9 +16,9 @@
         <developmentDependency>true</developmentDependency>
     </metadata>
     <files>
-        <file src="Cake.Intellisense\bin\Release\*.exe" target="tools\" />
-        <file src="Cake.Intellisense\bin\Release\*.config" target="tools\" />
-        <file src="Cake.Intellisense\bin\Release\*.dll" target="tools\" />
-        <file src="Cake.Intellisense\bin\Release\*.xml" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\net452\*.exe" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\net452\*.config" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\net452\*.dll" target="tools\" />
+        <file src="Cake.Intellisense\bin\Release\net452\*.xml" target="tools\" />
     </files>
 </package>
