@@ -86,8 +86,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
             [InlineData(null)]
             public void ListsAllAvailableFrameworks_WhenTargetFrameworkNotSpecified(string targetFramework)
             {
-                int index = -1;
-                int resultIndex = 0;
+                int resultIndex = -1;
                 var frameworkName = new FrameworkName(".NETFramework,Version=v4.5");
                 var frameworkNames = new List<FrameworkName> { frameworkName };
 
@@ -100,7 +99,7 @@ namespace Cake.Intellisense.Tests.Unit.CommandLineTests
 
                 Get<IPackageManager>().FindPackage(Arg.Any<string>(), Arg.Any<string>()).Returns(Use<IPackage>());
                 Get<IPackageManager>().GetTargetFrameworks(Arg.Any<IPackage>()).Returns(frameworkNames);
-                Get<IConsoleReader>().TryRead(out index).Returns(callInfo =>
+                Get<IConsoleReader>().TryRead(out resultIndex).Returns(callInfo =>
                 {
                     callInfo[0] = 0;
                     return true;

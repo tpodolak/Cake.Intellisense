@@ -27,7 +27,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesCakeMethodAliasAttribute),
-        @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     [global::Cake.Core.Annotations.CakeMethodAliasAttribute]
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
@@ -39,7 +39,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
     {
     }
 }",
-        @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
     public static T Argument<T>(this global::Cake.Core.ICakeContext context, System.String name)
     {
@@ -55,7 +55,7 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesCakeAliasCategoryAttribute),
-        @"[global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
+                    @"[global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
 public static class ArgumentAliases
 {
 }
@@ -64,7 +64,7 @@ public static class ArgumentAliases
 public static class EnvironmentAliases
 {
 }",
-        @"public static class ArgumentAliases
+                    @"public static class ArgumentAliases
 {
 }
 
@@ -77,7 +77,7 @@ public static class EnvironmentAliases
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesCakeNamespaceImportAttribute),
-        @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakeNamespaceImportAttribute(null), global::Cake.Core.Annotations.CakeNamespaceImportAttribute(null)]
     public static global::Cake.Common.Build.AppVeyor.IAppVeyorProvider AppVeyor(this global::Cake.Core.ICakeContext context)
@@ -89,7 +89,7 @@ public static class EnvironmentAliases
     {
     }
 }",
-        @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     public static global::Cake.Common.Build.AppVeyor.IAppVeyorProvider AppVeyor(this global::Cake.Core.ICakeContext context)
     {
@@ -105,14 +105,14 @@ public static class EnvironmentAliases
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesCakePropertyAttributesFromMethods),
-        @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
     }
 }",
-        @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo(this global::Cake.Core.ICakeContext context)
     {
@@ -124,7 +124,7 @@ public static class EnvironmentAliases
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesCakePropertyAttributesFromProperties),
-        @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true)]
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo
@@ -132,7 +132,7 @@ public static class EnvironmentAliases
         get;
     }
 }",
-        @"public static class BuildSystemAliases
+                    @"public static class BuildSystemAliases
 {
     public static global::Cake.Common.Build.Bamboo.IBambooProvider Bamboo
     {
@@ -145,7 +145,7 @@ public static class EnvironmentAliases
             {
                 return new ServiceRewriterTestCase(
                     nameof(KeepsCommentTriviaWhenRemovingCakeAttributes),
-        @"/// <summary>
+                    @"/// <summary>
 ///  Contains functionality related to build systems.
 /// </summary>
 [global::Cake.Core.Annotations.CakeAliasCategoryAttribute(null)]
@@ -170,7 +170,7 @@ public static class BuildSystemAliases
     {
     }
 }",
-        @"/// <summary>
+                    @"/// <summary>
 ///  Contains functionality related to build systems.
 /// </summary>
 public static class BuildSystemAliases
@@ -197,7 +197,7 @@ public static class BuildSystemAliases
             {
                 return new ServiceRewriterTestCase(
                     nameof(KeepsAttributesNotRelatedWithCakeIntact),
-        @"[Obsolete]
+                    @"[Obsolete]
 public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true),Obsolete]
@@ -205,7 +205,7 @@ public static class BuildSystemAliases
     {
     }
 }",
-        @"[Obsolete]
+                    @"[Obsolete]
 public static class BuildSystemAliases
 {
     [Obsolete]
@@ -219,7 +219,7 @@ public static class BuildSystemAliases
             {
                 return new ServiceRewriterTestCase(
                     nameof(RemovesParametersFromObosoleteAttribute),
-        @"[Obsolete(""null"",true)]
+                    @"[Obsolete(""null"",true)]
 public static class BuildSystemAliases
 {
     [global::Cake.Core.Annotations.CakePropertyAliasAttribute(Cache = true),Obsolete(""null"",true)]
@@ -227,7 +227,7 @@ public static class BuildSystemAliases
     {
     }
 }",
-        @"[Obsolete]
+                    @"[Obsolete]
 public static class BuildSystemAliases
 {
     [Obsolete]
@@ -242,7 +242,7 @@ public static class BuildSystemAliases
                 var assemblyName = typeof(AttributeSyntaxRewriterService).Assembly.GetName().Name;
                 return new ServiceRewriterTestCase(
                     nameof(UpdatesAssemblyTitleAttributeWithMetadataAssemblyName),
-        $@"[assembly: AssemblyTitle(""{assemblyName}"")]
+                    $@"[assembly: AssemblyTitle(""{assemblyName}"")]
 namespace Cake.Common
 {{
     public static class ArgumentAliases
