@@ -15,6 +15,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AppDomainToolkit" Version="1.0.4.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
