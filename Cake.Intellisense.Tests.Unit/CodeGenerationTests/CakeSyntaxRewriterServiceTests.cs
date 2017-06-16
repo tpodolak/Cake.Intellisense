@@ -21,11 +21,22 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
         {
             public RewriteMethod()
             {
+                var syntaxRewriterServices = new List<ISyntaxRewriterService>
+                {
+                    Substitute.For<ISyntaxRewriterService>(),
+                    Substitute.For<ISyntaxRewriterService>(),
+                    Substitute.For<ISyntaxRewriterService>()
+                };
+
+                syntaxRewriterServices.AsEnumerable().Reverse().ForEach((item, idx) => item.Order.Returns(idx));
+
                 var compilation = Use<Microsoft.CodeAnalysis.Compilation>(string.Empty, null, null, false, null);
                 compilation.SyntaxTrees.Returns(new List<SyntaxTree> { CSharpSyntaxTree.ParseText(string.Empty) });
                 compilation.AddSyntaxTrees(Arg.Any<SyntaxTree[]>()).Returns(compilation);
                 compilation.ReplaceSyntaxTree(Arg.Any<SyntaxTree>(), Arg.Any<SyntaxTree>()).Returns(compilation);
                 Get<ICompilationProvider>().Get(Arg.Any<string>()).Returns(compilation);
+                Get<IEnumerable<ISyntaxRewriterService>>().GetEnumerator()
+                    .Returns(callInfo => syntaxRewriterServices.GetEnumerator());
             }
 
             [Fact]
@@ -62,21 +73,6 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
                         Get<Microsoft.CodeAnalysis.Compilation>().ReplaceSyntaxTree(Arg.Any<SyntaxTree>(), Arg.Any<SyntaxTree>());
                     }
                 });
-            }
-
-            public override object CreateInstance(Type type, params object[] constructorArgs)
-            {
-                if (type != typeof(IEnumerable<ISyntaxRewriterService>))
-                    return base.CreateInstance(type, constructorArgs);
-
-                var syntaxRewriterServices = new[]
-                {
-                    Substitute.For<ISyntaxRewriterService>(),
-                    Substitute.For<ISyntaxRewriterService>(),
-                    Substitute.For<ISyntaxRewriterService>()
-                };
-                syntaxRewriterServices.Reverse().ForEach((item, idx) => item.Order.Returns(idx));
-                return syntaxRewriterServices;
             }
         }
     }
