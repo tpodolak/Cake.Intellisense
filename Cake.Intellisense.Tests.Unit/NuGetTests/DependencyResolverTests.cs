@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.Versioning;
 using Cake.Intellisense.NuGet;
 using Cake.Intellisense.Settings.Interfaces;
@@ -19,6 +18,7 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
             private readonly FrameworkName _defaultFramework = new FrameworkName(".NETFramework,Version=v4.5");
 
             public GetDependenciesAndSelfMethod()
+                : base(new MockInfo(typeof(IPackageRepository), Substitute.For<IPackageRepository, IDependencyResolver>()))
             {
                 Use<IPackage>();
                 Get<INuGetSettings>().RecursiveDependencyResolution.Returns(true);
@@ -104,17 +104,6 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
 
                 result.Should().HaveCount(3);
                 result.ShouldBeEquivalentTo(new[] { package, firstDependentPackage, secondDependentPackage });
-            }
-
-            public override object CreateInstance(Type type, params object[] constructorArgs)
-            {
-                if (type == typeof(IPackageRepository))
-                {
-                    var nugetPackageRepositoryProvider = Substitute.For<IPackageRepository, IDependencyResolver>();
-                    return nugetPackageRepositoryProvider;
-                }
-
-                return base.CreateInstance(type, constructorArgs);
             }
 
             private PackageDependencySet CreateDependencySet(IPackage package)

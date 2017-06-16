@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using MoreLinq;
 using NSubstitute;
 using NSubstitute.Core;
 
@@ -14,14 +13,20 @@ namespace Cake.Intellisense.Tests.Unit.Common
 
         public T Subject { get; }
 
-        public Test()
+        public Test(params MockInfo[] mocksInfo)
         {
             var parameters = GetMostComplexConstructor().GetParameters();
+            mocksInfo = mocksInfo ?? new MockInfo[0];
 
-            // allow to register custom instances via virtual call to CreateInstance
-            var localContainer = parameters.ToDictionary(parameterInfo => parameterInfo.ParameterType, parameterInfo => CreateInstance(parameterInfo.ParameterType));
-            localContainer.ForEach(pair => _container.Add(pair.Key, pair.Value));
-            Subject = (T)Activator.CreateInstance(typeof(T), localContainer.Values.ToArray());
+            foreach (var parameterInfo in parameters)
+            {
+                var instance = mocksInfo.SingleOrDefault(mock => mock.Type == parameterInfo.ParameterType)?.Instance ??
+                               CreateInstance(parameterInfo.ParameterType);
+
+                Use(parameterInfo.ParameterType, instance);
+            }
+
+            Subject = (T)Activator.CreateInstance(typeof(T), _container.Values.ToArray());
         }
 
         public TDependency Get<TDependency>()
@@ -34,24 +39,15 @@ namespace Cake.Intellisense.Tests.Unit.Common
             throw new InvalidOperationException($"Unable to resolve dependency {dependencyType}");
         }
 
-        public object Use(Type dependencyType, params object[] constructorArgs)
-        {
-            if (_container.ContainsKey(dependencyType))
-                throw new InvalidOperationException($"Dependency {dependencyType} is already registerd");
-
-            var instance = CreateInstance(dependencyType, constructorArgs);
-            _container.Add(dependencyType, instance);
-            return instance;
-        }
-
         public TDependency Use<TDependency>(params object[] constructorArgs)
         {
-            return (TDependency)Use(typeof(TDependency), constructorArgs);
+            var instance = (TDependency)CreateInstance(typeof(TDependency), constructorArgs);
+
+            return Use(instance);
         }
 
-        public TDependency Use<TDependency>(TDependency instance)
+        public object Use(Type dependencyType, object instance)
         {
-            var dependencyType = typeof(TDependency);
             if (_container.ContainsKey(dependencyType))
                 throw new InvalidOperationException($"Dependency {dependencyType} is already registerd");
 
@@ -59,14 +55,21 @@ namespace Cake.Intellisense.Tests.Unit.Common
             return instance;
         }
 
-        public virtual object CreateInstance(Type type, params object[] constructorArgs)
+        private TDependency Use<TDependency>(TDependency instance)
+        {
+            return (TDependency)Use(typeof(TDependency), instance);
+        }
+
+        private object CreateInstance(Type type, params object[] constructorArgs)
         {
             if (type.IsPrimitive)
                 return Activator.CreateInstance(type);
             if (type == typeof(string))
                 return null;
 
-            return type.IsInterface ? Substitute.For(new[] { type }, constructorArgs) : SubstitutionContext.Current.SubstituteFactory.CreatePartial(new[] { type }, constructorArgs);
+            return type.IsInterface
+                ? Substitute.For(new[] { type }, constructorArgs)
+                : SubstitutionContext.Current.SubstituteFactory.CreatePartial(new[] { type }, constructorArgs);
         }
 
         private ConstructorInfo GetMostComplexConstructor()
