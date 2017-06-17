@@ -1,4 +1,5 @@
-﻿using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewriters;
+﻿using System.Collections.Generic;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.AttributeRewriters;
 using Cake.Intellisense.Tests.Unit.Common;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
@@ -9,17 +10,17 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
         {
             static RewriteMethod()
             {
-                TestCases = new[]
+                TestCases = new List<ServiceRewriterTestCase>
                 {
-                    new object[] { RemovesCakeMethodAliasAttribute() },
-                    new object[] { RemovesCakeAliasCategoryAttribute() },
-                    new object[] { RemovesCakeNamespaceImportAttribute() },
-                    new object[] { RemovesCakePropertyAttributesFromMethods() },
-                    new object[] { RemovesCakePropertyAttributesFromProperties() },
-                    new object[] { KeepsCommentTriviaWhenRemovingCakeAttributes() },
-                    new object[] { KeepsAttributesNotRelatedWithCakeIntact() },
-                    new object[] { RemovesParametersFromObosoleteAttribute() },
-                    new object[] { UpdatesAssemblyTitleAttributeWithMetadataAssemblyName() }
+                    RemovesCakeMethodAliasAttribute(),
+                    RemovesCakeAliasCategoryAttribute(),
+                    RemovesCakeNamespaceImportAttribute(),
+                    RemovesCakePropertyAttributesFromMethods(),
+                    RemovesCakePropertyAttributesFromProperties(),
+                    KeepsCommentTriviaWhenRemovingCakeAttributes(),
+                    KeepsAttributesNotRelatedWithCakeIntact(),
+                    RemovesParametersFromObosoleteAttribute(),
+                    UpdatesAssemblyTitleAttributeWithMetadataAssemblyName()
                 };
             }
 

@@ -1,4 +1,5 @@
-﻿using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
+﻿using System.Collections.Generic;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.MethodRewriters;
 using Cake.Intellisense.Tests.Unit.Common;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
@@ -9,15 +10,15 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
         {
             static RewriteMethod()
             {
-                TestCases = new[]
+                TestCases = new List<ServiceRewriterTestCase>
                 {
-                    new object[] { RemovesCakeContextParam_WhenMethodIsCakeAlias() },
-                    new object[] { KeepsParametersIntacts_WhenMethodNotDecoratedWithCakeMethodAliasAttribute() },
-                    new object[] { KeepsMethodIntact_WhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters() },
-                    new object[] { ConvertsMethodDecoratedWithCakePropertyAliasAttributeToProperty() },
-                    new object[] { AppendMethodBodyWithProperReturnsStatements_WhenMethodReturnsValue() },
-                    new object[] { AppendMethodBodyWithOutParametersAssigned_WhenMethodHasOutParameters() },
-                    new object[] { ConvertsAbstractMethodToPublicStaticMethods() }
+                    RemovesCakeContextParam_WhenMethodIsCakeAlias(),
+                    KeepsParametersIntacts_WhenMethodNotDecoratedWithCakeMethodAliasAttribute(),
+                    KeepsMethodIntact_WhenMethodDecoratedWithCakeMethodAliasAttributeButHasNoParameters(),
+                    ConvertsMethodDecoratedWithCakePropertyAliasAttributeToProperty(),
+                    AppendMethodBodyWithProperReturnsStatements_WhenMethodReturnsValue(),
+                    AppendMethodBodyWithOutParametersAssigned_WhenMethodHasOutParameters(),
+                    ConvertsAbstractMethodToPublicStaticMethods()
                 };
             }
 

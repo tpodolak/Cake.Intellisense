@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.CommentRewriters;
 using Cake.Intellisense.Documentation.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
@@ -19,11 +20,11 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 
             static RewriteMethod()
             {
-                TestCases = new[]
+                TestCases = new List<ServiceRewriterTestCase>
                 {
-                new object[] { ProperlyAppendsXmlCommentToMethodWithoutAttributes() },
-                new object[] { ProperlyAppendsXmlCommentToMethodWithAttributes() }
-            };
+                    ProperlyAppendsXmlCommentToMethodWithoutAttributes(),
+                    ProperlyAppendsXmlCommentToMethodWithAttributes()
+                };
             }
 
             public RewriteMethod()

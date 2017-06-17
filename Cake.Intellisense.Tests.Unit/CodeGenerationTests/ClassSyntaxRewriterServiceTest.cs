@@ -1,4 +1,5 @@
-﻿using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters;
+﻿using System.Collections.Generic;
+using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.ClassRewriters;
 using Cake.Intellisense.Tests.Unit.Common;
 
 namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
@@ -9,17 +10,17 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
         {
             static RewriteMethod()
             {
-                TestCases = new[]
+                TestCases = new List<ServiceRewriterTestCase>
                 {
-                new object[] { RemovesFieldsDeclaration() },
-                new object[] { RemovesPropertyDeclarations() },
-                new object[] { RemovesNonPublicClasses() },
-                new object[] { AppendsMetadataClassSuffixToClassName() },
-                new object[] { RemovesAllConstructor() },
-                new object[] { ReplacesClassModifierWithPublicOne() },
-                new object[] { RemovesNonPublicMethods() },
-                new object[] { RemovesBaseList() }
-            };
+                    RemovesFieldsDeclaration(),
+                    RemovesPropertyDeclarations(),
+                    RemovesNonPublicClasses(),
+                    AppendsMetadataClassSuffixToClassName(),
+                    RemovesAllConstructor(),
+                    ReplacesClassModifierWithPublicOne(),
+                    RemovesNonPublicMethods(),
+                    RemovesBaseList()
+                };
             }
 
             private static ServiceRewriterTestCase RemovesFieldsDeclaration()

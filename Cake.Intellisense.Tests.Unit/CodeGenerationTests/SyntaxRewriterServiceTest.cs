@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Cake.Intellisense.CodeGeneration.SyntaxRewriterServices.Interfaces;
 using Cake.Intellisense.Tests.Unit.Common;
 using Cake.Intellisense.Tests.Unit.XUnitExtensionPoints;
@@ -11,10 +12,12 @@ namespace Cake.Intellisense.Tests.Unit.CodeGenerationTests
 {
     public abstract class SyntaxRewriterServiceTest<T> : Test<T> where T : class, ISyntaxRewriterService
     {
-        public static IEnumerable<object[]> TestCases { get; set; }
+        public static IEnumerable<ServiceRewriterTestCase> TestCases { get; set; }
+
+        public static IEnumerable<object[]> AvailableTestCases => TestCases.Select(testCase => new object[] { testCase });
 
         [Theory]
-        [CustomMemberData(nameof(TestCases))]
+        [CustomMemberData(nameof(AvailableTestCases))]
         public void Verify(ServiceRewriterTestCase testCase)
         {
             var inputTree = ParseSyntaxTree(testCase.Input);
