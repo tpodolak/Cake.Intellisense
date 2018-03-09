@@ -1,3 +1,6 @@
+## Project decommissioned
+As described on my [blog](https://tpodolak.com/blog/2017/04/12/vs-code-forcing-partial-intellisense-support-cake-scripts/) this project was a temporary solution for enabling IntelliSense support for Cake scripts. As the official support made its way to the [OmniSharp](https://cakebuild.net/blog/2017/11/intellisense-vscode) repository, there is no point in keeping this code alive anymore.
+
 ## Cake.Intellisense
 Cake and Cake addins metadata generator which provides partial intellisense support for Cake build scripts for omnisharp editors.
 
