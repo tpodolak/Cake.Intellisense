@@ -11,7 +11,7 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=ReportGenerator&version=2.4.5"
 #tool "nuget:https://www.nuget.org/api/v2?package=JetBrains.ReSharper.CommandLineTools&version=2017.1.20170407.131846"
 #tool "nuget:https://www.nuget.org/api/v2?package=xunit.runner.visualstudio&version=2.2.0"
-#addin Cake.Coveralls
+#addin "nuget:https://www.nuget.org/api/v2?package=cake.coveralls&version=0.4.0"
 
 var parameters = BuildParameters.GetParameters(Context);
 var buildVersion = BuildVersion.Calculate(Context);
