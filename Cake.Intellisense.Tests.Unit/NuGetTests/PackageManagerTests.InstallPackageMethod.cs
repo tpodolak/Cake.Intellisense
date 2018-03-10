@@ -93,8 +93,32 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 var result = Subject.InstallPackage("Cake.Common", "2.0.0.0", targetFramework);
 
                 result.Should().NotBeNull();
-                result.Version.Should().Be(new SemanticVersion(2, 0, 0, 0));
+                result.Should().BeSameAs(secondPackage);
                 Get<IPackageManager>().Received().InstallPackage(Arg.Any<IPackage>(), Arg.Any<bool>(), Arg.Any<bool>());
+            }
+
+            [Fact]
+            public void ReturnsVersionTargetingGivenFramework_WhenVersionNotSpecified()
+            {
+                var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
+                var firstPackage = Substitute.For<IPackage>();
+                var secondPackage = Substitute.For<IPackage>();
+                var firstPackageAssemblyReference = Use<IPackageAssemblyReference>();
+                var secondPackageAssemblyReference = Substitute.For<IPackageAssemblyReference>();
+                secondPackageAssemblyReference.TargetFramework.Returns(new FrameworkName(".NETFramework,Version=v4.6"));
+                firstPackageAssemblyReference.TargetFramework.Returns(targetFramework);
+                firstPackage.Version.Returns(new SemanticVersion(2, 0, 0, 0));
+                firstPackage.Id.Returns("Cake.Common");
+                firstPackage.AssemblyReferences.Returns(new[] { firstPackageAssemblyReference });
+
+                secondPackage.Version.Returns(new SemanticVersion(1, 0, 0, 0));
+                secondPackage.Id.Returns("Cake.Common");
+                secondPackage.AssemblyReferences.Returns(new[] { secondPackageAssemblyReference });
+                Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { firstPackage, secondPackage }.AsQueryable());
+
+                var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
+
+                result.Should().BeSameAs(firstPackage);
             }
         }
     }

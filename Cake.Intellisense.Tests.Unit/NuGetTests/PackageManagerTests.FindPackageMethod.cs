@@ -27,7 +27,7 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
 
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage>().AsQueryable());
 
-                var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
+                var result = Subject.FindPackage("Cake.Common", string.Empty, targetFramework);
 
                 result.Should().BeNull();
                 Get<IPackageManager>().DidNotReceive().InstallPackage(Arg.Any<IPackage>(), Arg.Any<bool>(), Arg.Any<bool>());
@@ -57,14 +57,15 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
 
                 Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { secondPackage, firstPackage }.AsQueryable());
                 Get<INuGetSettings>().AllowPreReleaseVersions.Returns(allowPreRelease);
-                var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
+
+                var result = Subject.FindPackage("Cake.Common", string.Empty, targetFramework);
 
                 result.Should().NotBeNull();
                 result.Version.ToString().Should().Be(expectedVersion);
             }
 
             [Fact]
-            public void ReturnsVersionTargetingGivenFramework()
+            public void ReturnsVersionTargetingGivenFramework_WhenVersionNotSpecified()
             {
                 var targetFramework = new FrameworkName(".NETFramework,Version=v4.5");
                 var firstPackage = Substitute.For<IPackage>();
@@ -80,12 +81,12 @@ namespace Cake.Intellisense.Tests.Unit.NuGetTests
                 secondPackage.Version.Returns(new SemanticVersion(1, 0, 0, 0));
                 secondPackage.Id.Returns("Cake.Common");
                 secondPackage.AssemblyReferences.Returns(new[] { secondPackageAssemblyReference });
-                Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { secondPackage, firstPackage }.AsQueryable());
+                Get<IPackageRepository>().GetPackages().Returns(new List<IPackage> { firstPackage, secondPackage }.AsQueryable());
 
-                var result = Subject.InstallPackage("Cake.Common", string.Empty, targetFramework);
+                var result = Subject.FindPackage("Cake.Common", string.Empty, targetFramework);
 
                 result.Should().NotBeNull();
-                result.AssemblyReferences.Select(val => val.TargetFramework).Should().ContainSingle(framework => framework == targetFramework);
+                result.Should().BeSameAs(firstPackage);
             }
         }
     }

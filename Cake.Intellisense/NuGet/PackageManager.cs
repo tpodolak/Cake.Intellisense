@@ -47,24 +47,34 @@ namespace Cake.Intellisense.NuGet
 
         public IPackage FindPackage(string packageId, string version, FrameworkName targetFramework)
         {
-            var package = FindPackage(packageId, version);
+            var packages = FindPackages(packageId, version);
 
-            if (package != null && GetTargetFrameworks(package).Any(framework => framework == targetFramework))
-                return package;
-
-            return null;
+            // people most likely will search for newer package first so slight optimization by adding reverse
+            // (getting target frameworks is expansive operation)
+            return packages.Reverse().FirstOrDefault(package =>
+                GetTargetFrameworks(package).Any(framework => framework == targetFramework));
         }
 
         public IPackage FindPackage(string packageId, string version)
         {
+            var packages = FindPackages(packageId, version);
+
+            return packages.LastOrDefault();
+        }
+
+        private IList<IPackage> FindPackages(string packageId, string version)
+        {
             var packages = _packageRepository.FindPackagesById(packageId).ToList();
 
             if (string.IsNullOrWhiteSpace(version))
-                return packages.LastOrDefault(package => _settings.AllowPreReleaseVersions || package.IsReleaseVersion());
+            {
+                return packages.Where(package => _settings.AllowPreReleaseVersions || package.IsReleaseVersion())
+                    .ToList();
+            }
 
             var semanticVersion = new SemanticVersion(new Version(version));
 
-            return _packageRepository.FindPackagesById(packageId).SingleOrDefault(package => package.Version == semanticVersion);
+            return packages.Where(package => package.Version == semanticVersion).ToList();
         }
     }
 }
